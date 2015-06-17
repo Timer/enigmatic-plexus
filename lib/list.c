@@ -44,6 +44,11 @@ int list_get_int(List *list, int index) {
   return *((int *) ((list->arr)[index]));
 }
 
+void list_remove(List *list, int index) {
+  assert(index < list->count--);
+  free((list->arr)[index]);
+}
+
 List * list_slice(List *ol, int start, int end) {
   List *sl = list_empty();
   for (int index = start; index < end; ++index) {
