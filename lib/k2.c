@@ -3,6 +3,7 @@
 #include <string.h>
 #include "list.h"
 #include "matrix.h"
+#include "map.h"
 
 int score_family() {
   return 0;
