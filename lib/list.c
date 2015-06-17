@@ -62,6 +62,21 @@ List * list_slice(List *ol, int start, int end) {
   return sl;
 }
 
+List * difference_type_int(List *primary, List *secondary) {
+  List *list = list_slice(primary, 0, primary->count);
+  if (list->count == 0 || secondary->count == 0) return list;
+  for (int i = 0; i < secondary->count; ++i) {
+    int val = *((int *) (secondary->arr)[i]);
+    for (int i2 = 0; i2 < list->count; ++i2) {
+      if (*((int *) (list->arr)[i2]) == val) {
+        list_remove(list, i2);
+        break;
+      }
+    }
+  }
+  return list;
+}
+
 void list_delete(List *list) {
   for (int i = 0; i < list->count; ++i) {
     free(list->arr[i]);
