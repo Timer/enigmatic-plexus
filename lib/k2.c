@@ -33,10 +33,9 @@ Matrix * learn_struct_K2(
     //TODO: type{j}/params{j}
     int score = score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub, NULL);
     for (; ps->count <= max_fan_in ;) {
-      List *pps = list_empty();
       List *order_sub = list_slice(order, 0, i - 1);
+      List *pps = difference_type_int(order_sub, ps);
       list_scrap(order_sub);
-      //TODO: pps = mysetdiff(order(1:i-1), ps);
       int nps = pps->count;
       Matrix *pscore = matrix_zeros(1, nps);
       for (int pi = 0; pi < nps; ++pi) {
@@ -53,7 +52,7 @@ Matrix * learn_struct_K2(
       int best_pscore = list_get_int(mm->values, 0), best_p = list_get_int(mm->rows, 0);
       matrix_max_delete(mm);
       best_p = list_get_int(pps, best_p);
-      list_delete(pps);
+      list_scrap(pps);
       if (best_pscore > score) {
         score = best_pscore;
         list_push_int(ps, best_p);
