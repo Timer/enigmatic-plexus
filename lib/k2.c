@@ -5,38 +5,49 @@
 #include "matrix.h"
 #include "map.h"
 
-int score_family() {
+//TODO: node_type is cell array, ns still unknown
+int score_family(int j, List *ps, void *node_type, char *scoring_fn, void *ns, List *discrete, Matrix *data, Map *args) {
   return 0;
 }
 
 Matrix * learn_struct_K2(
-  Matrix *data, List *order
+  Matrix *data, void *ns, List *order, Map *varargin
 ) {
   assert(order->count == data->rows);
   int n = data->rows, ncases = data->cols;
   int max_fan_in = n;
+  char *scoring_fn = "bayesian";
+  List *discrete = list_empty();
+  for (int i = 0; i < n; ++i) list_push_int(discrete, i);
   Matrix *clamped = matrix_zeros(n, ncases);
 
   Matrix *dag = matrix_zeros(n, n);
   for (int i = 0; i < n; ++i) {
     List *ps = list_empty();
     int j = list_get_int(order, i);
-    Matrix * u_matrix = matrix_sub_indices(clamped, j, j + 1, 0, clamped->cols);
+    Matrix *u_matrix = matrix_sub_indices(clamped, j, j + 1, 0, clamped->cols);
     assert(u_matrix->rows == 1);
     List *u = matrix_find_by_value(u_matrix, 0);
     matrix_scrap(u_matrix);
-    int score = score_family();
-    //TODO: score = score_family(j, ps, type{j}, scoring_fn, ns, discrete, data(:,u), params{j});
+    Matrix *data_sub = matrix_sub_index_list(data, 0, n, u);
+    //TODO: type{j}/params{j}
+    int score = score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub, NULL);
     for (; ps->count <= max_fan_in ;) {
       List *pps = list_empty();
+      List *order_sub = list_slice(order, 0, i - 1);
+      list_scrap(order_sub);
       //TODO: pps = mysetdiff(order(1:i-1), ps);
       int nps = pps->count;
       Matrix *pscore = matrix_zeros(1, nps);
       for (int pi = 0; pi < nps; ++pi) {
         int p = list_get_int(pps, pi);
-        *matrix_element_by_index(pscore, pi) = score_family();
-        //TODO: pscore(pi) = score_family(j, [ps p], type{j}, scoring_fn, ns, discrete, data(:,u), params{j});
+        int n_index = list_push_int(ps, p);
+        *matrix_element_by_index(pscore, pi) =
+        //TODO: type{j}/params{j}
+          score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub, NULL);
+        list_remove(ps, n_index);
       }
+      matrix_scrap(data_sub);
       MatrixMax *mm = matrix_max(pscore);
       assert(mm->cols == 1);
       int best_pscore = list_get_int(mm->values, 0), best_p = list_get_int(mm->rows, 0);
