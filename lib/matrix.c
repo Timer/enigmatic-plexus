@@ -84,6 +84,20 @@ Matrix * matrix_sub_list_index(Matrix *o_matrix, List *rows, int col_start, int 
   return n_matrix;
 }
 
+Matrix * matrix_sub_index_list(Matrix *o_matrix, int row_start, int row_end, List *cols) {
+  Matrix *n_matrix = matrix_raw(row_end - row_start, cols->count);
+  int index = -1;
+  int **n_data = n_matrix->data, **o_data = o_matrix->data;
+  for (int r = row_start; r < row_end; ++r) {
+    int b = r * o_matrix->cols;
+    for (int ci = 0; ci < cols->count; ++ci) {
+      int c = list_get_int(cols, ci);
+      n_data[++index] = o_data[b + c];
+    }
+  }
+  return n_matrix;
+}
+
 List * matrix_find_by_value(Matrix *matrix, int value) {
   int index = 0;
   List *list = list_empty();
@@ -113,6 +127,13 @@ MatrixMax * matrix_max(Matrix *matrix) {
     list_push_int(max->rows, largest_row);
   }
   return max;
+}
+
+List * matrix_to_list(Matrix *matrix) {
+  assert(matrix->rows == 1);
+  List *l = list_empty();
+  for (int i = 0; i < matrix->cols; ++i) list_push_int(l, *matrix_element(matrix, 0, i));
+  return l;
 }
 
 void matrix_max_delete(MatrixMax *matrix_max) {
