@@ -1,5 +1,6 @@
 #include "list.h"
 #include <stdlib.h>
+#include <memory.h>
 #include <assert.h>
 
 List * list_empty() {
@@ -44,9 +45,13 @@ int list_get_int(List *list, int index) {
   return *((int *) ((list->arr)[index]));
 }
 
-void list_remove(List *list, int index) {
+void * list_remove(List *list, int index) {
   assert(index < list->count--);
-  free((list->arr)[index]);
+  void *ptr = (list->arr)[index];
+  if (list->count - index > 0) {
+    memmove(list->arr + index, list->arr + index + 1, (list->count - index) * sizeof(void *));
+  }
+  return ptr;
 }
 
 List * list_slice(List *ol, int start, int end) {

@@ -45,7 +45,7 @@ Matrix * learn_struct_K2(
         *matrix_element_by_index(pscore, pi) =
         //TODO: type{j}/params{j}
           score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub, NULL);
-        list_remove(ps, n_index);
+        free(list_remove(ps, n_index));
       }
       matrix_scrap(data_sub);
       MatrixMax *mm = matrix_max(pscore);
