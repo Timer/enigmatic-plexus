@@ -3,15 +3,16 @@
 #include <string.h>
 #include "list.h"
 #include "matrix.h"
-#include "map.h"
 
 //TODO: node_type is cell array, ns still unknown
-int score_family(int j, List *ps, void *node_type, char *scoring_fn, void *ns, List *discrete, Matrix *data, Map *args) {
+int score_family(int j, List *ps, void *node_type, char *scoring_fn, void *ns, List *discrete, Matrix *data) {
+  int n = data->rows, ncases = data->cols;
+
   return 0;
 }
 
 Matrix * learn_struct_K2(
-  Matrix *data, void *ns, List *order, Map *varargin
+  Matrix *data, void *ns, List *order
 ) {
   assert(order->count == data->rows);
   int n = data->rows, ncases = data->cols;
@@ -31,7 +32,7 @@ Matrix * learn_struct_K2(
     matrix_scrap(u_matrix);
     Matrix *data_sub = matrix_sub_index_list(data, 0, n, u);
     //TODO: type{j}/params{j}
-    int score = score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub, NULL);
+    int score = score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub);
     for (; ps->count <= max_fan_in ;) {
       List *order_sub = list_slice(order, 0, i - 1);
       List *pps = difference_type_int(order_sub, ps);
@@ -43,7 +44,7 @@ Matrix * learn_struct_K2(
         int n_index = list_push_int(ps, p);
         *matrix_element_by_index(pscore, pi) =
         //TODO: type{j}/params{j}
-          score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub, NULL);
+          score_family(j, ps, NULL, scoring_fn, ns, discrete, data_sub);
         free(list_remove(ps, n_index));
       }
       matrix_scrap(data_sub);
