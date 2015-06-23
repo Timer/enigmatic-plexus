@@ -33,16 +33,10 @@ function dag = learn_struct_K2(data, ns, order, varargin)
 [n ncases] = size(data);
 
 % set default params
-% // this sets up a vector of cell arrays, 1 for each n, for both type and params
-% // we should be able to avoid this for our first run because all of the
-% // params and types are the same
-type = cell(1,n);
-params = cell(1,n);
-for i=1:n
-  type{i} = 'tabular';
-  %params{i} = { 'prior', 1 };
-  params{i} = { 'prior_type', 'dirichlet', 'dirichlet_weight', 1 };
-end
+% // i changed this to be set once because its always the same
+
+type = 'tabular';
+params = { 'prior_type', 'dirichlet', 'dirichlet_weight', 1 };
 
 % // select the scoring type, for now we will always use bayesian
 scoring_fn = 'bayesian';
@@ -50,58 +44,38 @@ scoring_fn = 'bayesian';
 % // this sets up a vector of the numbers 1 to n
 discrete = 1:n;
 
-% // this creates a matrix n by ncases of all 0's
-clamped = zeros(n, ncases);
-
-max_fan_in = n;
-verbose = 0;
-
-
-% // we should be able to avoid this for now because our arguments are
-% // always the same
-args = varargin;
-nargs = length(args);
-if length(args) > 0 
-  if isstr(args{1})
-    for i=1:2:nargs
-      switch args{i},
-       case 'verbose',    verbose = strcmp(args{i+1}, 'yes');
-       case 'max_fan_in', max_fan_in = args{i+1}; 
-       case 'scoring_fn', scoring_fn = args{i+1};
-       case 'type',       type = args{i+1}; 
-       case 'discrete',   discrete = args{i+1}; 
-       case 'clamped',    clamped = args{i+1}; 
-       case 'params',     if isempty(args{i+1}), params = cell(1,n); else params = args{i+1};  end
-      end
-    end
-  else
-    max_fan_in = args{1};
-  end
-end
+% // i set max to 5 for now, we will figure it out later
+max_fan_in = 2;
 
 % // the initial DAG adjacency matri created with no connections (all 0)
 dag = zeros(n,n);
+
+verbose = 1;
 
 for i=1:n
   % // ps is the vector of parents for the node we are working on,
   % // currently set to nothing
   ps = [];
   j = order(i);
-  % // this will return every index, we can really take clamped out (for now)
-  u = find(clamped(j,:)==0);
-  
+ 
   % // this gives a base line score (no parents)
-  score = score_family(j, ps, type{j}, scoring_fn, ns, discrete, data(:,u), params{j});
+  score = score_family(j, ps, type, scoring_fn, ns, discrete, data, params);
   
   if verbose, fprintf('\nnode %d, empty score %6.4f\n', j, score); end
   done = 0;
+  
+  % // loop until done or until the max number of parents has been hit
   while ~done & (length(ps) <= max_fan_in)
+    % // this sets pps to the numbers in order(1:i-1) that are NOT in ps
     pps = mysetdiff(order(1:i-1), ps); % potential parents
     nps = length(pps);
+    
+    % // pscore is used to score each potential parent, 0 to start
     pscore = zeros(1, nps);
+
     for pi=1:nps
       p = pps(pi);
-      pscore(pi) = score_family(j, [ps p], type{j}, scoring_fn, ns, discrete, data(:,u), params{j});
+      pscore(pi) = score_family(j, [ps p], type, scoring_fn, ns, discrete, data, params);
       if verbose, fprintf('considering adding %d to %d, score %6.4f\n', p, j, pscore(pi)); end
     end
     [best_pscore, best_p] = max(pscore);
