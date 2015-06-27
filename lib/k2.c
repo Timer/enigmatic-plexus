@@ -3,12 +3,31 @@
 #include <string.h>
 #include "list.h"
 #include "matrix.h"
+#include "bnet.h"
 
-//TODO: node_type is cell array, ns still unknown
-int score_family(int j, List *ps, void *node_type, char *scoring_fn, void *ns, List *discrete, Matrix *data, void *params) {
+BayesianNetwork *mk_bnet(Matrix *dag, void *ns, char *prefix, List *discrete) {
+  return NULL;//TODO: this
+}
+
+int score_family(int j, List *ps, char *node_type, char *scoring_fn, void *ns, List *discrete, Matrix *data, void *args) {
   int n = data->rows, ncases = data->cols;
+  Matrix *dag = matrix_zeros(0, 0);
+  if (ps->count > 0) {
+    Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
+    matrix_set(dag_sub, 1);
+    matrix_scrap(dag_sub);
+    //TODO: sort `ps` here.
+  }
 
-  return 0;
+  BayesianNetwork *bnet = mk_bnet(dag, ns, "discrete", discrete);
+  CPD *cpd;
+  if (!strcmp(scoring_fn, "tabular")) {
+    cpd = NULL;//TODO: tabular gen for (bnet, j, args{:});
+  } else {
+    assert(1 == 2);
+  }
+  //TODO: bnet->cpds[j] = cpd;
+  return 0;//TODO: log_marg_prob_node(bnet.CPD{j}, data(j,:), data(ps,:))
 }
 
 Matrix * learn_struct_K2(
