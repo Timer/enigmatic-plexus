@@ -5,7 +5,11 @@
 #include "matrix.h"
 #include "bnet.h"
 
-BayesianNetwork *mk_bnet(Matrix *dag, void *ns, char *prefix, List *discrete) {
+CPD * tabular_CPD(BayesianNetwork *bnet, int self, void *args) {
+  return NULL;//TODO: this
+}
+
+BayesianNetwork * mk_bnet(Matrix *dag, void *ns, char *prefix, List *discrete) {
   return NULL;//TODO: this
 }
 
@@ -22,7 +26,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, void *ns, L
   BayesianNetwork *bnet = mk_bnet(dag, ns, "discrete", discrete);
   CPD *cpd;
   if (!strcmp(scoring_fn, "tabular")) {
-    cpd = NULL;//TODO: tabular gen for (bnet, j, args{:});
+    cpd = tabular_CPD(bnet, j, args);
   } else {
     assert(1 == 2);
   }
