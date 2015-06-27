@@ -11,6 +11,7 @@ List * list_empty() {
 }
 
 void list_enlarge(List *list) {
+  int prev = list->count;
   if (list->arr) {
     if (list->count == list->size) {
       realloc(list->arr, (list->size *= 2) * sizeof(void *));
@@ -19,6 +20,8 @@ void list_enlarge(List *list) {
     list->size = 2;
     list->arr = malloc(sizeof(void *) * list->size);
   }
+  for (int i = prev; i < list->count; ++i) list_set(list, i, NULL);
+}
 }
 
 int list_push(List *list, void *data) {
