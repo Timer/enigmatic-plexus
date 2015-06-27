@@ -41,6 +41,13 @@ int list_push_int(List *list, int value) {
   return list->count++;
 }
 
+void * list_set(List *list, int index, void *data) {
+  assert(index < list->size);
+  void *old = (list->arr)[index];
+  (list->arr)[index] = data;
+  return old;
+}
+
 void * list_get(List *list, int index) {
   assert(index < list->count);
   return (list->arr)[index];
