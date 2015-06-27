@@ -8,6 +8,7 @@ typedef struct {
 
 List * list_empty();
 void list_enlarge(List *list);
+void list_grow(List *list, int size);
 int list_push(List *list, void *data);
 int list_push_int(List *list, int value);
 void * list_get(List *list, int index);

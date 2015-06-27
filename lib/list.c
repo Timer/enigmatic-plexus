@@ -22,6 +22,9 @@ void list_enlarge(List *list) {
   }
   for (int i = prev; i < list->count; ++i) list_set(list, i, NULL);
 }
+
+void list_grow(List *list, int size) {
+  while (list->size < size) list_enlarge(list);
 }
 
 int list_push(List *list, void *data) {
