@@ -36,7 +36,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, void *ns, L
   } else {
     assert(1 == 2);
   }
-  //TODO: bnet->cpds[j] = cpd;
+  list_set(bnet->cpds, j, cpd);
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
     *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   int score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
