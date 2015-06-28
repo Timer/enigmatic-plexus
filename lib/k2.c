@@ -9,14 +9,8 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return 0;//TODO: this
 }
 
-CPD * tabular_CPD(BayesianNetwork *bnet, int self, void *args) {
+CPD * tabular_CPD(Matrix *dag, void *node_sizes, int self, void *args) {
   return NULL;//TODO: this
-}
-
-BayesianNetwork * mk_bnet(Matrix *dag, void *ns, char *prefix, List *discrete) {
-  BayesianNetwork *b = malloc(sizeof(BayesianNetwork));
-  b->cpds = list_empty();
-  return b;
 }
 
 int score_family(int j, List *ps, char *node_type, char *scoring_fn, void *ns, List *discrete, Matrix *data, void *args) {
@@ -29,20 +23,17 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, void *ns, L
     //TODO: sort `ps` here.
   }
 
-  BayesianNetwork *bnet = mk_bnet(dag, ns, "discrete", discrete);
   CPD *cpd;
   if (!strcmp(scoring_fn, "tabular")) {
-    cpd = tabular_CPD(bnet, j, args);
+    cpd = tabular_CPD(dag, ns, j, args);
   } else {
     assert(1 == 2);
   }
-  list_set(bnet->cpds, j, cpd);
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
     *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   int score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
-  bnet_delete(bnet);
   return score;
 }
 
