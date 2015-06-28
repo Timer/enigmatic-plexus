@@ -26,6 +26,7 @@ if ~isempty(ps), dag(ps, j) = 1;, ps = sort(ps);, end
 bnet = mk_bnet(dag, ns, 'discrete', discrete);
 
 fname = sprintf('%s_CPD', node_type);
-bnet.CPD{j} = feval(fname, bnet, j, args{:});
+bnet.CPD{j} = feval(fname, bnet, j, args{:})
+feval(fname, bnet, j, args{:})
 score = log_marg_prob_node(bnet.CPD{j}, data(j,:), data(ps,:));
 end
