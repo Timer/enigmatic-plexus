@@ -26,7 +26,7 @@ int * matrix_element(Matrix *matrix, int row, int col) {
   if (row >= matrix->rows || col >= matrix->cols) {
     exit(EXIT_FAILURE);
   }
-  return (matrix->data)[col * matrix->rows + row];
+  return (matrix->data)[row * matrix->cols + col];
 }
 
 int * matrix_element_by_index(Matrix *matrix, int index) {
