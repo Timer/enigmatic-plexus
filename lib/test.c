@@ -4,8 +4,10 @@
 
 int main() {
   Matrix* m = matrix_zeros(2, 3);
-  for (int i = 0; i < 6; ++i)
-    *(matrix_element_by_index(m, i)) = i + 1;
+  int a = 0;
+  for (int i = 0; i < 2; ++i)
+    for (int j = 0; j < 3; ++j)
+      *(matrix_element(m, i, j)) = a++;
 
 
   for (int i = 0; i < 6; ++i)
@@ -14,4 +16,6 @@ int main() {
 
   int b = prod(m);
   printf("%d", b);
+  for (int i = 0; i < 3; ++i)
+    printf("%d", *(matrix_element(m, 0, i)));
 }
