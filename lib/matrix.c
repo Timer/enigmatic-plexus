@@ -26,14 +26,10 @@ int * matrix_element(Matrix *matrix, int row, int col) {
   if (row >= matrix->rows || col >= matrix->cols) {
     exit(EXIT_FAILURE);
   }
-  return (matrix->data)[row * matrix->cols + col];
+  return (matrix->data)[col * matrix->rows + row];
 }
 
 int * matrix_element_by_index(Matrix *matrix, int index) {
-  //Matrix indices are in the form of:
-  //[0][3][6]
-  //[1][4][7]
-  //[2][5][8]
   return (matrix->data)[index];
 }
 
