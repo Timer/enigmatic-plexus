@@ -34,7 +34,7 @@ int * matrix_element_by_index(Matrix *matrix, int index) {
   //[0][3][6]
   //[1][4][7]
   //[2][5][8]
-  return matrix_element(matrix, index % matrix->rows, index / matrix->cols);
+  return (matrix->data)[index];
 }
 
 void matrix_set(Matrix *matrix, int value) {
