@@ -8,8 +8,9 @@ int prod(Matrix* sz) {
   int ret = 1;
 
   // for each item in the matrix
-  for (int i = 0; i < sz->rows * sz->cols; ++i)
+  for (int i = 0; i < sz->rows * sz->cols; ++i) {
     ret *= *((int *) matrix_element_by_index(sz, i));
+  }
   return ret;
 }
 
