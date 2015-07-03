@@ -68,8 +68,9 @@ void matrix_dobule_set(Matrix *matrix, int value) {
 Matrix * matrix_sub_indices(Matrix *o_matrix, int row_start, int row_end, int col_start, int col_end) {
   Matrix *n_matrix = matrix_raw(row_end - row_start, col_end - col_start);
   void **n_data = n_matrix->data, **o_data = o_matrix->data;
-  int ri = 0, ci = 0;
+  int ci = 0;
   for (int c = col_start; c < col_end; ++c, ++ci) {
+    int ri = 0;
     for (int r = row_start; r < row_end; ++r, ++ri) {
       n_data[_matrix_index_for(n_matrix, ri, ci)] = o_data[_matrix_index_for(o_matrix, r, c)];
     }
@@ -92,10 +93,9 @@ Matrix * matrix_sub_lists(Matrix *o_matrix, List *rows, List *cols) {
 
 Matrix * matrix_sub_list_index(Matrix *o_matrix, List *rows, int col_start, int col_end) {
   Matrix *n_matrix = matrix_raw(rows->count, col_end - col_start);
-  int ci = 0;
   void **n_data = n_matrix->data, **o_data = o_matrix->data;
   for (int ri = 0; ri < rows->count; ++ri) {
-    int r = list_get_int(rows, ri);
+    int ci = 0, r = list_get_int(rows, ri);
     for (int c = col_start; c < col_end; ++c, ++ci) {
       n_data[_matrix_index_for(n_matrix, ri, ci)] = o_data[_matrix_index_for(o_matrix, r, c)];
     }
@@ -105,8 +105,8 @@ Matrix * matrix_sub_list_index(Matrix *o_matrix, List *rows, int col_start, int 
 
 Matrix * matrix_sub_index_list(Matrix *o_matrix, int row_start, int row_end, List *cols) {
   Matrix *n_matrix = matrix_raw(row_end - row_start, cols->count);
-  int ri = 0;
   void **n_data = n_matrix->data, **o_data = o_matrix->data;
+  int ri = 0;
   for (int r = row_start; r < row_end; ++r, ++ri) {
     for (int ci = 0; ci < cols->count; ++ci) {
       int c = list_get_int(cols, ci);
