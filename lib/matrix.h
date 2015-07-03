@@ -24,6 +24,8 @@ Matrix * matrix_sub_indices(Matrix *matrix, int row_start, int row_end, int col_
 Matrix * matrix_sub_lists(Matrix *matrix, List *rows, List *cols);
 Matrix * matrix_sub_list_index(Matrix *matrix, List *rows, int col_start, int col_end);
 Matrix * matrix_sub_index_list(Matrix *matrix, int row_start, int row_end, List *cols);
+Matrix * matrix_sub_col(Matrix *matrix, int col);
+Matrix * matrix_sub_row(Matrix *matrix, int row);
 List * matrix_find_by_value(Matrix *matrix, int value);
 List * matrix_double_find_by_value(Matrix *matrix, double value);
 MatrixMax * matrix_max(Matrix *matrix);

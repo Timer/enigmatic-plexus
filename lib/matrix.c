@@ -121,6 +121,14 @@ Matrix * matrix_sub_index_list(Matrix *o_matrix, int row_start, int row_end, Lis
   return n_matrix;
 }
 
+Matrix * matrix_sub_col(Matrix *matrix, int col) {
+  return matrix_sub_indices(matrix, 0, matrix->rows, col, col + 1);
+}
+
+Matrix * matrix_sub_row(Matrix *matrix, int row) {
+  return matrix_sub_indices(matrix, row, row + 1, 0, matrix->cols);
+}
+
 List * matrix_find_by_value(Matrix *matrix, int value) {
   List *list = list_empty();
   for (int c = 0; c < matrix->cols; ++c) {
