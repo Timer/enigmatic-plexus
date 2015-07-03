@@ -39,6 +39,9 @@ void * matrix_element(Matrix *matrix, int row, int col) {
 }
 
 void * matrix_element_by_index(Matrix *matrix, int index) {
+  if (index >= matrix->rows * matrix->cols) {
+    exit(EXIT_FAILURE);
+  }
   return (matrix->data)[index];
 }
 
