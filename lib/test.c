@@ -31,22 +31,22 @@ int main(int argc, char* argv[]) {
 
       /* creating the following matrix
       [2][1][2][1][1]
-      [1][1][1][2][2]
-      [1][2][2][1][1]
+      [1][3][1][2][2]
+      [1][2][2][4][1]
       */
       Matrix* data = matrix_zeros(3, 5);
       *matrix_element_by_index(data, 0) = 2;
       *matrix_element_by_index(data, 1) = 1;
       *matrix_element_by_index(data, 2) = 1;
       *matrix_element_by_index(data, 3) = 1;
-      *matrix_element_by_index(data, 4) = 1;
+      *matrix_element_by_index(data, 4) = 3;
       *matrix_element_by_index(data, 5) = 2;
       *matrix_element_by_index(data, 6) = 2;
       *matrix_element_by_index(data, 7) = 1;
       *matrix_element_by_index(data, 8) = 2;
       *matrix_element_by_index(data, 9) = 1;
       *matrix_element_by_index(data, 10) = 2;
-      *matrix_element_by_index(data, 11) = 1;
+      *matrix_element_by_index(data, 11) = 4;
       *matrix_element_by_index(data, 12) = 1;
       *matrix_element_by_index(data, 13) = 2;
       *matrix_element_by_index(data, 14) = 1;
