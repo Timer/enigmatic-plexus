@@ -93,6 +93,10 @@ void test_helpers() {
     list_get_int(mm->rows, 3) == 1
   );
   matrix_max_delete(mm);
+
+  puts("Testing matrix_prod ...");
+  matrix_set(m, 2);
+  assert(matrix_prod(m) == 4096);
   // --- MATRIX END
 
   matrix_delete(m);
