@@ -116,14 +116,12 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
 
   // calculate the length of the histogram array
   int total = prod(sz);
-  printf("prod(sz): %d\n", total);
   // move from the bottom of the column to the top
   for (int i = mat_col->rows - 1; i >= 0; --i) {
     total /= *matrix_element_by_index(sz, i);
     int element = *matrix_element_by_index(mat_col, i);
     index += (element - 1) * total;
   }
-  printf("index: %d", index);
   return index;
 }
 

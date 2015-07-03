@@ -30,11 +30,11 @@ int main(int argc, char* argv[]) {
       matrix_delete(m);
 
       /* creating the following matrix
-      [2][1][2][1][1]
-      [1][3][1][2][2]
-      [1][2][2][4][1]
+      [2][1][2][1][1][2]
+      [1][3][1][2][2][3]
+      [1][2][2][4][1][4]
       */
-      Matrix* data = matrix_zeros(3, 5);
+      Matrix* data = matrix_zeros(3, 6);
       *matrix_element_by_index(data, 0) = 2;
       *matrix_element_by_index(data, 1) = 1;
       *matrix_element_by_index(data, 2) = 1;
@@ -50,6 +50,9 @@ int main(int argc, char* argv[]) {
       *matrix_element_by_index(data, 12) = 1;
       *matrix_element_by_index(data, 13) = 2;
       *matrix_element_by_index(data, 14) = 1;
+      *matrix_element_by_index(data, 15) = 2;
+      *matrix_element_by_index(data, 16) = 3;
+      *matrix_element_by_index(data, 17) = 4;
 
       printf("\n == created matrix == \n");
       for (int i = 0; i < data->rows; ++i) {
@@ -97,7 +100,9 @@ int main(int argc, char* argv[]) {
       *matrix_element_by_index(sz, 2) = 4;
 
       printf("\n == testing count_index == \n");
-      count_index(sz, data, 1);
+      printf("prod(sz): %d\n", prod(sz));
+      for (int i = 0; i < data->cols; ++i)
+        printf("index for col %d: %d\n", i, count_index(sz, data, i));
 
 
 }
