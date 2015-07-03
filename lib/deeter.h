@@ -3,8 +3,6 @@
 
 #include "matrix.h"
 
-int prod(Matrix* sz);
-
 // return the index in the histogram of possible column variations
 // given sz and a column
 int count_index(Matrix* sz, Matrix* sample_data, int col);

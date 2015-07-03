@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
   printf("\n");
 
   printf("\n == prod == \n");
-  int b = prod(m);
+  int b = matrix_prod(m);
   printf("%d", b);
   printf("\n");
 
@@ -208,7 +208,7 @@ int main(int argc, char* argv[]) {
   *(int *) matrix_element_by_index(sz, 2) = 4;
 
   printf("\n == testing count_index == \n");
-  printf("prod(sz): %d\n", prod(sz));
+  printf("prod(sz): %d\n", matrix_prod(sz));
   for (int i = 0; i < data->cols; ++i) {
     printf("index for col %d: %d\n", i, count_index(sz, data, i));
   }

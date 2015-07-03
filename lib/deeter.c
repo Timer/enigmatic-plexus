@@ -2,18 +2,6 @@
 #include <stdio.h>
 #include "deeter.h"
 
-int prod(Matrix* sz) {
-  // create return value
-  // an empty matrix returns 1
-  int ret = 1;
-
-  // for each item in the matrix
-  for (int i = 0; i < sz->rows * sz->cols; ++i) {
-    ret *= *((int *) matrix_element_by_index(sz, i));
-  }
-  return ret;
-}
-
 /*
   count_index will return the index of where to store the number of times
   a particular row was found in the prior data
@@ -116,7 +104,7 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
   int index = 0;
 
   // calculate the length of the histogram array
-  int total = prod(sz);
+  int total = matrix_prod(sz);
   // move from the bottom of the column to the top
   for (int i = mat_col->rows - 1; i >= 0; --i) {
     // adjust the total for each sub-index
