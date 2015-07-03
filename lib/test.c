@@ -1,10 +1,107 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "matrix.h"
 #include "list.h"
 #include "deeter.h"
 
+void test_helpers() {
+  // --- MATRIX START
+  puts("Creating test matrix ...");
+  Matrix *m = matrix_zeros(3, 4);
+
+  puts("Validating matrix set ...");
+  matrix_set(m, 10);
+  for (int i = 0; i < m->rows * m->cols; ++i) {
+    assert(*(int *) matrix_element_by_index(m, i) == 10);
+  }
+
+  puts("Validating element and index correspondence ...");
+  const int test_row = 1, test_col = 2, test_index = 7;
+  *(int *) matrix_element(m, test_row, test_col) *= 2;
+  assert(*(int *) matrix_element_by_index(m, test_index) == 20);
+
+  puts("Testing matrix find ...");
+  List *l = matrix_find_by_value(m, 20);
+  assert(l->count == 1);
+  assert(list_get_int(l, 0) == test_index);
+  list_delete(l);
+
+  puts("Validating proper generation of sub matrices ...");
+  Matrix *sm = matrix_sub_indices(m, 1, 2, 1, 3);
+  assert(sm->rows == 1 && sm->cols == 2);
+  matrix_set(sm, 5);
+  matrix_scrap(sm);
+
+  l = matrix_find_by_value(m, 5);
+  assert(l->count == 2);
+  assert(list_get_int(l, 0) == 4);
+  assert(list_get_int(l, 1) == 7);
+  list_delete(l);
+
+  List *rows = list_empty(), *cols = list_empty();
+  list_push_int(rows, 1);
+  list_push_int(rows, 2);
+  list_push_int(cols, 3);
+  sm = matrix_sub_lists(m, rows, cols);
+  assert(sm->rows == 2 && sm->cols == 1);
+  matrix_set(sm, 6);
+  matrix_scrap(sm);
+
+  l = matrix_find_by_value(m, 6);
+  assert(l->count == 2);
+  assert(list_get_int(l, 0) == 10);
+  assert(list_get_int(l, 1) == 11);
+  list_delete(l);
+
+  sm = matrix_sub_index_list(m, 1, 3, cols);
+  assert(sm->rows == 2 && sm->cols == 1);
+  matrix_set(sm, 7);
+  matrix_scrap(sm);
+
+  l = matrix_find_by_value(m, 7);
+  assert(l->count == 2);
+  assert(list_get_int(l, 0) == 10);
+  assert(list_get_int(l, 1) == 11);
+  list_delete(l);
+
+  sm = matrix_sub_list_index(m, rows, 3, 4);
+  assert(sm->rows == 2 && sm->cols == 1);
+  matrix_set(sm, 18);
+  matrix_scrap(sm);
+
+  l = matrix_find_by_value(m, 18);
+  assert(l->count == 2);
+  assert(list_get_int(l, 0) == 10);
+  assert(list_get_int(l, 1) == 11);
+  list_delete(l);
+
+  puts("Testing matrix max ...");
+  MatrixMax *mm = matrix_max(m);
+  assert(mm->cols == 4);
+  assert(mm->values->count == 4 && mm->rows->count == 4);
+  assert(
+    list_get_int(mm->values, 0) == 10 &&
+    list_get_int(mm->values, 1) == 10 &&
+    list_get_int(mm->values, 2) == 10 &&
+    list_get_int(mm->values, 3) == 18
+  );
+  assert(
+    list_get_int(mm->rows, 0) == 0 &&
+    list_get_int(mm->rows, 1) == 0 &&
+    list_get_int(mm->rows, 2) == 0 &&
+    list_get_int(mm->rows, 3) == 1
+  );
+  matrix_max_delete(mm);
+  // --- MATRIX END
+
+  matrix_delete(m);
+  puts("All tests passed!");
+}
+
 int main(int argc, char* argv[]) {
+  test_helpers();
+
       Matrix* m = matrix_zeros(2, 3);
       int a = 1;
       for (int i = 0; i < 2; ++i)
