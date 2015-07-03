@@ -112,24 +112,20 @@ Matrix * matrix_sub_index_list(Matrix *o_matrix, int row_start, int row_end, Lis
 }
 
 List * matrix_find_by_value(Matrix *matrix, int value) {
-  int index = 0;
   List *list = list_empty();
   for (int c = 0; c < matrix->cols; ++c) {
     for (int r = 0; r < matrix->rows; ++r) {
-      if (*((int *) matrix_element(matrix, r, c)) == value) list_push_int(list, index);
-      ++index;
+      if (*((int *) matrix_element(matrix, r, c)) == value) list_push_int(list, _matrix_index_for(matrix, r, c));
     }
   }
   return list;
 }
 
 List * matrix_double_find_by_value(Matrix *matrix, double value) {
-  int index = 0;
   List *list = list_empty();
   for (int c = 0; c < matrix->cols; ++c) {
     for (int r = 0; r < matrix->rows; ++r) {
-      if (*((double *) matrix_element(matrix, r, c)) == value) list_push_double(list, index);
-      ++index;
+      if (*((double *) matrix_element(matrix, r, c)) == value) list_push_double(list, _matrix_index_for(matrix, r, c));
     }
   }
   return list;
