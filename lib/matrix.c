@@ -180,6 +180,14 @@ List * matrix_to_list(Matrix *matrix) {
   return l;
 }
 
+Matrix * matrix_from_list(int rows, int cols, int arr[]) {
+  Matrix *m = matrix_zeros(rows, cols);
+  for (int i = 0; i < rows * cols; ++i) {
+    *(int *) matrix_element_by_index(m, i) = arr[i];
+  }
+  return m;
+}
+
 List * matrix_double_to_list(Matrix *matrix) {
   assert(matrix->rows == 1);
   List *l = list_empty();

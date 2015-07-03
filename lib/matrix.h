@@ -28,10 +28,10 @@ List * matrix_double_find_by_value(Matrix *matrix, double value);
 MatrixMax * matrix_max(Matrix *matrix);
 MatrixMax * matrix_double_max(Matrix *matrix);
 List * matrix_to_list(Matrix *matrix);
+Matrix * matrix_from_list(int rows, int cols, int arr[]);
 List * matrix_double_to_list(Matrix *matrix);
 void matrix_max_delete(MatrixMax *matrix_max);
 void matrix_delete(Matrix *matrix);
 void matrix_scrap(Matrix *matrix);
-void matrix_fill_with_list(List* values);
 
 #endif
