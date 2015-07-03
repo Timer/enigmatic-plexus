@@ -70,7 +70,6 @@ Matrix * matrix_sub_indices(Matrix *o_matrix, int row_start, int row_end, int co
   void **n_data = n_matrix->data, **o_data = o_matrix->data;
   int ri = 0, ci = 0;
   for (int c = col_start; c < col_end; ++c, ++ci) {
-    int b = c * o_matrix->rows;
     for (int r = row_start; r < row_end; ++r, ++ri) {
       n_data[_matrix_index_for(n_matrix, ri, ci)] = o_data[_matrix_index_for(o_matrix, r, c)];
     }
