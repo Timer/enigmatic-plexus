@@ -41,6 +41,14 @@ int list_push_int(List *list, int value) {
   return list->count++;
 }
 
+int list_push_double(List *list, double value) {
+  list_enlarge(list);
+  int *v = malloc(sizeof(double));
+  *v = value;
+  (list->arr)[list->count] = v;
+  return list->count++;
+}
+
 void * list_set(List *list, int index, void *data) {
   assert(index < list->size);
   void *old = (list->arr)[index];

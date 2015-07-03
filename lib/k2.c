@@ -38,10 +38,10 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   assert(pev->rows == 1);
   Matrix *data = matrix_zeros(2, self_ev->cols > pev->cols ? self_ev->cols : pev->cols);
   for (int i = 0; i < pev->cols; ++i) {
-    *matrix_element(data, 0, i) = *matrix_element(pev, 0, i);
+    *((int *) matrix_element(data, 0, i)) = *((int *) matrix_element(pev, 0, i));
   }
   for (int i = 0; i < self_ev->cols; ++i) {
-    *matrix_element(data, 0, i) = *matrix_element(self_ev, 0, i);
+    *((int *) matrix_element(data, 0, i)) = *((int *) matrix_element(self_ev, 0, i));
   }
   int counts = compute_counts(data, cpd->sizes);
   return dirichlet_score_family(counts, cpd->dirichlet);
@@ -111,7 +111,7 @@ Matrix * learn_struct_K2(
       for (int pi = 0; pi < nps; ++pi) {
         int p = list_get_int(pps, pi);
         int n_index = list_push_int(ps, p);
-        *matrix_element_by_index(pscore, pi) = score_family(j, ps, type, scoring_fn, ns, discrete, data, params);
+        *((int *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data, params);
         free(list_remove(ps, n_index));
       }
       MatrixMax *mm = matrix_max(pscore);
