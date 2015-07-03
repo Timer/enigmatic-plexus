@@ -1,9 +1,10 @@
 COMPILER=CC
 
 EXECUTABLES=matrix.o list.o bnet.o k2.o
+TEST_EXECUTABLES=deeter.o test.o
 
 all:
-	make $(EXECUTABLES)
+	make $(EXECUTABLES) $(TEST_EXECUTABLES)
 
 matrix.o: matrix.c
 	$(COMPILER) -c -o $@ $^
@@ -21,5 +22,13 @@ k2.o: matrix.o list.o bnet.o k2.c
 	$(COMPILER) -o $@ $^
 GARBAGE+=
 
+deeter.o: deeter.c
+	$(COMPILER) -c -o $@ $^
+GARBAGE+=
+
+test.o: deeter.o matrix.o list.o test.c
+	$(COMPILER) -o $@ $^
+GARBAGE+=
+
 clean:
-	rm -f $(GARBAGE) $(EXECUTABLES)
+	rm -f $(GARBAGE) $(EXECUTABLES) $(TEST_EXECUTABLES)

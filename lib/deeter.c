@@ -9,7 +9,7 @@ int prod(Matrix* sz) {
 
   // for each item in the matrix
   for (int i = 0; i < sz->rows * sz->cols; ++i)
-    ret *= *(matrix_element_by_index(sz, i));
+    ret *= *((int *) matrix_element_by_index(sz, i));
   return ret;
 }
 
@@ -119,9 +119,9 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
   // move from the bottom of the column to the top
   for (int i = mat_col->rows - 1; i >= 0; --i) {
     // adjust the total for each sub-index
-    total /= *matrix_element_by_index(sz, i);
+    total /= *(int *) matrix_element_by_index(sz, i);
     // add the new sub-index to index
-    index += (*matrix_element_by_index(mat_col, i) - 1) * total;
+    index += (* (int *) matrix_element_by_index(mat_col, i) - 1) * total;
   }
   return index;
 }
