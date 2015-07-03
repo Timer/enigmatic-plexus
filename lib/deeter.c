@@ -118,9 +118,10 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
   int total = prod(sz);
   // move from the bottom of the column to the top
   for (int i = mat_col->rows - 1; i >= 0; --i) {
+    // adjust the total for each sub-index
     total /= *matrix_element_by_index(sz, i);
-    int element = *matrix_element_by_index(mat_col, i);
-    index += (element - 1) * total;
+    // add the new sub-index to index
+    index += (*matrix_element_by_index(mat_col, i) - 1) * total;
   }
   return index;
 }

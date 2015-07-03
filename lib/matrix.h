@@ -26,5 +26,6 @@ List * matrix_to_list(Matrix *matrix);
 void matrix_max_delete(MatrixMax *matrix_max);
 void matrix_delete(Matrix *matrix);
 void matrix_scrap(Matrix *matrix);
+void matrix_fill_with_list(List* values);
 
 #endif

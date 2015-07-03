@@ -53,6 +53,8 @@ Matrix * matrix_sub_indices(Matrix *o_matrix, int row_start, int row_end, int co
   return n_matrix;
 }
 
+// WE NEED TO FIX THIS
+
 Matrix * matrix_sub_lists(Matrix *o_matrix, List *rows, List *cols) {
   Matrix *n_matrix = matrix_raw(rows->count, cols->count);
   int index = -1;
