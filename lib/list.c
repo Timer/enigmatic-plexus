@@ -99,7 +99,7 @@ List * difference_type_int(List *primary, List *secondary) {
 }
 
 void list_delete(List *list) {
-  for (int i = 0; i < list->count; ++i) {
+  for (int i = 0; i < list->size; ++i) {
     free(list->arr[i]);
   }
   list_scrap(list);
