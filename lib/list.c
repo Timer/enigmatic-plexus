@@ -24,7 +24,7 @@ void list_enlarge(List *list) {
 }
 
 void list_grow(List *list, int size) {
-  while (list->size < size) list_enlarge(list);
+  while (list->count < size) list_push(list, NULL);
 }
 
 int list_push(List *list, void *data) {
