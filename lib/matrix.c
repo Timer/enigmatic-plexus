@@ -59,6 +59,15 @@ void matrix_set(Matrix *matrix, int value) {
   }
 }
 
+int matrix_prod(Matrix *matrix) {
+  int p = 1;
+  void **data = matrix->data;
+  for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
+    p *= *(int *) data[i];
+  }
+  return p;
+}
+
 void matrix_dobule_set(Matrix *matrix, int value) {
   void **data = matrix->data;
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {

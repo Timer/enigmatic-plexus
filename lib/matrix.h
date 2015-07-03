@@ -18,6 +18,7 @@ Matrix * matrix_double_zeros(int rows, int cols);
 void * matrix_element(Matrix *matrix, int row, int col);
 void * matrix_element_by_index(Matrix *matrix, int index);
 void matrix_set(Matrix *matrix, int value);
+int matrix_prod(Matrix *matrix);
 void matrix_double_set(Matrix *matrix, double value);
 Matrix * matrix_sub_indices(Matrix *matrix, int row_start, int row_end, int col_start, int col_end);
 Matrix * matrix_sub_lists(Matrix *matrix, List *rows, List *cols);
