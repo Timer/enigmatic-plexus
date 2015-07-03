@@ -57,9 +57,8 @@ int main(int argc, char* argv[]) {
           printf("[%d]", *matrix_element(data, i, j));
         printf("\n");
       }
-      printf("\n");
 
-      printf("\n == testing matrix_sub_indices == \n");
+      printf("\n == testing matrix_sub_indices, 1st col == \n");
       Matrix* second_col = matrix_sub_indices(data, 0, 3, 0, 1);
       printf("Rows: %d, Cols: %d\n", second_col->rows, second_col->cols);
       for (int i = 0; i < second_col->rows; ++i) {
@@ -67,5 +66,26 @@ int main(int argc, char* argv[]) {
           printf("[%d]", *matrix_element(second_col, i, j));
         printf("\n");
       }
+      matrix_scrap(second_col);
+
+      printf("\n == testing matrix_sub_col, 4th col == \n");
+      Matrix* fourth_col = matrix_sub_col(data, 4);
+      printf("Rows: %d, Cols: %d\n", fourth_col->rows, fourth_col->cols);
+      for (int i = 0; i < fourth_col->rows; ++i) {
+        for (int j = 0; j < fourth_col->cols; ++j)
+          printf("[%d]", *matrix_element(fourth_col, i, j));
+        printf("\n");
+      }
+      matrix_scrap(fourth_col);
+
+      printf("\n == testing matrix_sub_row, 2nd row == \n");
+      Matrix* second_row = matrix_sub_row(data, 1);
+      printf("Rows: %d, Cols: %d\n", second_row->rows, second_row->cols);
+      for (int i = 0; i < second_row->rows; ++i) {
+        for (int j = 0; j < second_row->cols; ++j)
+          printf("[%d]", *matrix_element(second_row, i, j));
+        printf("\n");
+      }
+      matrix_scrap(second_row);
 
 }

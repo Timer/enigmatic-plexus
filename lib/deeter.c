@@ -113,3 +113,11 @@ int count_index(Matrix* sz, Matrix* sample_data) {
 
   return 5;
 }
+
+Matrix* matrix_sub_col(Matrix *matrix, int col) {
+  return matrix_sub_indices(matrix, 0, matrix->rows, col, col + 1);
+}
+
+Matrix* matrix_sub_row(Matrix *matrix, int row) {
+  return matrix_sub_indices(matrix, row, row + 1, 0, matrix->cols);
+}
