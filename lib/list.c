@@ -14,7 +14,7 @@ void list_enlarge(List *list) {
   int prev = list->count;
   if (list->arr) {
     if (list->count == list->size) {
-      realloc(list->arr, (list->size *= 2) * sizeof(void *));
+      list->arr = realloc(list->arr, (list->size *= 2) * sizeof(void *));
     }
   } else {
     list->size = 2;
