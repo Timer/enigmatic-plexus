@@ -11,16 +11,17 @@ List * list_empty() {
 }
 
 void list_enlarge(List *list) {
-  int prev = list->count;
   if (list->arr) {
     if (list->count == list->size) {
+      const int prev = list->size;
       list->arr = realloc(list->arr, (list->size *= 2) * sizeof(void *));
+      for (int i = prev; i < list->size; ++i) list_set(list, i, NULL);
     }
   } else {
     list->size = 2;
     list->arr = malloc(sizeof(void *) * list->size);
+    for (int i = 0; i < list->size; ++i) list_set(list, i, NULL);
   }
-  for (int i = prev; i < list->count; ++i) list_set(list, i, NULL);
 }
 
 void list_grow(List *list, int size) {
