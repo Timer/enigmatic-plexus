@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <limits.h>
+#include <float.h>
 
 // --- PRIVATE START
 int _matrix_index_for(Matrix *m, int row, int col) {
@@ -133,11 +134,12 @@ List * matrix_double_find_by_value(Matrix *matrix, double value) {
 
 MatrixMax * matrix_max(Matrix *matrix) {
   MatrixMax *max = malloc(sizeof(MatrixMax));
+  max->cols = matrix->cols;
   max->values = list_empty();
   max->rows = list_empty();
   for (int c = 0; c < matrix->cols; ++c) {
     int largest = INT_MIN, largest_row = -1;
-    for (int r = 0; c < matrix->rows; ++r) {
+    for (int r = 0; r < matrix->rows; ++r) {
       int val = *((int *) matrix_element(matrix, r, c));
       if (val > largest) {
         largest = val;
@@ -152,11 +154,13 @@ MatrixMax * matrix_max(Matrix *matrix) {
 
 MatrixMax * matrix_double_max(Matrix *matrix) {
   MatrixMax *max = malloc(sizeof(MatrixMax));
+  max->cols = matrix->cols;
   max->values = list_empty();
   max->rows = list_empty();
   for (int c = 0; c < matrix->cols; ++c) {
-    double largest = INT_MIN, largest_row = -1;
-    for (int r = 0; c < matrix->rows; ++r) {
+    double largest = -DBL_MAX;
+    int largest_row = -1;
+    for (int r = 0; r < matrix->rows; ++r) {
       double val = *((double *) matrix_element(matrix, r, c));
       if (val > largest) {
         largest = val;
@@ -164,7 +168,7 @@ MatrixMax * matrix_double_max(Matrix *matrix) {
       }
     }
     list_push_double(max->values, largest);
-    list_push_double(max->rows, largest_row);
+    list_push_int(max->rows, largest_row);
   }
   return max;
 }
