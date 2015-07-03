@@ -3,6 +3,12 @@
 #include <assert.h>
 #include <limits.h>
 
+// --- PRIVATE START
+int _matrix_index_for(Matrix *m, int row, int col) {
+  return col * m->rows + row;
+}
+// --- PRIVATE END
+
 Matrix * matrix_raw(int rows, int cols) {
   assert(rows != 0);
   assert(cols != 0);
@@ -35,7 +41,7 @@ void * matrix_element(Matrix *matrix, int row, int col) {
   if (row >= matrix->rows || col >= matrix->cols) {
     exit(EXIT_FAILURE);
   }
-  return (matrix->data)[col * matrix->rows + row];
+  return (matrix->data)[_matrix_index_for(matrix, row, col)];
 }
 
 void * matrix_element_by_index(Matrix *matrix, int index) {
