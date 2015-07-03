@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "deeter.h"
 
 int prod(Matrix* sz) {
@@ -106,13 +107,27 @@ int prod(Matrix* sz) {
 
     8 + 4 + 0 = 12, which matches the previous example
 */
-int count_index(Matrix* sz, Matrix* sample_data) {
-  if (sample_data->cols != 1) {
-    exit(EXIT_FAILURE);
-  }
+int count_index(Matrix* sz, Matrix* sample_data, int col) {
+  // grab the desired column
+  Matrix* mat_col = matrix_sub_col(sample_data, col);
 
-  return 5;
+  // the index
+  int index = 0;
+
+  // calculate the length of the histogram array
+  int total = prod(sz);
+  printf("prod(sz): %d\n", total);
+  // move from the bottom of the column to the top
+  for (int i = mat_col->rows - 1; i >= 0; --i) {
+    total /= *matrix_element_by_index(sz, i);
+    int element = *matrix_element_by_index(mat_col, i);
+    index += (element - 1) * total;
+  }
+  printf("index: %d", index);
+  return index;
 }
+
+
 
 Matrix* matrix_sub_col(Matrix *matrix, int col) {
   return matrix_sub_indices(matrix, 0, matrix->rows, col, col + 1);

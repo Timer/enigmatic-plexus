@@ -5,7 +5,9 @@
 
 int prod(Matrix* sz);
 
-int count_index(Matrix* sz, Matrix* sample_data);
+// return the index in the histogram of possible column variations
+// given sz and a column
+int count_index(Matrix* sz, Matrix* sample_data, int col);
 
 
 // matrix.h

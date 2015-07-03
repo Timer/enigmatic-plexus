@@ -88,4 +88,16 @@ int main(int argc, char* argv[]) {
       }
       matrix_scrap(second_row);
 
+      /* creating the following sz
+      [2][3][4]
+      */
+      Matrix* sz = matrix_zeros(1, 3);
+      *matrix_element_by_index(sz, 0) = 2;
+      *matrix_element_by_index(sz, 1) = 3;
+      *matrix_element_by_index(sz, 2) = 4;
+
+      printf("\n == testing count_index == \n");
+      count_index(sz, data, 1);
+
+
 }
