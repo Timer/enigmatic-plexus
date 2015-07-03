@@ -58,4 +58,14 @@ int main(int argc, char* argv[]) {
         printf("\n");
       }
       printf("\n");
+
+      printf("\n == testing matrix_sub_indices == \n");
+      Matrix* second_col = matrix_sub_indices(data, 0, 3, 0, 1);
+      printf("Rows: %d, Cols: %d\n", second_col->rows, second_col->cols);
+      for (int i = 0; i < second_col->rows; ++i) {
+        for (int j = 0; j < second_col->cols; ++j)
+          printf("[%d]", *matrix_element(second_col, i, j));
+        printf("\n");
+      }
+
 }

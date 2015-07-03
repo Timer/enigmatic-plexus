@@ -44,10 +44,10 @@ Matrix * matrix_sub_indices(Matrix *o_matrix, int row_start, int row_end, int co
   Matrix *n_matrix = matrix_raw(row_end - row_start, col_end - col_start);
   int index = -1;
   int **n_data = n_matrix->data, **o_data = o_matrix->data;
-  for (int r = row_start; r < row_end; ++r) {
-    int b = r * o_matrix->cols;
-    for (int c = col_start; c < col_end; ++c) {
-      n_data[++index] = o_data[b + c];
+  for (int c = col_start; c < col_end; ++c) {
+    int b = c * o_matrix->rows;
+    for (int r = row_start; r < row_end; ++r) {
+      n_data[++index] = o_data[b + r];
     }
   }
   return n_matrix;
