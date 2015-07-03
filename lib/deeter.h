@@ -5,6 +5,6 @@
 
 int prod(Matrix* sz);
 
-int count_index(Matrix* sz, Matrix* row);
+int count_index(Matrix* sz, Matrix* sample_data);
 
 #endif

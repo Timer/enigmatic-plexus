@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "deeter.h"
 
 int prod(Matrix* sz) {
@@ -105,6 +106,10 @@ int prod(Matrix* sz) {
 
     8 + 4 + 0 = 12, which matches the previous example
 */
-int count_index(Matrix* sz, Matrix* row) {
-    return 0;
+int count_index(Matrix* sz, Matrix* sample_data) {
+  if (sample_data->cols != 1) {
+    exit(EXIT_FAILURE);
+  }
+
+  return 5;
 }
