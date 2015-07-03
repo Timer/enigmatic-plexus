@@ -1,4 +1,4 @@
-COMPILER=CC
+COMPILER=gcc -std=c99
 
 EXECUTABLES=matrix.o list.o bnet.o k2.o
 TEST_EXECUTABLES=deeter.o test.o
