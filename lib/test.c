@@ -212,4 +212,8 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < data->cols; ++i) {
     printf("index for col %d: %d\n", i, count_index(sz, data, i));
   }
+
+  /* Testing matrix_range */
+  Matrix* range = matrix_range(3, 9);
+  matrix_display(range);
 }
