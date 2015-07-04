@@ -30,14 +30,15 @@ Matrix * matrix_zeros(int rows, int cols) {
   return matrix;
 }
 
-Matrix* matrix_range(int from, int to) {
+Matrix * matrix_range(int from, int to) {
   printf("%d %d\n", from, to);
-  Matrix* matrix = matrix_zeros((to - from) + 1, 1);
+  Matrix *matrix = matrix_zeros((to - from) + 1, 1);
   printf("%d %d\n", matrix->rows, matrix->cols);
   for (int i = from; i <= to; ++i) {
     printf("%d\n", i - from);
     *((int *) matrix_element_by_index(matrix, i - from)) = i;
   }
+  return matrix;
 }
 
 Matrix * matrix_double_zeros(int rows, int cols) {
@@ -246,12 +247,12 @@ void matrix_scrap(Matrix *matrix) {
 // STARTING N-DIMENSIONAL FUNCTIONS
 
 // this will take any regular matrix and return an element is as if the
-// matrix had the given dimensions for the given indeces
-int matrix_element_n_dim(Matrix* m, Matrix* ind, Matrix* dims) {
+// matrix had the given dimensions for the given indices
+int matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
   assert(m->rows * m->cols == matrix_prod(dims));
 }
 
-void matrix_display(Matrix* matrix) {
+void matrix_display(Matrix *matrix) {
   for (int i = 0; i < matrix->rows * matrix->cols; ++i)
     printf("[%d]", *((int *) matrix_element_by_index(matrix, i)));
 

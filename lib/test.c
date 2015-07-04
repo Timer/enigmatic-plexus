@@ -216,4 +216,5 @@ int main(int argc, char* argv[]) {
   /* Testing matrix_range */
   Matrix* range = matrix_range(3, 9);
   matrix_display(range);
+  printf("\n");
 }
