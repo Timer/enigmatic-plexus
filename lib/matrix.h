@@ -38,7 +38,7 @@ void matrix_max_delete(MatrixMax *matrix_max);
 void matrix_delete(Matrix *matrix);
 void matrix_scrap(Matrix *matrix);
 
-int matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims);
+void * matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims);
 
 // for testing ease
 void matrix_display();

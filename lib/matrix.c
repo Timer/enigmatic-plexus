@@ -243,8 +243,16 @@ void matrix_scrap(Matrix *matrix) {
 
 // this will take any regular matrix and return an element is as if the
 // matrix had the given dimensions for the given indices
-int matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
+void * matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
   assert(m->rows * m->cols == matrix_prod(dims));
+  List *l_i = matrix_to_list(ind), *l_d = matrix_to_list(dims);
+  assert(l_i->count == l_d->count);
+  int index = 0;
+  for (int i = 0, m = 1; i < l_i->count; m *= list_get_int(l_d, i++)) {
+    assert(list_get_int(l_i, i) < list_get_int(l_d, i));
+    index += list_get_int(l_i, i) * m;
+  }
+  return matrix_element_by_index(m, index);
 }
 
 void matrix_display(Matrix *matrix) {
