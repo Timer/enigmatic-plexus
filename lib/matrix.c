@@ -253,8 +253,7 @@ int matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
 }
 
 void matrix_display(Matrix *matrix) {
-  for (int i = 0; i < matrix->rows * matrix->cols; ++i)
+  for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
     printf("[%d]", *((int *) matrix_element_by_index(matrix, i)));
-
-  printf("test");
+  }
 }
