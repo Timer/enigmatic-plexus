@@ -14,8 +14,8 @@ typedef struct {
 } MatrixMax;
 
 Matrix * matrix_zeros(int rows, int cols);
-Matrix * matrix_range(int from, int to);
 Matrix * matrix_double_zeros(int rows, int cols);
+Matrix * matrix_range(int from, int to);
 void * matrix_element(Matrix *matrix, int row, int col);
 void * matrix_element_by_index(Matrix *matrix, int index);
 void matrix_set(Matrix *matrix, int value);

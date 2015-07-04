@@ -30,22 +30,19 @@ Matrix * matrix_zeros(int rows, int cols) {
   return matrix;
 }
 
-Matrix * matrix_range(int from, int to) {
-  printf("%d %d\n", from, to);
-  Matrix *matrix = matrix_zeros((to - from) + 1, 1);
-  printf("%d %d\n", matrix->rows, matrix->cols);
-  for (int i = from; i <= to; ++i) {
-    printf("%d\n", i - from);
-    *((int *) matrix_element_by_index(matrix, i - from)) = i;
-  }
-  return matrix;
-}
-
 Matrix * matrix_double_zeros(int rows, int cols) {
   Matrix *matrix = matrix_raw(rows, cols);
   void **data = matrix->data;
   for (int i = 0; i < rows * cols; ++i) {
     *((double *) (data[i] = malloc(sizeof(double)))) = 0;
+  }
+  return matrix;
+}
+
+Matrix * matrix_range(int from, int to) {
+  Matrix *matrix = matrix_zeros((to - from) + 1, 1);
+  for (int i = from; i <= to; ++i) {
+    *((int *) matrix_element_by_index(matrix, i - from)) = i;
   }
   return matrix;
 }
