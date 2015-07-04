@@ -203,9 +203,14 @@ MatrixMax * matrix_double_max(Matrix *matrix) {
 }
 
 List * matrix_to_list(Matrix *matrix) {
-  assert(matrix->rows == 1);
   List *l = list_empty();
-  for (int i = 0; i < matrix->cols; ++i) list_push_int(l, *((int *) matrix_element(matrix, 0, i)));
+  for (int i = 0; i < matrix->rows * matrix->cols; ++i) list_push_int(l, *((int *) matrix_element_by_index(matrix, i)));
+  return l;
+}
+
+List * matrix_double_to_list(Matrix *matrix) {
+  List *l = list_empty();
+  for (int i = 0; i < matrix->rows * matrix->cols; ++i) list_push_double(l, *((double *) matrix_element_by_index(matrix, i)));
   return l;
 }
 
@@ -215,13 +220,6 @@ Matrix * matrix_from_list(int rows, int cols, int arr[]) {
     *(int *) matrix_element_by_index(m, i) = arr[i];
   }
   return m;
-}
-
-List * matrix_double_to_list(Matrix *matrix) {
-  assert(matrix->rows == 1);
-  List *l = list_empty();
-  for (int i = 0; i < matrix->cols; ++i) list_push_double(l, *((double *) matrix_element(matrix, 0, i)));
-  return l;
 }
 
 void matrix_max_delete(MatrixMax *matrix_max) {
