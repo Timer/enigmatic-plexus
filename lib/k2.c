@@ -31,7 +31,7 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   Matrix* gamma_pnc = matrix_lgamma(pnc);
   matrix_delete(pnc);
   Matrix* gamma_prior = matrix_lgamma(prior);
-  Matrix* lu_mat matrix_double_subtract(gamma_pnc, gamma_prior);
+  Matrix* lu_mat = matrix_double_subtract(gamma_pnc, gamma_prior);
   matrix_delete(gamma_pnc);
   matrix_delete(gamma_prior);
   Matrix* LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
