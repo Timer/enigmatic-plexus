@@ -410,6 +410,14 @@ Matrix * matrix_sum_n_cols_double(Matrix *matrix, int cols) {
   return m;
 }
 
+Matrix * matrix_double_subtract(Matrix *m1, Matrix *m2) {
+  Matrix *m = matrix_double_zeros(m1->rows, m1->cols);
+  for (int i = 0; i < m1->rows * m1->cols; ++i) {
+    *(double *) matrix_element_by_index(m, i) = *(double *) matrix_element_by_index(m1, i) - *(double *) matrix_element_by_index(m2, i);
+  }
+  return m;
+}
+
 Matrix* matrix_create_sz(Matrix* matrix) {
   Matrix* r = matrix_zeros(matrix->rows, 1);
   for (int i = 0; i < matrix->rows; ++i) {

@@ -44,6 +44,7 @@ Matrix* matrix_add_double(Matrix* a, Matrix* b);
 Matrix* matrix_add_int_double(Matrix* a, Matrix* b);
 Matrix * matrix_sum_n_cols(Matrix *matrix, int cols);
 Matrix* matrix_sum_n_cols_double(Matrix *matrix, int cols);
+Matrix * matrix_double_subtract(Matrix *m1, Matrix *m2);
 Matrix* matrix_create_sz(Matrix* matrix);
 
 void matrix_max_delete(MatrixMax *matrix_max);
