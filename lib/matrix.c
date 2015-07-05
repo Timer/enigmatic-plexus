@@ -205,6 +205,7 @@ Matrix * matrix_sub_row(Matrix *matrix, int row) {
 
 Matrix * matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
   assert(matrix->cols == rows->cols);
+  //TODO: revisit sanity
   Matrix *nm = matrix_raw(matrix->rows + rows->rows, matrix->cols);
   int **o_data = (int **) matrix->data, **n_data = (int **) nm->data,
     **a_data = (int **) rows->data;
