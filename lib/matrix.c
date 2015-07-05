@@ -160,6 +160,7 @@ Matrix * matrix_sub_row(Matrix *matrix, int row) {
 }
 
 Matrix * matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
+  //TODO: SPEED UP A TON ...
   assert(matrix->cols == rows->cols);
   Matrix *nm = matrix_raw(matrix->rows + rows->rows, matrix->cols);
   int **o_data = (int **) matrix->data, **n_data = (int **) nm->data,
