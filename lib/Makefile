@@ -19,7 +19,7 @@ bnet.o: bnet.c
 GARBAGE+=
 
 k2.o: matrix.o list.o bnet.o k2.c
-	$(COMPILER) -o $@ $^
+	$(COMPILER) -o $@ $^ -lm
 GARBAGE+=
 
 deeter.o: deeter.c
@@ -27,7 +27,7 @@ deeter.o: deeter.c
 GARBAGE+=
 
 test.o: deeter.o matrix.o list.o test.c
-	$(COMPILER) -o $@ $^
+	$(COMPILER) -o $@ $^ -lm
 GARBAGE+=
 
 clean:
