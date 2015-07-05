@@ -160,21 +160,18 @@ Matrix * matrix_sub_row(Matrix *matrix, int row) {
 }
 
 Matrix * matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
-  //TODO: SPEED UP A TON ...
   assert(matrix->cols == rows->cols);
   Matrix *nm = matrix_raw(matrix->rows + rows->rows, matrix->cols);
   int **o_data = (int **) matrix->data, **n_data = (int **) nm->data,
     **a_data = (int **) rows->data;
-  for (int r = 0; r < matrix->rows; ++r) {
-    for (int c = 0; c < matrix->cols; ++c) {
-      n_data[_matrix_index_for(nm, r, c)] = o_data[_matrix_index_for(matrix, r, c)];
-    }
+  for (int i = 0, o_rows = matrix->rows; i < matrix->rows * matrix->cols; ++i) {
+    *n_data++ = *o_data++;
+    if (i != 0 && i % o_rows == 0) n_data += rows->rows;
   }
-  for (int r = 0; r < rows->rows; ++r) {
-    for (int c = 0; c < rows->cols; ++c) {
-      n_data[_matrix_index_for(nm, matrix->rows + r, matrix->cols + c)] =
-        a_data[_matrix_index_for(matrix, r, c)];
-    }
+  n_data = (int **) nm->data + matrix->rows;
+  for (int i = 0, o_rows = matrix->rows, a_rows = rows->rows; i < rows->rows * rows->cols; ++i) {
+    *n_data++ = *a_data++;
+    if (i != 0 && i % a_rows == 0) n_data += o_rows;
   }
   return nm;
 }
