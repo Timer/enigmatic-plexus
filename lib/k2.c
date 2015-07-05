@@ -74,7 +74,7 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   list_delete(ps);
   cpd->sizes = fam_sz;
 
-  Matrix *calc = matrix_sub_indices(fam_sz, 0, 1, 0, ps->count);
+  Matrix *calc = matrix_sub_indices(fam_sz, 0, 1, 0, ps->count - 1);
   int psz = matrix_prod(calc), dirichlet_weight = 1;
   matrix_scrap(calc);
   /*
