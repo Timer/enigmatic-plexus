@@ -8,19 +8,6 @@
 #include "bnet.h"
 
 double dirichlet_score_family(Matrix *counts, CPD* cpd) {
-  /*
-  ns = mysize(counts);
-  ns_ps = ns(1:end-1);
-  ns_self = ns(end);
-  if nargin < 2, prior = normalise(myones(ns)); end
-  prior = reshape(prior(:), [prod(ns_ps) ns_self]);
-  counts = reshape(counts,  [prod(ns_ps) ns_self]);
-  LU = sum(gammaln(prior + counts) - gammaln(prior), 2);
-  alpha_ij = sum(prior, 2);
-  N_ij = sum(counts, 2);
-  LV = gammaln(alpha_ij) - gammaln(alpha_ij + N_ij);
-  LL = sum(LU + LV);
-  */
   Matrix* ns = cpd->sizes;
   Matrix* ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
   Matrix* prior = cpd->dirichlet;
@@ -56,7 +43,7 @@ double dirichlet_score_family(Matrix *counts, CPD* cpd) {
   double score = matrix_sum_double(LU_LV);
   matrix_delete(LU_LV);
 
-  return score;//TODO: this
+  return score;
 }
 
 int count_index(Matrix *sz, Matrix *sample_data, int col) {
