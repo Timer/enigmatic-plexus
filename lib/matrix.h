@@ -43,7 +43,7 @@ Matrix* matrix_add(Matrix* a, Matrix* b);
 Matrix* matrix_add_double(Matrix* a, Matrix* b);
 Matrix* matrix_add_int_double(Matrix* a, Matrix* b);
 Matrix * matrix_sum_n_cols(Matrix *matrix, int cols);
-
+Matrix* matrix_sum_n_cols_double(Matrix *matrix, int cols);
 Matrix* matrix_create_sz(Matrix* matrix);
 
 void matrix_max_delete(MatrixMax *matrix_max);
@@ -54,4 +54,5 @@ void * matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims);
 
 // for testing ease
 void matrix_display();
+void matrix_display_double();
 #endif

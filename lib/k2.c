@@ -21,9 +21,15 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   LL = sum(LU + LV);
   */
   Matrix* ns = cpd->sizes;
-  Matrix* ns_ps = matrix_sub_indices(ns, 0, ns->rows, 0, ns->cols + 1);
-
+  Matrix* ns_ps = matrix_sub_indices(ns, 0, ns->rows - 1, 0, ns->cols);
+  Matrix* ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
   Matrix* prior = cpd->dirichlet;
+
+  Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(double*) matrix_element_by_index(ns_self, 0));
+  matrix_display_double(alpha_ij);
+
+
+  matrix_display(ns);
   return 0;//TODO: this
 }
 
@@ -55,9 +61,9 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
-  //const int score = dirichlet_score_family(counts, cpd);
+  const int score = dirichlet_score_family(counts, cpd);
   matrix_delete(counts);
-  return 1; //score;
+  return score;
 }
 
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
