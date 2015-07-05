@@ -54,7 +54,7 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
-CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
+CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
   list_push_int(ps, self);
@@ -72,7 +72,7 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   return cpd;
 }
 
-int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data, void *args) {
+int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
   int n = data->rows, ncases = data->cols;
   Matrix *dag = matrix_zeros(0, 0);
   if (ps->count > 0) {
@@ -84,7 +84,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
 
   CPD *cpd;
   if (!strcmp(scoring_fn, "tabular")) {
-    cpd = tabular_CPD(dag, ns, j, args);
+    cpd = tabular_CPD(dag, ns, j);
   } else {
     assert(1 == 2);
   }
@@ -105,7 +105,6 @@ Matrix * learn_struct_K2(
   int max_fan_in = n;
   char *type = "tabular";
   char *scoring_fn = "bayesian";
-  char *params = "";//TODO: set this different
   List *discrete = list_empty();
   for (int i = 0; i < n; ++i) list_push_int(discrete, i);
 
@@ -113,7 +112,7 @@ Matrix * learn_struct_K2(
   for (int i = 0; i < n; ++i) {
     List *ps = list_empty();
     int j = list_get_int(order, i);
-    int score = score_family(j, ps, type, scoring_fn, ns, discrete, data, params);
+    int score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
     for (; ps->count <= max_fan_in ;) {
       List *order_sub = list_slice(order, 0, i - 1);
       List *pps = difference_type_int(order_sub, ps);
@@ -123,7 +122,7 @@ Matrix * learn_struct_K2(
       for (int pi = 0; pi < nps; ++pi) {
         int p = list_get_int(pps, pi);
         int n_index = list_push_int(ps, p);
-        *((int *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data, params);
+        *((int *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data);
         free(list_remove(ps, n_index));
       }
       MatrixMax *mm = matrix_max(pscore);
