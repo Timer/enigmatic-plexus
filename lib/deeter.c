@@ -97,23 +97,3 @@
 
     8 + 4 + 0 = 12, which matches the previous example
 */
-int count_index(Matrix* sz, Matrix* sample_data, int col) {
-  // grab the desired column
-  Matrix* mat_col = matrix_sub_col(sample_data, col);
-
-  int index = 0;
-  int **id = (int **) mat_col->data, **dd = (int **) sz->data;
-  for (int i = 0, m = 1; i < mat_col->rows * mat_col->cols; m *= *dd[i++]) {
-    assert((*id[i]) - 1 < *dd[i]);
-    index += ((*id[i]) - 1) * m;
-  }
-  return index;
-}
-
-Matrix * compute_counts(Matrix* sample_data, Matrix* sz) {
-  Matrix * count = matrix_zeros(matrix_prod(sz), 1);
-   for (int i = 0; i < sample_data->cols; ++i) {
-    *((int*) matrix_element_by_index(count, count_index(sz, sample_data, i))) += 1;
-  }
-  return count;
-}

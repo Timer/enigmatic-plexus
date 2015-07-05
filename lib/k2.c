@@ -5,7 +5,7 @@
 #include "matrix.h"
 #include "bnet.h"
 
-int dirichlet_score_family(int counts, int prior) {
+int dirichlet_score_family(Matrix *counts, int prior) {
   /*
   ns = mysize(counts);
   ns_ps = ns(1:end-1);
@@ -22,15 +22,24 @@ int dirichlet_score_family(int counts, int prior) {
   return 0;//TODO: this
 }
 
-int compute_counts(Matrix *data, Matrix *sz) {
+int count_index(Matrix *sz, Matrix *sample_data, int col) {
+  Matrix *mat_col = matrix_sub_col(sample_data, col);
+  int index = 0;
+  int **id = (int **) mat_col->data, **dd = (int **) sz->data;
+  for (int i = 0, m = 1; i < mat_col->rows * mat_col->cols; m *= *dd[i++]) {
+    assert((*id[i]) - 1 < *dd[i]);
+    index += ((*id[i]) - 1) * m;
+  }
+  return index;
+}
+
+Matrix * compute_counts(Matrix *data, Matrix *sz) {
   assert(sz->cols == data->cols);
-  /*
-  P = prod(sz);
-  indices = subv2ind(sz, data');
-  count = hist(indices, 1:P);
-  count = myreshape(count, sz);
-  */
-  return 0;//TODO: this
+  Matrix *count = matrix_zeros(matrix_prod(sz), 1);
+   for (int i = 0; i < data->cols; ++i) {
+    *((int*) matrix_element_by_index(count, count_index(sz, data, i))) += 1;
+  }
+  return count;
 }
 
 int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
@@ -43,8 +52,11 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   for (int i = 0; i < self_ev->cols; ++i) {
     *((int *) matrix_element(data, 0, i)) = *((int *) matrix_element(self_ev, 0, i));
   }
-  int counts = compute_counts(data, cpd->sizes);
-  return dirichlet_score_family(counts, cpd->dirichlet);
+  Matrix *counts = compute_counts(data, cpd->sizes);
+  matrix_delete(data);
+  int score = dirichlet_score_family(counts, cpd->dirichlet);
+  matrix_delete(counts);
+  return score;
 }
 
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {

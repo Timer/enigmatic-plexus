@@ -123,6 +123,9 @@ void test_helpers() {
   matrix_delete(m_ind);
   matrix_delete(m_dims);
   matrix_delete(m);
+
+  //TODO: test remaining matrix funcs
+  //TODO: test count index / compute count functs
   // --- MATRIX END
 
   puts("All tests passed!");
@@ -223,22 +226,6 @@ int main(int argc, char* argv[]) {
     printf("\n");
   }
   matrix_scrap(second_row);
-
-  /* creating the following sz
-  [2][3][4]
-  */
-  Matrix* sz = matrix_zeros(1, 3);
-  *(int *) matrix_element_by_index(sz, 0) = 2;
-  *(int *) matrix_element_by_index(sz, 1) = 3;
-  *(int *) matrix_element_by_index(sz, 2) = 4;
-
-  printf("\n == testing count_index == \n");
-  printf("prod(sz): %d\n", matrix_prod(sz));
-  for (int i = 0; i < data->cols; ++i) {
-    printf("index for col %d: %d\n", i, count_index(sz, data, i));
-  }
-
-  matrix_display(compute_counts(data, sz));
 
   /* Testing matrix_range */
   Matrix* range = matrix_range(3, 9);
