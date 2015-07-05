@@ -39,6 +39,8 @@ int count_index(Matrix *sz, Matrix *sample_data, int col) {
 }
 
 Matrix * compute_counts(Matrix *data, Matrix *sz) {
+  matrix_display(data);
+  matrix_display(sz);
   assert(sz->rows == data->rows);
   Matrix *count = matrix_zeros(matrix_prod(sz), 1);
    for (int i = 0; i < data->cols; ++i) {
@@ -59,17 +61,16 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return 1; //score;
 }
 
-CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
+  CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
-  list_push_int(ps, self);
   Matrix *fam_sz = matrix_zeros(1, ps->count);
   for (int i = 0; i < ps->count; ++i) {
     *(int *) matrix_element_by_index(fam_sz, i) = *(int *) matrix_element_by_index(ns, list_get_int(ps, i));
   }
   cpd->sizes = fam_sz;
-
   Matrix *calc = matrix_sub_indices(fam_sz, 0, 1, 0, ps->count - 1);
+
   int psz = matrix_prod(calc), dirichlet_weight = 1;
   list_delete(ps);
   matrix_scrap(calc);
@@ -78,6 +79,8 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
 }
 
 int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
+  printf("score fam started\n");
+  printf("%d\n", ps->count);
   int n = data->rows, ncases = data->cols;
   Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
@@ -86,7 +89,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
     matrix_scrap(dag_sub);
     //TODO: sort `ps` here.
   }
-
+  matrix_display(dag);
   CPD *cpd;
   if (!strcmp(node_type, "tabular")) {
     cpd = tabular_CPD(dag, ns, j);
@@ -99,6 +102,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
   cpd_delete(cpd);
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
+  printf("score fam ended\n");
   return score;
 }
 
@@ -179,16 +183,14 @@ int main(int argc, char **argv) {
 
   Matrix* sz = matrix_create_sz(data);
 
-  matrix_display(data);
-  matrix_display(sz);
 
   Matrix* counts = compute_counts(data, sz);
-  matrix_display(counts);
-
   List* ps = list_empty();
+  list_push_int(ps, 0);
+  list_push_int(ps, 1);
   Matrix* dis = matrix_range(0, 2);
   List* discrete = matrix_to_list(dis);
 
-  int score = score_family(1, ps, "tabular", "bayesian", sz, discrete, data);
+  int score = score_family(2, ps, "tabular", "bayesian", sz, discrete, data);
   return 0;
 }
