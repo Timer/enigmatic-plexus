@@ -44,17 +44,12 @@ Matrix * compute_counts(Matrix *data, Matrix *sz) {
 
 int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   assert(self_ev->rows == 1);
-  assert(pev->rows == 1);
-  Matrix *data = matrix_zeros(2, self_ev->cols > pev->cols ? self_ev->cols : pev->cols);
-  for (int i = 0; i < pev->cols; ++i) {
-    *((int *) matrix_element(data, 0, i)) = *((int *) matrix_element(pev, 0, i));
-  }
-  for (int i = 0; i < self_ev->cols; ++i) {
-    *((int *) matrix_element(data, 0, i)) = *((int *) matrix_element(self_ev, 0, i));
-  }
+  assert(cpd->sizes->rows == 1);
+  assert(pev->cols == self_ev->cols);
+  Matrix *data = matrix_sub_concat_rows(pev, self_ev);
   Matrix *counts = compute_counts(data, cpd->sizes);
-  matrix_delete(data);
-  int score = dirichlet_score_family(counts, cpd->dirichlet);
+  matrix_scrap(data);
+  const int score = dirichlet_score_family(counts, cpd->dirichlet);
   matrix_delete(counts);
   return score;
 }
