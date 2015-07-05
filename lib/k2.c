@@ -71,11 +71,11 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   for (int i = 0; i < ps->count; ++i) {
     *(int *) matrix_element_by_index(fam_sz, i) = *(int *) matrix_element_by_index(ns, list_get_int(ps, i));
   }
-  list_delete(ps);
   cpd->sizes = fam_sz;
 
   Matrix *calc = matrix_sub_indices(fam_sz, 0, 1, 0, ps->count - 1);
   int psz = matrix_prod(calc), dirichlet_weight = 1;
+  list_delete(ps);
   matrix_scrap(calc);
   /*
   CPD.dirichlet = (dirichlet_weight/psz) * mk_stochastic(myones(fam_sz));
