@@ -35,20 +35,18 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   matrix_delete(gamma_pnc);
   matrix_delete(gamma_prior);
   Matrix* LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
-  // run lgamma accross the new lU_mat
-  // delete the new one
-  // run gamma on prior
-  //sub from another
-  // sum 2 that
+  matrix_delete(lu_mat);
+
+  Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
+  matrix_display_double(alpha_ij);
 
   // N_ij sum2 counts
+  Matrix* N_ij = matrix_sum_n_cols_double(counts, *(int*) matrix_element_by_index(ns_self, 0));
 
   // LV gamma accross alpha_ij
 
 
 
-  Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
-  matrix_display_double(alpha_ij);
 
 
   matrix_display(ns);
