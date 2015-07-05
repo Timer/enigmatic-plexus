@@ -238,22 +238,19 @@ void matrix_scrap(Matrix *matrix) {
   free(matrix);
 }
 
-
-// STARTING N-DIMENSIONAL FUNCTIONS
-
-// this will take any regular matrix and return an element is as if the
-// matrix had the given dimensions for the given indices
+// --- N-DIMENSIONAL START
 void * matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
   assert(m->rows * m->cols == matrix_prod(dims));
-  List *l_i = matrix_to_list(ind), *l_d = matrix_to_list(dims);
-  assert(l_i->count == l_d->count);
+  assert(ind->rows * ind->cols == dims->rows * dims->cols);
   int index = 0;
-  for (int i = 0, m = 1; i < l_i->count; m *= list_get_int(l_d, i++)) {
-    assert(list_get_int(l_i, i) < list_get_int(l_d, i));
-    index += list_get_int(l_i, i) * m;
+  void **id = ind->data, **dd = dims->data;
+  for (int i = 0, m = 1; i < ind->rows * ind->cols; m *= *(int *) dd[i++]) {
+    assert(*(int *) id[i] < *(int *) dd[i]);
+    index += *(int *) id[i] * m;
   }
   return matrix_element_by_index(m, index);
 }
+// --- N-DIMENSIONAL END
 
 void matrix_display(Matrix *matrix) {
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
