@@ -298,6 +298,8 @@ void matrix_display(Matrix *matrix) {
 }
 
 Matrix* matrix_add(Matrix* a, Matrix* b) {
+  assert(a->rows == b->rows);
+  assert(a->cols == b->cols);
   Matrix* r = matrix_zeros(a->rows, a->cols);
   int** ad = (int**) a->data, ** bd = (int**) b->data, ** rd = (int**) r->data;
   for (int i = 0; i < a->rows * a->cols; ++i)
@@ -305,6 +307,8 @@ Matrix* matrix_add(Matrix* a, Matrix* b) {
 }
 
 Matrix* matrix_add_double(Matrix* a, Matrix* b) {
+  assert(a->rows == b->rows);
+  assert(a->cols == b->cols);
   Matrix* r = matrix_zeros(a->rows, a->cols);
   double** ad = (double**) a->data, ** bd = (double**) b->data, ** rd = (double**) r->data;
   for (int i = 0; i < a->rows * a->cols; ++i)
@@ -313,6 +317,8 @@ Matrix* matrix_add_double(Matrix* a, Matrix* b) {
 
 // first is int, second is double
 Matrix* matrix_add_int_double(Matrix* a, Matrix* b) {
+  assert(a->rows == b->rows);
+  assert(a->cols == b->cols);
   Matrix* r = matrix_zeros(a->rows, a->cols);
   int** ad = (int**) a->data;
   double** bd = (double**) b->data, ** rd = (double**) r->data;
