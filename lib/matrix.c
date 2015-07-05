@@ -88,7 +88,9 @@ Matrix * matrix_sub_indices(Matrix *o_matrix, int row_start, int row_end, int co
   Matrix *n_matrix = matrix_raw(row_end - row_start, col_end - col_start);
   void **n_data = n_matrix->data, **o_data = o_matrix->data;
   for (int c = col_start, ci = 0; c < col_end; ++c, ++ci) {
+    assert(c < o_matrix->cols);
     for (int r = row_start, ri = 0; r < row_end; ++r, ++ri) {
+      assert(r < o_matrix->rows);
       n_data[_matrix_index_for(n_matrix, ri, ci)] = o_data[_matrix_index_for(o_matrix, r, c)];
     }
   }
@@ -101,6 +103,7 @@ Matrix * matrix_sub_lists(Matrix *o_matrix, List *rows, List *cols) {
   for (int ri = 0; ri < rows->count; ++ri) {
     for (int ci = 0, r = list_get_int(rows, ri); ci < cols->count; ++ci) {
       int c = list_get_int(cols, ci);
+      assert(r < o_matrix->rows && c < o_matrix->cols);
       n_data[_matrix_index_for(n_matrix, ri, ci)] = o_data[_matrix_index_for(o_matrix, r, c)];
     }
   }
@@ -112,6 +115,7 @@ Matrix * matrix_sub_list_index(Matrix *o_matrix, List *rows, int col_start, int 
   void **n_data = n_matrix->data, **o_data = o_matrix->data;
   for (int ri = 0; ri < rows->count; ++ri) {
     for (int c = col_start, ci = 0, r = list_get_int(rows, ri); c < col_end; ++c, ++ci) {
+      assert(r < o_matrix->rows && c < o_matrix->cols);
       n_data[_matrix_index_for(n_matrix, ri, ci)] = o_data[_matrix_index_for(o_matrix, r, c)];
     }
   }
@@ -124,6 +128,7 @@ Matrix * matrix_sub_index_list(Matrix *o_matrix, int row_start, int row_end, Lis
   for (int r = row_start, ri = 0; r < row_end; ++r, ++ri) {
     for (int ci = 0; ci < cols->count; ++ci) {
       int c = list_get_int(cols, ci);
+      assert(r < o_matrix->rows && c < o_matrix->cols);
       n_data[_matrix_index_for(n_matrix, ri, ci)] = o_data[_matrix_index_for(o_matrix, r, c)];
     }
   }
