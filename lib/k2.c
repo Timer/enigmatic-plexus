@@ -66,9 +66,10 @@ Matrix * mk_stochstic(int fam_sz){
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
-  Matrix *fam_sz = matrix_zeros(1, ps->count + 1);
-  for (int i = 0; i <= ps->count; ++i) {
-    *(int *) matrix_element_by_index(fam_sz, i) = *(int *) matrix_element_by_index(dag, list_get_int(ps, i));
+  list_push_int(ps, self);
+  Matrix *fam_sz = matrix_zeros(1, ps->count);
+  for (int i = 0; i < ps->count; ++i) {
+    *(int *) matrix_element_by_index(fam_sz, i) = *(int *) matrix_element_by_index(ns, list_get_int(ps, i));
   }
   list_delete(ps);
   cpd->sizes = fam_sz;
