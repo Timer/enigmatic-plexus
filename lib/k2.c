@@ -48,13 +48,10 @@ Matrix * compute_counts(Matrix *data, Matrix *sz) {
 }
 
 int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
-  printf("log_marg_prob started\n");
   assert(self_ev->rows == 1);
   assert(cpd->sizes->cols == 1);
   assert(pev->cols == self_ev->cols);
   Matrix *data = matrix_sub_concat_rows(pev, self_ev);
-
-  matrix_display(data);
 
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
@@ -84,8 +81,6 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
 }
 
 int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
-  printf("score fam started\n");
-  printf("%d\n", ps->count);
   int n = data->rows, ncases = data->cols;
   Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
@@ -108,7 +103,6 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
   cpd_delete(cpd);
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
-  printf("score fam ended\n");
   return score;
 }
 
@@ -197,5 +191,6 @@ int main(int argc, char **argv) {
   List* discrete = matrix_to_list(dis);
 
   int score = score_family(2, ps, "tabular", "bayesian", sz, discrete, data);
+  printf("%d\n", score);
   return 0;
 }
