@@ -74,8 +74,7 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   int psz = matrix_prod(calc), dirichlet_weight = 1;
   list_delete(ps);
   matrix_scrap(calc);
-  cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, (1 / psz) * (1 / (*(int*) matrix_element_by_index(ns, self))));
-
+  cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, ((double) 1 / psz) * ((double)1 / (*(int*) matrix_element_by_index(ns, self))));
 
   return cpd;
 }
