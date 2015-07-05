@@ -37,6 +37,10 @@ MatrixMax * matrix_double_max(Matrix *matrix);
 List * matrix_to_list(Matrix *matrix);
 List * matrix_double_to_list(Matrix *matrix);
 Matrix * matrix_from_list(int rows, int cols, int arr[]);
+Matrix* matrix_add(Matrix* a, Matrix* b);
+Matrix* matrix_add_double(Matrix* a, Matrix* b);
+Matrix* matrix_add_int_double(Matrix* a, Matrix* b);
+
 void matrix_max_delete(MatrixMax *matrix_max);
 void matrix_delete(Matrix *matrix);
 void matrix_scrap(Matrix *matrix);
