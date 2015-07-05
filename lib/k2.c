@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <stdio.h>
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
 
-int dirichlet_score_family(Matrix *counts, Matrix* prior) {
+int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   /*
   ns = mysize(counts);
   ns_ps = ns(1:end-1);
@@ -19,6 +20,10 @@ int dirichlet_score_family(Matrix *counts, Matrix* prior) {
   LV = gammaln(alpha_ij) - gammaln(alpha_ij + N_ij);
   LL = sum(LU + LV);
   */
+  Matrix* ns = cpd->sizes;
+  Matrix* ns_ps = matrix_sub_indices(ns, 0, ns->rows, 0, ns->cols + 1);
+
+  Matrix* prior = cpd->dirichlet;
   return 0;//TODO: this
 }
 
@@ -34,7 +39,7 @@ int count_index(Matrix *sz, Matrix *sample_data, int col) {
 }
 
 Matrix * compute_counts(Matrix *data, Matrix *sz) {
-  assert(sz->cols == data->cols);
+  assert(sz->rows == data->rows);
   Matrix *count = matrix_zeros(matrix_prod(sz), 1);
    for (int i = 0; i < data->cols; ++i) {
     *((int*) matrix_element_by_index(count, count_index(sz, data, i))) += 1;
@@ -49,9 +54,9 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   Matrix *data = matrix_sub_concat_rows(pev, self_ev);
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
-  const int score = dirichlet_score_family(counts, cpd->dirichlet);
+  //const int score = dirichlet_score_family(counts, cpd);
   matrix_delete(counts);
-  return score;
+  return 1; //score;
 }
 
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
@@ -74,7 +79,7 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
 
 int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
   int n = data->rows, ncases = data->cols;
-  Matrix *dag = matrix_zeros(0, 0);
+  Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
     Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
     matrix_set(dag_sub, 1);
@@ -83,7 +88,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
   }
 
   CPD *cpd;
-  if (!strcmp(scoring_fn, "tabular")) {
+  if (!strcmp(node_type, "tabular")) {
     cpd = tabular_CPD(dag, ns, j);
   } else {
     assert(1 == 2);
@@ -95,6 +100,10 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
   return score;
+}
+
+Matrix * matrix_sum_rows(Matrix* matrix, Matrix* sz) {
+
 }
 
 Matrix * learn_struct_K2(
@@ -147,5 +156,39 @@ Matrix * learn_struct_K2(
 }
 
 int main(int argc, char **argv) {
+
+  Matrix* data = matrix_zeros(3, 6);
+  *(int *) matrix_element_by_index(data, 0) = 2;
+  *(int *) matrix_element_by_index(data, 1) = 3;
+  *(int *) matrix_element_by_index(data, 2) = 4;
+  *(int *) matrix_element_by_index(data, 3) = 1;
+  *(int *) matrix_element_by_index(data, 4) = 3;
+  *(int *) matrix_element_by_index(data, 5) = 2;
+  *(int *) matrix_element_by_index(data, 6) = 2;
+  *(int *) matrix_element_by_index(data, 7) = 1;
+  *(int *) matrix_element_by_index(data, 8) = 2;
+  *(int *) matrix_element_by_index(data, 9) = 1;
+  *(int *) matrix_element_by_index(data, 10) = 2;
+  *(int *) matrix_element_by_index(data, 11) = 4;
+  *(int *) matrix_element_by_index(data, 12) = 1;
+  *(int *) matrix_element_by_index(data, 13) = 2;
+  *(int *) matrix_element_by_index(data, 14) = 1;
+  *(int *) matrix_element_by_index(data, 15) = 1;
+  *(int *) matrix_element_by_index(data, 16) = 2;
+  *(int *) matrix_element_by_index(data, 17) = 4;
+
+  Matrix* sz = matrix_create_sz(data);
+
+  matrix_display(data);
+  matrix_display(sz);
+
+  Matrix* counts = compute_counts(data, sz);
+  matrix_display(counts);
+
+  List* ps = list_empty();
+  Matrix* dis = matrix_range(0, 2);
+  List* discrete = matrix_to_list(dis);
+
+  int score = score_family(1, ps, "tabular", "bayesian", sz, discrete, data);
   return 0;
 }

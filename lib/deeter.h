@@ -2,5 +2,4 @@
 #define DEETER_H
 
 #include "matrix.h"
-
 #endif
