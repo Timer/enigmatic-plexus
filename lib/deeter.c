@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include "deeter.h"
 
 /*
@@ -112,5 +113,15 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
     // add the new sub-index to index
     index += (* (int *) matrix_element_by_index(mat_col, i) - 1) * total;
   }
+  return index;
+}
+
+int matrix_element_n_dim_tony(Matrix *m, Matrix *ind, Matrix *dims) {
+  assert(m->rows * m->cols == matrix_prod(dims));
+  assert(ind->rows * ind-> cols == dims->rows * dims->cols);
+  int** ind_first = (int**) ind->data, ** dim_first = (int**) dims->data;
+  int index = **(ind_first++);
+  for (int i = 1, offset = 1; i < ind->rows * ind-> cols; ++i, offset *= **(dim_first++))
+    index += (offset * **(ind_first++));
   return index;
 }
