@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
@@ -49,7 +50,7 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
 
 
 
-  matrix_display(ns);
+  matrix_display_double(LU);
   return 0;//TODO: this
 }
 
