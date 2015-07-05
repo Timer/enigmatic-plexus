@@ -179,8 +179,8 @@ int main(int argc, char* argv[]) {
   *(int *) matrix_element_by_index(data, 12) = 1;
   *(int *) matrix_element_by_index(data, 13) = 2;
   *(int *) matrix_element_by_index(data, 14) = 1;
-  *(int *) matrix_element_by_index(data, 15) = 2;
-  *(int *) matrix_element_by_index(data, 16) = 3;
+  *(int *) matrix_element_by_index(data, 15) = 1;
+  *(int *) matrix_element_by_index(data, 16) = 2;
   *(int *) matrix_element_by_index(data, 17) = 4;
 
   printf("\n == created matrix == \n");
@@ -237,6 +237,8 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < data->cols; ++i) {
     printf("index for col %d: %d\n", i, count_index(sz, data, i));
   }
+
+  matrix_display(compute_counts(data, sz));
 
   /* Testing matrix_range */
   Matrix* range = matrix_range(3, 9);
