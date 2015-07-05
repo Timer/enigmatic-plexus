@@ -50,7 +50,7 @@ Matrix * compute_counts(Matrix *data, Matrix *sz) {
 int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   printf("log_marg_prob started\n");
   assert(self_ev->rows == 1);
-  assert(cpd->sizes->rows == 1);
+  assert(cpd->sizes->cols == 1);
   assert(pev->cols == self_ev->cols);
   Matrix *data = matrix_sub_concat_rows(pev, self_ev);
 
@@ -67,12 +67,12 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
   list_push_int(ps, self);
-  Matrix *fam_sz = matrix_zeros(1, ps->count);
+  Matrix *fam_sz = matrix_zeros(ps->count, 1);
   for (int i = 0; i < ps->count; ++i) {
     *(int *) matrix_element_by_index(fam_sz, i) = *(int *) matrix_element_by_index(ns, list_get_int(ps, i));
   }
   cpd->sizes = fam_sz;
-  Matrix *calc = matrix_sub_indices(fam_sz, 0, 1, 0, ps->count - 1);
+  Matrix *calc = matrix_sub_indices(fam_sz, 0, ps->count - 1, 0, 1);
 
   int psz = matrix_prod(calc), dirichlet_weight = 1;
   list_delete(ps);
