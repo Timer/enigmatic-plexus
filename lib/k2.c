@@ -7,7 +7,7 @@
 #include "matrix.h"
 #include "bnet.h"
 
-int dirichlet_score_family(Matrix *counts, CPD* cpd) {
+double dirichlet_score_family(Matrix *counts, CPD* cpd) {
   /*
   ns = mysize(counts);
   ns_ps = ns(1:end-1);
@@ -22,12 +22,9 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   LL = sum(LU + LV);
   */
   Matrix* ns = cpd->sizes;
-  Matrix* ns_ps = matrix_sub_indices(ns, 0, ns->rows - 1, 0, ns->cols);
   Matrix* ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
   Matrix* prior = cpd->dirichlet;
 
-  // LU
-  // add prior and counts together -> new matrix
   Matrix* pnc = matrix_add_int_double(counts, prior);
   Matrix* gamma_pnc = matrix_lgamma(pnc);
   matrix_delete(pnc);
@@ -39,19 +36,27 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   matrix_delete(lu_mat);
 
   Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
-  matrix_display_double(alpha_ij);
+  Matrix* N_ij = matrix_sum_n_cols_double(counts, *(int*) matrix_element_by_index(ns_self, 0));\
+  matrix_scrap(ns_self);
 
-  // N_ij sum2 counts
-  Matrix* N_ij = matrix_sum_n_cols_double(counts, *(int*) matrix_element_by_index(ns_self, 0));
+  Matrix* gamma_alpha = matrix_lgamma(alpha_ij);
 
-  // LV gamma accross alpha_ij
+  Matrix* alpha_N = matrix_add_int_double(N_ij, alpha_ij);
+  matrix_delete(alpha_ij);
+  matrix_delete(N_ij);
 
+  Matrix* gamma_alpha_N = matrix_lgamma(alpha_N);
+  matrix_delete(alpha_N);
 
+  Matrix* LV = matrix_double_subtract(gamma_alpha, gamma_alpha_N);
+  matrix_delete(gamma_alpha);
+  matrix_delete(gamma_alpha_N);
 
+  Matrix* LU_LV = matrix_add_double(LU, LV);
+  double score = matrix_sum_double(LU_LV);
+  matrix_delete(LU_LV);
 
-
-  matrix_display_double(LU);
-  return 0;//TODO: this
+  return score;//TODO: this
 }
 
 int count_index(Matrix *sz, Matrix *sample_data, int col) {
@@ -74,7 +79,7 @@ Matrix * compute_counts(Matrix *data, Matrix *sz) {
   return count;
 }
 
-int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
+double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   assert(self_ev->rows == 1);
   assert(cpd->sizes->cols == 1);
   assert(pev->cols == self_ev->cols);
@@ -82,7 +87,7 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
-  const int score = dirichlet_score_family(counts, cpd);
+  const double score = dirichlet_score_family(counts, cpd);
   matrix_delete(counts);
   return score;
 }
@@ -106,7 +111,7 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   return cpd;
 }
 
-int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
+double score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
   int n = data->rows, ncases = data->cols;
   Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
@@ -125,7 +130,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
 
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
     *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
-  int score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
+  double score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
   cpd_delete(cpd);
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
@@ -199,8 +204,8 @@ int main(int argc, char **argv) {
   *(int *) matrix_element_by_index(data, 12) = 1;
   *(int *) matrix_element_by_index(data, 13) = 2;
   *(int *) matrix_element_by_index(data, 14) = 1;
-  *(int *) matrix_element_by_index(data, 15) = 1;
-  *(int *) matrix_element_by_index(data, 16) = 2;
+  *(int *) matrix_element_by_index(data, 15) = 2;
+  *(int *) matrix_element_by_index(data, 16) = 3;
   *(int *) matrix_element_by_index(data, 17) = 4;
 
   Matrix* sz = matrix_create_sz(data);
@@ -212,7 +217,7 @@ int main(int argc, char **argv) {
   Matrix* dis = matrix_range(0, 2);
   List* discrete = matrix_to_list(dis);
 
-  int score = score_family(2, ps, "tabular", "bayesian", sz, discrete, data);
-  printf("%d\n", score);
+  double score = score_family(2, ps, "tabular", "bayesian", sz, discrete, data);
+  printf("%f\n", score);
   return 0;
 }

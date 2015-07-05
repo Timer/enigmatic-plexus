@@ -138,6 +138,24 @@ int matrix_prod(Matrix *matrix) {
   return p;
 }
 
+int matrix_sum(Matrix *matrix) {
+  int p = 0;
+  void **data = matrix->data;
+  for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
+    p += *(int *) data[i];
+  }
+  return p;
+}
+
+double matrix_sum_double(Matrix *matrix) {
+  double p = 0;
+  void **data = matrix->data;
+  for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
+    p += *(double *) data[i];
+  }
+  return p;
+}
+
 void matrix_dobule_set(Matrix *matrix, int value) {
   void **data = matrix->data;
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
