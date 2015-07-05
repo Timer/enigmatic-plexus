@@ -9,4 +9,6 @@ typedef struct {
   int dirichlet;
 } CPD;
 
+List * adjacency_matrix_parents(Matrix *adj_mat, int col);
+
 #endif
