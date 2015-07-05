@@ -101,16 +101,11 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
   // grab the desired column
   Matrix* mat_col = matrix_sub_col(sample_data, col);
 
-  // the index
   int index = 0;
-  // calculate the length of the histogram array
-  int total = matrix_prod(sz);
-  // move from the bottom of the column to the top
-  for (int i = mat_col->rows - 1; i >= 0; --i) {
-    // adjust the total for each sub-index
-    total /= *(int *) matrix_element_by_index(sz, i);
-    // add the new sub-index to index
-    index += (* (int *) matrix_element_by_index(mat_col, i) - 1) * total;
+  int **id = (int **) mat_col->data, **dd = (int **) sz->data;
+  for (int i = 0, m = 1; i < mat_col->rows * mat_col->cols; m *= *dd[i++]) {
+    assert((*id[i]) - 1 < *dd[i]);
+    index += ((*id[i]) - 1) * m;
   }
   return index;
 }
