@@ -59,6 +59,10 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
+Matrix * mk_stochstic(int fam_sz){
+  Matrix * ret = matrix_double_zeros(fam_sz, 1);
+}
+
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   /*
   ps = parents(dag, self);

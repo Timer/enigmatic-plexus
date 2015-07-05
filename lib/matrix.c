@@ -30,11 +30,29 @@ Matrix * matrix_zeros(int rows, int cols) {
   return matrix;
 }
 
+Matrix * matrix_create(int rows, int cols, int value) {
+  Matrix *matrix = matrix_raw(rows, cols);
+  void **data = matrix->data;
+  for (int i = 0; i < rows * cols; ++i) {
+    *((int *) (data[i] = malloc(sizeof(int)))) = value;
+  }
+  return matrix;
+}
+
 Matrix * matrix_double_zeros(int rows, int cols) {
   Matrix *matrix = matrix_raw(rows, cols);
   void **data = matrix->data;
   for (int i = 0; i < rows * cols; ++i) {
     *((double *) (data[i] = malloc(sizeof(double)))) = 0;
+  }
+  return matrix;
+}
+
+Matrix * matrix_double_create(int rows, int cols, double value) {
+  Matrix *matrix = matrix_raw(rows, cols);
+  void **data = matrix->data;
+  for (int i = 0; i < rows * cols; ++i) {
+    *((double *) (data[i] = malloc(sizeof(double)))) = value;
   }
   return matrix;
 }
