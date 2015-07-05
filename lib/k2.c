@@ -47,7 +47,7 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return dirichlet_score_family(counts, cpd->dirichlet);
 }
 
-CPD * tabular_CPD(Matrix *dag, void *node_sizes, int self, void *args) {
+CPD * tabular_CPD(Matrix *dag, Matrix *node_sizes, int self, void *args) {
   void *ns = node_sizes;
   /*
   ps = parents(bnet.dag, self);
@@ -61,7 +61,7 @@ CPD * tabular_CPD(Matrix *dag, void *node_sizes, int self, void *args) {
   return NULL;//TODO: this
 }
 
-int score_family(int j, List *ps, char *node_type, char *scoring_fn, void *ns, List *discrete, Matrix *data, void *args) {
+int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data, void *args) {
   int n = data->rows, ncases = data->cols;
   Matrix *dag = matrix_zeros(0, 0);
   if (ps->count > 0) {
@@ -86,7 +86,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, void *ns, L
 }
 
 Matrix * learn_struct_K2(
-  Matrix *data, void *ns, List *order
+  Matrix *data, Matrix *ns, List *order
 ) {
   assert(order->count == data->rows);
   int n = data->rows, ncases = data->cols;
