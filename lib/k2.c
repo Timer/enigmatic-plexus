@@ -68,9 +68,7 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   int psz = matrix_prod(calc), dirichlet_weight = 1;
   list_delete(ps);
   matrix_scrap(calc);
-
   cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, (1 / psz) * (1 / (*(int*) matrix_element_by_index(ns, self))));
-
   return cpd;
 }
 
@@ -93,7 +91,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
     *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   int score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
-  //TODO: scrap cpd
+  cpd_delete(cpd);
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
   return score;

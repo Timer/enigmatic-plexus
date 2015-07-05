@@ -1,6 +1,13 @@
 #include "bnet.h"
 #include <assert.h>
+#include <stdlib.h>
 #include "matrix.h"
+
+void cpd_delete(CPD *cpd) {
+  matrix_delete(cpd->sizes);
+  matrix_delete(cpd->dirichlet);
+  free(cpd);
+}
 
 List * adjacency_matrix_parents(Matrix *adj_mat, int col) {
   List *l = list_empty();
