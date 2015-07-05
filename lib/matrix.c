@@ -243,10 +243,10 @@ void * matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
   assert(m->rows * m->cols == matrix_prod(dims));
   assert(ind->rows * ind->cols == dims->rows * dims->cols);
   int index = 0;
-  void **id = ind->data, **dd = dims->data;
-  for (int i = 0, m = 1; i < ind->rows * ind->cols; m *= *(int *) dd[i++]) {
-    assert(*(int *) id[i] < *(int *) dd[i]);
-    index += *(int *) id[i] * m;
+  int **id = (int **) ind->data, **dd = (int **) dims->data;
+  for (int i = 0, m = 1; i < ind->rows * ind->cols; m *= *dd[i++]) {
+    assert(*id[i] < *dd[i]);
+    index += *id[i] * m;
   }
   return matrix_element_by_index(m, index);
 }
