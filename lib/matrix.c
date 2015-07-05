@@ -418,6 +418,14 @@ Matrix * matrix_double_subtract(Matrix *m1, Matrix *m2) {
   return m;
 }
 
+Matrix * matrix_lgamma(Matrix *m) {
+  Matrix *nm = matrix_double_zeros(m->rows, m->cols);
+  for (int i = 0; i < m->rows * m->cols; ++i) {
+    *(double *) matrix_element_by_index(nm, i) = lgamma(*(double *) matrix_element_by_index(m, i));
+  }
+  return nm;
+}
+
 Matrix* matrix_create_sz(Matrix* matrix) {
   Matrix* r = matrix_zeros(matrix->rows, 1);
   for (int i = 0; i < matrix->rows; ++i) {
