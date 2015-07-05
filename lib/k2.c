@@ -25,7 +25,7 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   Matrix* ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
   Matrix* prior = cpd->dirichlet;
 
-  Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(double*) matrix_element_by_index(ns_self, 0));
+  Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_display_double(alpha_ij);
 
 
