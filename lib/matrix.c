@@ -304,6 +304,8 @@ Matrix* matrix_add(Matrix* a, Matrix* b) {
   int** ad = (int**) a->data, ** bd = (int**) b->data, ** rd = (int**) r->data;
   for (int i = 0; i < a->rows * a->cols; ++i)
     *rd[i] = *ad[i] + *bd[i];
+
+  return r;
 }
 
 Matrix* matrix_add_double(Matrix* a, Matrix* b) {
@@ -313,6 +315,8 @@ Matrix* matrix_add_double(Matrix* a, Matrix* b) {
   double** ad = (double**) a->data, ** bd = (double**) b->data, ** rd = (double**) r->data;
   for (int i = 0; i < a->rows * a->cols; ++i)
     *rd[i] = *ad[i] + *bd[i];
+
+  return r;
 }
 
 // first is int, second is double
@@ -324,4 +328,6 @@ Matrix* matrix_add_int_double(Matrix* a, Matrix* b) {
   double** bd = (double**) b->data, ** rd = (double**) r->data;
   for (int i = 0; i < a->rows * a->cols; ++i)
     *rd[i] = *ad[i] + *bd[i];
+
+  return r;
 }
