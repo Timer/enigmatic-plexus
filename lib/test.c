@@ -104,7 +104,7 @@ void test_helpers() {
   puts("Testing n-dimensional functionality ...");
   m = matrix_range(1, 8);
   int dims[] = {2, 2, 2};
-  Matrix *m_ind = matrix_zeros(3, 1), *m_dims = matrix_from_list(3, 1, dims);
+  Matrix *m_ind = matrix_zeros(3, 1), *m_dims = matrix_from_array(3, 1, dims);
   //0, 0, 0
   assert(*(int *) matrix_element_n_dim(m, m_ind, m_dims) == 1);
   *(int *) matrix_element_by_index(m_ind, 0) = 1;

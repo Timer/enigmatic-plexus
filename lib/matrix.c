@@ -249,7 +249,7 @@ List * matrix_double_to_list(Matrix *matrix) {
   return l;
 }
 
-Matrix * matrix_from_list(int rows, int cols, int arr[]) {
+Matrix * matrix_from_array(int rows, int cols, int arr[]) {
   Matrix *m = matrix_zeros(rows, cols);
   for (int i = 0; i < rows * cols; ++i) {
     *(int *) matrix_element_by_index(m, i) = arr[i];
