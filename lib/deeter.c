@@ -119,6 +119,6 @@ Matrix * compute_counts(Matrix* sample_data, Matrix* sz) {
   int data_size = sample_data->rows * sample_data->cols;
   Matrix * count = matrix_zeros(matrix_prod(sz), 1);
    for (int i = 0; i < data_size; ++i)
-    *((int*) matrix_element_by_index(count, i)) += count_index(sz, sample_data, i);
+    *((int*) matrix_element_by_index(count, count_index(sz, sample_data, i))) += 1;
   return count;
 }
