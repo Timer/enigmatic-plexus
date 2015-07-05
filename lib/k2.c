@@ -49,7 +49,7 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   /*
-  ps = parents(bnet.dag, self);
+  ps = parents(dag, self);
   fam_sz = ns([ps self]);
   CPD.sizes = fam_sz;
 
