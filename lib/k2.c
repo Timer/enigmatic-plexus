@@ -5,7 +5,7 @@
 #include "matrix.h"
 #include "bnet.h"
 
-int dirichlet_score_family(Matrix *counts, int prior) {
+int dirichlet_score_family(Matrix *counts, Matrix* prior) {
   /*
   ns = mysize(counts);
   ns_ps = ns(1:end-1);
@@ -59,10 +59,6 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
-Matrix * mk_stochstic(int fam_sz){
-  Matrix * ret = matrix_double_zeros(fam_sz, 1);
-}
-
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
@@ -77,9 +73,9 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
   int psz = matrix_prod(calc), dirichlet_weight = 1;
   list_delete(ps);
   matrix_scrap(calc);
-  /*
-  CPD.dirichlet = (dirichlet_weight/psz) * mk_stochastic(myones(fam_sz));
-  */
+
+  cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, (1 / psz) * (1 / (*(int*) matrix_element_by_index(ns, self))));
+
   return cpd;
 }
 
