@@ -25,6 +25,28 @@ int dirichlet_score_family(Matrix *counts, CPD* cpd) {
   Matrix* ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
   Matrix* prior = cpd->dirichlet;
 
+  // LU
+  // add prior and counts together -> new matrix
+  Matrix* pnc = matrix_add_int_double(counts, prior);
+  Matrix* gamma_pnc = matrix_lgamma(pnc);
+  matrix_delete(pnc);
+  Matrix* gamma_prior = matrix_lgamma(prior);
+  Matrix* lu_mat matrix_double_subtract(gamma_pnc, gamma_prior);
+  matrix_delete(gamma_pnc);
+  matrix_delete(gamma_prior);
+  Matrix* LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
+  // run lgamma accross the new lU_mat
+  // delete the new one
+  // run gamma on prior
+  //sub from another
+  // sum 2 that
+
+  // N_ij sum2 counts
+
+  // LV gamma accross alpha_ij
+
+
+
   Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_display_double(alpha_ij);
 
