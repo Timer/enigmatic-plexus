@@ -103,7 +103,6 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
 
   // the index
   int index = 0;
-
   // calculate the length of the histogram array
   int total = matrix_prod(sz);
   // move from the bottom of the column to the top
@@ -116,12 +115,10 @@ int count_index(Matrix* sz, Matrix* sample_data, int col) {
   return index;
 }
 
-int matrix_element_n_dim_tony(Matrix *m, Matrix *ind, Matrix *dims) {
-  assert(m->rows * m->cols == matrix_prod(dims));
-  assert(ind->rows * ind-> cols == dims->rows * dims->cols);
-  int** ind_first = (int**) ind->data, ** dim_first = (int**) dims->data;
-  int index = **(ind_first++);
-  for (int i = 1, offset = 1; i < ind->rows * ind-> cols; ++i, offset *= **(dim_first++))
-    index += (offset * **(ind_first++));
-  return index;
+Matrix * compute_counts(Matrix* sample_data, Matrix* sz) {
+  int data_size = sample_data->rows * sample_data->cols;
+  Matrix * count = matrix_zeros(matrix_prod(sz), 1);
+   for (int i = 0; i < data_size; ++i)
+    *((int*) matrix_element_by_index(count, i)) += count_index(sz, sample_data, i);
+  return count;
 }

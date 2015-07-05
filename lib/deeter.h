@@ -8,3 +8,5 @@
 int count_index(Matrix* sz, Matrix* sample_data, int col);
 
 #endif
+
+Matrix * compute_counts(Matrix* sample_data, Matrix* sz);
