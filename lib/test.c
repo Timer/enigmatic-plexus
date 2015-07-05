@@ -165,8 +165,8 @@ int main(int argc, char* argv[]) {
   */
   Matrix* data = matrix_zeros(3, 6);
   *(int *) matrix_element_by_index(data, 0) = 2;
-  *(int *) matrix_element_by_index(data, 1) = 1;
-  *(int *) matrix_element_by_index(data, 2) = 1;
+  *(int *) matrix_element_by_index(data, 1) = 3;
+  *(int *) matrix_element_by_index(data, 2) = 4;
   *(int *) matrix_element_by_index(data, 3) = 1;
   *(int *) matrix_element_by_index(data, 4) = 3;
   *(int *) matrix_element_by_index(data, 5) = 2;
