@@ -39,8 +39,6 @@ int count_index(Matrix *sz, Matrix *sample_data, int col) {
 }
 
 Matrix * compute_counts(Matrix *data, Matrix *sz) {
-  matrix_display(data);
-  matrix_display(sz);
   assert(sz->rows == data->rows);
   Matrix *count = matrix_zeros(matrix_prod(sz), 1);
    for (int i = 0; i < data->cols; ++i) {
@@ -61,7 +59,7 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return 1; //score;
 }
 
-  CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
+CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
   Matrix *fam_sz = matrix_zeros(1, ps->count);
@@ -75,6 +73,8 @@ int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   list_delete(ps);
   matrix_scrap(calc);
   cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, (1 / psz) * (1 / (*(int*) matrix_element_by_index(ns, self))));
+
+
   return cpd;
 }
 

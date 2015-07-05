@@ -343,8 +343,8 @@ Matrix* matrix_add_int_double(Matrix* a, Matrix* b) {
 Matrix* matrix_create_sz(Matrix* matrix) {
   Matrix* r = matrix_zeros(matrix->rows, 1);
   for (int i = 0; i < matrix->rows; ++i) {
-    int max = 1, temp = 1;
-    for (int j = 0; j < matrix->cols; ++j) {
+    int max = 1;
+    for (int temp = 1, j = 0; j < matrix->cols; ++j) {
       temp = *(int*) matrix_element(matrix, i, j);
       max = max < temp ? temp : max;
     }
