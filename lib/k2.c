@@ -48,10 +48,14 @@ Matrix * compute_counts(Matrix *data, Matrix *sz) {
 }
 
 int log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
+  printf("log_marg_prob started\n");
   assert(self_ev->rows == 1);
   assert(cpd->sizes->rows == 1);
   assert(pev->cols == self_ev->cols);
   Matrix *data = matrix_sub_concat_rows(pev, self_ev);
+
+  matrix_display(data);
+
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
   //const int score = dirichlet_score_family(counts, cpd);
@@ -90,13 +94,14 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
     matrix_scrap(dag_sub);
     //TODO: sort `ps` here.
   }
-  matrix_display(dag);
+
   CPD *cpd;
   if (!strcmp(node_type, "tabular")) {
     cpd = tabular_CPD(dag, ns, j);
   } else {
     assert(1 == 2);
   }
+
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
     *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   int score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
@@ -183,7 +188,6 @@ int main(int argc, char **argv) {
   *(int *) matrix_element_by_index(data, 17) = 4;
 
   Matrix* sz = matrix_create_sz(data);
-
 
   Matrix* counts = compute_counts(data, sz);
   List* ps = list_empty();

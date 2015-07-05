@@ -212,6 +212,7 @@ Matrix * matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
     *n_data++ = *o_data++;
     if (i != 0 && i % o_rows == 0) n_data += rows->rows;
   }
+
   n_data = (int **) nm->data + matrix->rows;
   for (int i = 0, o_rows = matrix->rows, a_rows = rows->rows; i < rows->rows * rows->cols; ++i) {
     *n_data++ = *a_data++;
