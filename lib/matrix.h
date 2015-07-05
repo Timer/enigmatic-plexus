@@ -42,6 +42,7 @@ Matrix * matrix_from_list(List *l);
 Matrix* matrix_add(Matrix* a, Matrix* b);
 Matrix* matrix_add_double(Matrix* a, Matrix* b);
 Matrix* matrix_add_int_double(Matrix* a, Matrix* b);
+Matrix * matrix_sum_n_cols(Matrix *matrix, int cols);
 
 Matrix* matrix_create_sz(Matrix* matrix);
 

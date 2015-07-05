@@ -385,6 +385,15 @@ Matrix* matrix_add_int_double(Matrix* a, Matrix* b) {
   return r;
 }
 
+Matrix * matrix_sum_n_cols(Matrix *matrix, int cols) {
+  assert((matrix->rows * matrix->cols) % cols == 0);
+  Matrix *m = matrix_zeros((matrix->rows * matrix->cols) / cols, 1);
+  for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
+    *(int *) matrix_element_by_index(m, i % m->rows) += *(int *) matrix_element_by_index(matrix, i);
+  }
+  return m;
+}
+
 Matrix* matrix_create_sz(Matrix* matrix) {
   Matrix* r = matrix_zeros(matrix->rows, 1);
   for (int i = 0; i < matrix->rows; ++i) {
