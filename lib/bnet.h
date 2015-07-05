@@ -5,8 +5,7 @@
 #define BNET_H
 
 typedef struct {
-  Matrix *sizes;
-  int dirichlet;
+  Matrix *sizes, *dirichlet;
 } CPD;
 
 List * adjacency_matrix_parents(Matrix *adj_mat, int col);
