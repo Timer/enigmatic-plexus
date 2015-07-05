@@ -64,16 +64,22 @@ Matrix * mk_stochstic(int fam_sz){
 }
 
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
+  CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
-  /*
-  fam_sz = ns([ps self]);
-  CPD.sizes = fam_sz;
+  Matrix *fam_sz = matrix_zeros(1, ps->count + 1);
+  for (int i = 0; i <= ps->count; ++i) {
+    *(int *) matrix_element_by_index(fam_sz, i) = *(int *) matrix_element_by_index(dag, list_get_int(ps, i));
+  }
+  list_delete(ps);
+  cpd->sizes = fam_sz;
 
-  psz = prod(ns(ps));
-  dirichlet_weight = 1;
+  Matrix *calc = matrix_sub_indices(fam_sz, 0, 1, 0, ps->count);
+  int psz = matrix_prod(calc), dirichlet_weight = 1;
+  matrix_scrap(calc);
+  /*
   CPD.dirichlet = (dirichlet_weight/psz) * mk_stochastic(myones(fam_sz));
   */
-  return NULL;//TODO: this
+  return cpd;
 }
 
 int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data, void *args) {
@@ -95,6 +101,7 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
     *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   int score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
+  //TODO: scrap cpd
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
   return score;
