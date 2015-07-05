@@ -64,8 +64,8 @@ Matrix * mk_stochstic(int fam_sz){
 }
 
 CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self, void *args) {
+  List *ps = adjacency_matrix_parents(dag, self);
   /*
-  ps = parents(dag, self);
   fam_sz = ns([ps self]);
   CPD.sizes = fam_sz;
 
