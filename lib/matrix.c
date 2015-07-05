@@ -209,14 +209,13 @@ Matrix * matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
   int **o_data = (int **) matrix->data, **n_data = (int **) nm->data,
     **a_data = (int **) rows->data;
   for (int i = 0, o_rows = matrix->rows; i < matrix->rows * matrix->cols; ++i) {
-    *n_data++ = *o_data++;
     if (i != 0 && i % o_rows == 0) n_data += rows->rows;
+    *n_data++ = *o_data++;
   }
-
   n_data = (int **) nm->data + matrix->rows;
   for (int i = 0, o_rows = matrix->rows, a_rows = rows->rows; i < rows->rows * rows->cols; ++i) {
     *n_data++ = *a_data++;
-    if (i != 0 && i % a_rows == 0) n_data += o_rows;
+    if ((i != 0 || a_rows == 1) && i % a_rows == 0) n_data += o_rows;
   }
   return nm;
 }
