@@ -232,38 +232,4 @@ int main(int argc, char* argv[]) {
   Matrix* range = matrix_range(3, 9);
   matrix_display(range);
   printf("\n");
-
-  printf("\n == testing matrix_add == \n");
-
-  /* creating the following sz
-    [2][3][4]
-  */
-  Matrix* sz = matrix_zeros(1, 3);
-  *(int *) matrix_element_by_index(sz, 0) = 2;
-  *(int *) matrix_element_by_index(sz, 1) = 3;
-  *(int *) matrix_element_by_index(sz, 2) = 4;
-  matrix_display(data);
-  matrix_display(sz);
-
-  int count_index(Matrix *sz, Matrix *sample_data, int col) {
-    Matrix *mat_col = matrix_sub_col(sample_data, col);
-    int index = 0;
-    int **id = (int **) mat_col->data, **dd = (int **) sz->data;
-    for (int i = 0, m = 1; i < mat_col->rows * mat_col->cols; m *= *dd[i++]) {
-      assert((*id[i]) - 1 < *dd[i]);
-      index += ((*id[i]) - 1) * m;
-    }
-    return index;
-  }
-
-  Matrix * compute_counts(Matrix *data, Matrix *sz) {
-    assert(sz->cols == data->rows);
-    Matrix *count = matrix_zeros(matrix_prod(sz), 1);
-     for (int i = 0; i < data->cols; ++i) {
-      *((int*) matrix_element_by_index(count, count_index(sz, data, i))) += 1;
-    }
-    return count;
-  }
-
-  matrix_display(compute_counts(data, sz));
 }

@@ -132,10 +132,6 @@ int score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns,
   return score;
 }
 
-Matrix * matrix_sum_rows(Matrix* matrix, Matrix* sz) {
-
-}
-
 Matrix * learn_struct_K2(
   Matrix *data, Matrix *ns, List *order
 ) {

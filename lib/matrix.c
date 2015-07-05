@@ -5,6 +5,7 @@
 #include <limits.h>
 #include <float.h>
 #include <string.h>
+#include <math.h>
 
 // --- PRIVATE START
 int _matrix_index_for(Matrix *m, int row, int col) { return col * m->rows + row; }
