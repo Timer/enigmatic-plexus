@@ -6,9 +6,7 @@
 #include <float.h>
 
 // --- PRIVATE START
-int _matrix_index_for(Matrix *m, int row, int col) {
-  return col * m->rows + row;
-}
+int _matrix_index_for(Matrix *m, int row, int col) { return col * m->rows + row; }
 // --- PRIVATE END
 
 Matrix * matrix_raw(int rows, int cols) {
@@ -159,6 +157,25 @@ Matrix * matrix_sub_col(Matrix *matrix, int col) {
 
 Matrix * matrix_sub_row(Matrix *matrix, int row) {
   return matrix_sub_indices(matrix, row, row + 1, 0, matrix->cols);
+}
+
+Matrix * matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
+  assert(matrix->cols == rows->cols);
+  Matrix *nm = matrix_raw(matrix->rows + rows->rows, matrix->cols);
+  int **o_data = (int **) matrix->data, **n_data = (int **) nm->data,
+    **a_data = (int **) rows->data;
+  for (int r = 0; r < matrix->rows; ++r) {
+    for (int c = 0; c < matrix->cols; ++c) {
+      n_data[_matrix_index_for(nm, r, c)] = o_data[_matrix_index_for(matrix, r, c)];
+    }
+  }
+  for (int r = 0; r < rows->rows; ++r) {
+    for (int c = 0; c < rows->cols; ++c) {
+      n_data[_matrix_index_for(nm, matrix->rows + r, matrix->cols + c)] =
+        a_data[_matrix_index_for(matrix, r, c)];
+    }
+  }
+  return nm;
 }
 
 List * matrix_find_by_value(Matrix *matrix, int value) {
