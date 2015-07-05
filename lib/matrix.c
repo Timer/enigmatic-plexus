@@ -257,6 +257,14 @@ Matrix * matrix_from_array(int rows, int cols, int arr[]) {
   return m;
 }
 
+Matrix * matrix_from_list(List *l) {
+  Matrix *m = matrix_zeros(l->count, 1);
+  for (int i = 0; i < l->count; ++i) {
+    *(int *) matrix_element_by_index(m, i) = list_get_int(l, i);
+  }
+  return m;
+}
+
 void matrix_max_delete(MatrixMax *matrix_max) {
   list_delete(matrix_max->values);
   list_delete(matrix_max->rows);
