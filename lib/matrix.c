@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <float.h>
+#include <string.h>
 
 // --- PRIVATE START
 int _matrix_index_for(Matrix *m, int row, int col) { return col * m->rows + row; }
@@ -61,6 +62,49 @@ Matrix * matrix_range(int from, int to) {
     *((int *) matrix_element_by_index(matrix, i - from)) = i;
   }
   return matrix;
+}
+
+Matrix * matrix_from_file(char *file) {
+  FILE *f = fopen(file, "r");
+  assert(f != NULL);
+  char num[11] = "";
+  char c;
+  int lc = 0, rows = 0, cols = 0;
+  List *l_rows = list_empty();
+  List *nums = list_empty();
+  while ((c = fgetc(f)) != EOF) {
+    assert(c == ',' || c == '\n' || (c >= '0' && c <= '9'));
+    if (c == ',' || c == '\n') {
+      assert(strlen(num) > 0);
+      int val;
+      sscanf(num, "%d", &val);
+      list_push_int(nums, val);
+      num[0] = '\0';
+      ++cols;
+      if (c == '\n') {
+        ++rows;
+        list_push(l_rows, nums);
+        nums = list_empty();
+        if (lc != 0) assert(cols == lc);
+        lc = cols;
+        cols = 0;
+      }
+    } else {
+      char s[2] = {c, '\0'};
+      strcat(num, s);
+    }
+  }
+  fclose(f);
+  Matrix *m = matrix_zeros(l_rows->count, lc);
+  for (int r = 0; r < l_rows->count; ++r) {
+    List *cv = list_get(l_rows, r);
+    for (int c = 0; c < lc; ++c) {
+      *(int *) matrix_element(m, r, c) = list_get_int(cv, c);
+    }
+    list_delete(cv);
+  }
+  list_scrap(l_rows);
+  return m;
 }
 
 void * matrix_element(Matrix *matrix, int row, int col) {
