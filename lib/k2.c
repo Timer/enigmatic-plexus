@@ -138,11 +138,11 @@ Matrix * learn_struct_K2(
       List *pps = difference_type_int(order_sub, ps);
       list_scrap(order_sub);
       int nps = pps->count;
-      Matrix *pscore = matrix_zeros(1, nps);
+      Matrix *pscore = matrix_double_zeros(1, nps);
       for (int pi = 0; pi < nps; ++pi) {
         int p = list_get_int(pps, pi);
         int n_index = list_push_int(ps, p);
-        *((int *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data);
+        *((double *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data);
         free(list_remove(ps, n_index));
       }
       MatrixMax *mm = matrix_double_max(pscore);
@@ -151,7 +151,8 @@ Matrix * learn_struct_K2(
         list_scrap(pps);
         break;
       }
-      int best_pscore = list_get_int(mm->values, 0), best_p = list_get_int(mm->rows, 0);
+      double best_pscore = list_get_double(mm->values, 0), best_p = list_get_double(mm->rows, 0);
+      printf("best pscore: %f\n", best_pscore);
       matrix_max_delete(mm);
       best_p = list_get_int(pps, best_p);
       list_scrap(pps);
