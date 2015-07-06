@@ -147,7 +147,6 @@ Matrix * learn_struct_K2(
         free(list_remove(ps, n_index));
       }
       double best_pscore = -DBL_MAX;
-      printf("best score: %f\n", best_pscore);
       int best_p = -1;
       for (int i = 0; i < nps; ++i) {
         double d = *(double *) matrix_element_by_index(pscore, i);
@@ -156,6 +155,7 @@ Matrix * learn_struct_K2(
           best_p = i;
         }
       }
+      printf("best score: %f\n", best_pscore);
       if (best_p == -1) {
         list_scrap(pps);
         break;
