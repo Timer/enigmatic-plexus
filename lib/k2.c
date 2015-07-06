@@ -8,41 +8,33 @@
 #include "bnet.h"
 
 double dirichlet_score_family(Matrix *counts, CPD* cpd) {
-  Matrix* ns = cpd->sizes;
-  Matrix* ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
-  Matrix* prior = cpd->dirichlet;
-
-  Matrix* pnc = matrix_add_int_double(counts, prior);
-  Matrix* gamma_pnc = matrix_lgamma(pnc);
+  Matrix *ns = cpd->sizes, *prior = cpd->dirichlet;
+  Matrix *ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
+  Matrix *pnc = matrix_add_int_double(counts, prior);
+  Matrix *gamma_pnc = matrix_lgamma(pnc), *gamma_prior = matrix_lgamma(prior);
   matrix_delete(pnc);
-  Matrix* gamma_prior = matrix_lgamma(prior);
-  Matrix* lu_mat = matrix_double_subtract(gamma_pnc, gamma_prior);
+  Matrix *lu_mat = matrix_double_subtract(gamma_pnc, gamma_prior);
   matrix_delete(gamma_pnc);
   matrix_delete(gamma_prior);
-  Matrix* LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
+  Matrix *LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_delete(lu_mat);
-
   Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
-  Matrix* N_ij = matrix_sum_n_cols_double(counts, *(int*) matrix_element_by_index(ns_self, 0));\
+  Matrix* N_ij = matrix_sum_n_cols_double(counts, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_scrap(ns_self);
-
-  Matrix* gamma_alpha = matrix_lgamma(alpha_ij);
-
-  Matrix* alpha_N = matrix_add_int_double(N_ij, alpha_ij);
-  matrix_delete(alpha_ij);
+  Matrix *gamma_alpha = matrix_lgamma(alpha_ij);
+  Matrix *alpha_N = matrix_add_int_double(N_ij, alpha_ij);
   matrix_delete(N_ij);
-
-  Matrix* gamma_alpha_N = matrix_lgamma(alpha_N);
+  matrix_delete(alpha_ij);
+  Matrix *gamma_alpha_N = matrix_lgamma(alpha_N);
   matrix_delete(alpha_N);
-
-  Matrix* LV = matrix_double_subtract(gamma_alpha, gamma_alpha_N);
+  Matrix *LV = matrix_double_subtract(gamma_alpha, gamma_alpha_N);
   matrix_delete(gamma_alpha);
   matrix_delete(gamma_alpha_N);
-
-  Matrix* LU_LV = matrix_add_double(LU, LV);
+  Matrix *LU_LV = matrix_add_double(LU, LV);
+  matrix_delete(LU);
+  matrix_delete(LV);
   double score = matrix_sum_double(LU_LV);
   matrix_delete(LU_LV);
-
   return score;
 }
 
