@@ -186,16 +186,13 @@ int main(int argc, char **argv) {
     }
     fprintf(csv, "\n");
     fclose(csv);
-    
+
     matrix_delete(bnet);
     list_delete(order);
     matrix_scrap(m_order);
   }
 
-
   printf("Wrote networks to %s\n", argv[3]);
-
-
   matrix_delete(orders);
   matrix_delete(sz);
   matrix_delete(data);
