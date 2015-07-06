@@ -422,7 +422,7 @@ Matrix * matrix_sum_n_cols(Matrix *matrix, int cols) {
 
 Matrix * matrix_sum_n_cols_double(Matrix *matrix, int cols) {
   assert((matrix->rows * matrix->cols) % cols == 0);
-  Matrix *m = matrix_zeros((matrix->rows * matrix->cols) / cols, 1);
+  Matrix *m = matrix_double_zeros((matrix->rows * matrix->cols) / cols, 1);
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
     *(double *) matrix_element_by_index(m, i % m->rows) += *(double *) matrix_element_by_index(matrix, i);
   }
