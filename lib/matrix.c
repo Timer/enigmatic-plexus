@@ -258,47 +258,6 @@ List * matrix_double_find_by_value(Matrix *matrix, double value) {
   return list;
 }
 
-MatrixMax * matrix_max(Matrix *matrix) {
-  MatrixMax *max = malloc(sizeof(MatrixMax));
-  max->cols = matrix->cols;
-  max->values = list_empty();
-  max->rows = list_empty();
-  for (int c = 0; c < matrix->cols; ++c) {
-    int largest = INT_MIN, largest_row = -1;
-    for (int r = 0; r < matrix->rows; ++r) {
-      int val = *((int *) matrix_element(matrix, r, c));
-      if (val > largest) {
-        largest = val;
-        largest_row = r;
-      }
-    }
-    list_push_int(max->values, largest);
-    list_push_int(max->rows, largest_row);
-  }
-  return max;
-}
-
-MatrixMax * matrix_double_max(Matrix *matrix) {
-  MatrixMax *max = malloc(sizeof(MatrixMax));
-  max->cols = matrix->cols;
-  max->values = list_empty();
-  max->rows = list_empty();
-  for (int c = 0; c < matrix->cols; ++c) {
-    double largest = -DBL_MAX;
-    int largest_row = -1;
-    for (int r = 0; r < matrix->rows; ++r) {
-      double val = *((double *) matrix_element(matrix, r, c));
-      if (val > largest) {
-        largest = val;
-        largest_row = r;
-      }
-    }
-    list_push_double(max->values, largest);
-    list_push_int(max->rows, largest_row);
-  }
-  return max;
-}
-
 List * matrix_to_list(Matrix *matrix) {
   List *l = list_empty();
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) list_push_int(l, *((int *) matrix_element_by_index(matrix, i)));
@@ -325,12 +284,6 @@ Matrix * matrix_from_list(List *l) {
     *(int *) matrix_element_by_index(m, i) = list_get_int(l, i);
   }
   return m;
-}
-
-void matrix_max_delete(MatrixMax *matrix_max) {
-  list_delete(matrix_max->values);
-  list_delete(matrix_max->rows);
-  free(matrix_max);
 }
 
 void matrix_delete(Matrix *matrix) {

@@ -77,24 +77,6 @@ void test_helpers() {
   assert(list_get_int(l, 1) == 11);
   list_delete(l);
 
-  puts("Testing matrix max ...");
-  MatrixMax *mm = matrix_max(m);
-  assert(mm->cols == 4);
-  assert(mm->values->count == 4 && mm->rows->count == 4);
-  assert(
-    list_get_int(mm->values, 0) == 10 &&
-    list_get_int(mm->values, 1) == 10 &&
-    list_get_int(mm->values, 2) == 10 &&
-    list_get_int(mm->values, 3) == 18
-  );
-  assert(
-    list_get_int(mm->rows, 0) == 0 &&
-    list_get_int(mm->rows, 1) == 0 &&
-    list_get_int(mm->rows, 2) == 0 &&
-    list_get_int(mm->rows, 3) == 1
-  );
-  matrix_max_delete(mm);
-
   puts("Testing matrix_prod ...");
   matrix_set(m, 2);
   assert(matrix_prod(m) == 4096);

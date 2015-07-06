@@ -8,11 +8,6 @@ typedef struct {
   void **data;
 } Matrix;
 
-typedef struct {
-  int cols;
-  List *values, *rows;
-} MatrixMax;
-
 Matrix * matrix_zeros(int rows, int cols);
 Matrix * matrix_create(int rows, int cols, int value);
 Matrix * matrix_double_zeros(int rows, int cols);
@@ -35,8 +30,6 @@ Matrix * matrix_sub_row(Matrix *matrix, int row);
 Matrix * matrix_sub_concat_rows(Matrix *matrix, Matrix *rows);
 List * matrix_find_by_value(Matrix *matrix, int value);
 List * matrix_double_find_by_value(Matrix *matrix, double value);
-MatrixMax * matrix_max(Matrix *matrix);
-MatrixMax * matrix_double_max(Matrix *matrix);
 List * matrix_to_list(Matrix *matrix);
 List * matrix_double_to_list(Matrix *matrix);
 Matrix * matrix_from_array(int rows, int cols, int arr[]);
@@ -50,7 +43,6 @@ Matrix * matrix_double_subtract(Matrix *m1, Matrix *m2);
 Matrix * matrix_lgamma(Matrix *m);
 Matrix* matrix_create_sz(Matrix *matrix);
 
-void matrix_max_delete(MatrixMax *matrix_max);
 void matrix_delete(Matrix *matrix);
 void matrix_scrap(Matrix *matrix);
 

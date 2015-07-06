@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <float.h>
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
@@ -150,16 +151,20 @@ Matrix * learn_struct_K2(
         printf("new score: %f\n", *((double *) matrix_element_by_index(pscore, pi)));
         free(list_remove(ps, n_index));
       }
-      MatrixMax *mm = matrix_double_max(pscore);
-      if (mm->cols < 1) {
-        matrix_max_delete(mm);
+      double best_pscore = -DBL_MAX;
+      int best_p = -1;
+      for (int i = 0; i < nps; ++i) {
+        double d = *(double *) matrix_element_by_index(pscore, i);
+        if (d > best_pscore) {
+          best_pscore = d;
+          best_p = i;
+        }
+      }
+      if (best_p == -1) {
         list_scrap(pps);
         break;
       }
-      assert(mm->cols == 1);
-      double best_pscore = list_get_double(mm->values, 0), best_p = list_get_double(mm->rows, 0);
       printf("best pscore: %f\n", best_pscore);
-      matrix_max_delete(mm);
       best_p = list_get_int(pps, best_p);
       list_scrap(pps);
       if (best_pscore > score) {
