@@ -82,7 +82,7 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   cpd->sizes = fam_sz;
   Matrix *calc = matrix_sub_indices(fam_sz, 0, ps->count - 1, 0, 1);
 
-  int psz = matrix_prod(calc), dirichlet_weight = 1;
+  int psz = matrix_prod(calc);
   list_delete(ps);
   matrix_scrap(calc);
   cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, (1.0 / psz) * (1.0 / *(int *) matrix_element_by_index(ns, self)));
@@ -91,7 +91,6 @@ CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
 }
 
 double score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
-  int n = data->rows, ncases = data->cols;
   Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
     Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
@@ -120,7 +119,7 @@ Matrix * learn_struct_K2(
   Matrix *data, Matrix *ns, List *order
 ) {
   assert(order->count == data->rows);
-  int n = data->rows, ncases = data->cols;
+  int n = data->rows;
   int max_fan_in = n;
   char *type = "tabular";
   char *scoring_fn = "bayesian";
@@ -136,7 +135,6 @@ Matrix * learn_struct_K2(
     for (; ps->count <= max_fan_in ;) {
       List *order_sub = list_slice(order, 0, i);
       List *pps = difference_type_int(order_sub, ps);
-      Matrix* temp_pps = matrix_from_list(pps);
       list_scrap(order_sub);
       int nps = pps->count;
       Matrix *pscore = matrix_double_zeros(1, nps);
@@ -178,22 +176,5 @@ Matrix * learn_struct_K2(
 }
 
 int main(int argc, char **argv) {
-
-  Matrix* data = matrix_from_file("test3.csv");
-  Matrix* sz = matrix_create_sz(data);
-/*
-  List* ps = list_empty();
-  Matrix* order = matrix_range(0, data->rows - 1);
-  List* discrete = matrix_to_list(dis);
-
-  double score = score_family(2, ps, "tabular", "bayesian", sz, discrete, data);
-  printf("%f\n", score);
-  */
-  Matrix* order_m = matrix_range(0, data->rows - 1);
-  List * order = matrix_to_list(order_m);
-  for (int i = 0; i < 150; ++i) {
-    Matrix * dag = learn_struct_K2(data, sz, order);
-  }
-  //matrix_display(dag);
   return 0;
 }
