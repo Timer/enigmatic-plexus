@@ -10,7 +10,7 @@ echo "Compiling..."
 if [ $OS == "Darwin" ]; then
   CC=gcc-5
 fi
-rm *.out
+rm $(find . -name \*.out)
 $CC -c $(find . -name \*.c)
 echo "Building..."
 $CC $(find . -name \*.o -not -name k2.o) -o test.out
