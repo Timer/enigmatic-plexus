@@ -133,6 +133,7 @@ Matrix * learn_struct_K2(
     List *ps = list_empty();
     int j = list_get_int(order, i);
     double score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
+    printf("Initial Score: %f\n", score);
     for (; ps->count <= max_fan_in ;) {
       List *order_sub = list_slice(order, 0, i - 1);
       List *pps = difference_type_int(order_sub, ps);
