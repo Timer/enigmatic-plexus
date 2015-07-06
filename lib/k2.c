@@ -20,7 +20,7 @@ double dirichlet_score_family(Matrix *counts, CPD* cpd) {
   Matrix *LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_delete(lu_mat);
   Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
-  Matrix* N_ij = matrix_sum_n_cols_double(counts, *(int*) matrix_element_by_index(ns_self, 0));
+  Matrix* N_ij = matrix_sum_n_cols(counts, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_scrap(ns_self);
   Matrix *gamma_alpha = matrix_lgamma(alpha_ij);
   Matrix *alpha_N = matrix_add_int_double(N_ij, alpha_ij);
@@ -64,7 +64,6 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   assert(cpd->sizes->cols == 1);
   assert(pev->cols == self_ev->cols);
   Matrix *data = matrix_sub_concat_rows(pev, self_ev);
-
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
   const double score = dirichlet_score_family(counts, cpd);
@@ -134,15 +133,12 @@ Matrix * learn_struct_K2(
     List *ps = list_empty();
     int j = list_get_int(order, i);
     double score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
-    printf("Initial Score: %f\n", score);
     for (; ps->count <= max_fan_in ;) {
       List *order_sub = list_slice(order, 0, i);
       List *pps = difference_type_int(order_sub, ps);
       Matrix* temp_pps = matrix_from_list(pps);
-      matrix_display(temp_pps);
       list_scrap(order_sub);
       int nps = pps->count;
-      printf("nps: %d\n", nps);
       Matrix *pscore = matrix_double_zeros(1, nps);
       for (int pi = 0; pi < nps; ++pi) {
         int p = list_get_int(pps, pi);
@@ -164,7 +160,6 @@ Matrix * learn_struct_K2(
         list_scrap(pps);
         break;
       }
-      printf("best pscore: %f\n", best_pscore);
       best_p = list_get_int(pps, best_p);
       list_scrap(pps);
       if (best_pscore > score) {
