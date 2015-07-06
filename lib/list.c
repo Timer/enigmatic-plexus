@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <assert.h>
+#include <stdio.h>
 
 List * list_empty() {
   List *list = malloc(sizeof(List));
@@ -101,6 +102,7 @@ List * difference_type_int(List *primary, List *secondary) {
 
 void list_delete(List *list) {
   for (int i = 0; i < list->size; ++i) {
+    if (list->arr[i] == NULL) continue;
     free(list->arr[i]);
   }
   list_scrap(list);
