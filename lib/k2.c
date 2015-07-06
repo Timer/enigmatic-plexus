@@ -129,7 +129,6 @@ Matrix * learn_struct_K2(
 
   Matrix *dag = matrix_zeros(n, n);
 
-  printf("here\n");
   for (int i = 0; i < n; ++i) {
     List *ps = list_empty();
     int j = list_get_int(order, i);
@@ -147,7 +146,11 @@ Matrix * learn_struct_K2(
         free(list_remove(ps, n_index));
       }
       MatrixMax *mm = matrix_double_max(pscore);
-      assert(mm->cols == 1);
+      if (mm->cols < 1) {
+        matrix_max_delete(mm);
+        list_scrap(pps);
+        break;
+      }
       int best_pscore = list_get_int(mm->values, 0), best_p = list_get_int(mm->rows, 0);
       matrix_max_delete(mm);
       best_p = list_get_int(pps, best_p);
