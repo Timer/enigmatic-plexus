@@ -2,6 +2,11 @@
 cd $(dirname "$0")
 CC=gcc
 OS=`uname`
+if hash clang-format 2>/dev/null; then
+  echo "Linting..."
+  clang-format -i *.c
+  clang-format -i *.h
+fi
 echo "Compiling..."
 if [ $OS == "Darwin" ]; then
   CC=gcc-5
