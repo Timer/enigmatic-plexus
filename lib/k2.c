@@ -172,6 +172,9 @@ int main(int argc, char **argv) {
   Matrix *data = matrix_from_file(argv[1]), *sz = matrix_create_sz(data);
   Matrix *orders = matrix_from_file(argv[2]);
 
+  int out_csv_row_count = data->rows;
+  int out_csv_row_count_sq = out_csv_row_count * out_csv_row_count;
+
   FILE *csv = fopen(argv[3], "w");
   fclose(csv);
 
@@ -179,12 +182,16 @@ int main(int argc, char **argv) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
-
     csv = fopen(argv[3], "a");
-    for (int i = 0; i < bnet->rows * bnet->cols; ++i) {
+    fprintf(csv, "%d:", bnet->rows);
+    for (int i = 0; i < out_csv_row_count - 1; ++i) {
+      fprintf(csv, "%d,", *(int *) matrix_element_by_index(m_order, i));
+    }
+    fprintf(csv, "%d:", *(int *) matrix_element_by_index(m_order, out_csv_row_count - 1));
+    for (int i = 0; i < out_csv_row_count_sq - 1; ++i) {
       fprintf(csv, "%d,", *(int *) matrix_element_by_index(bnet, i));
     }
-    fprintf(csv, "\n");
+    fprintf(csv, "%d\n", *(int *) matrix_element_by_index(bnet, out_csv_row_count_sq - 1));
     fclose(csv);
 
     matrix_delete(bnet);
