@@ -172,21 +172,21 @@ int main(int argc, char **argv) {
   Matrix *data = matrix_from_file(argv[1]), *sz = matrix_create_sz(data);
   Matrix *orders = matrix_from_file(argv[2]);
 
-
-  //Matrix *cn = matrix_zeros(data->rows, data->rows);
   FILE *csv = fopen(argv[3], "w");
   fclose(csv);
+
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
 
     csv = fopen(argv[3], "a");
-    for (int i = 0; i < bnet->rows * bnet->cols; ++i)
+    for (int i = 0; i < bnet->rows * bnet->cols; ++i) {
       fprintf(csv, "%d,", *(int *) matrix_element_by_index(bnet, i));
+    }
     fprintf(csv, "\n");
-
-
+    fclose(csv);
+    
     matrix_delete(bnet);
     list_delete(order);
     matrix_scrap(m_order);
