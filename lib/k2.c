@@ -128,10 +128,12 @@ Matrix * learn_struct_K2(
   for (int i = 0; i < n; ++i) list_push_int(discrete, i);
 
   Matrix *dag = matrix_zeros(n, n);
+
+  printf("here\n");
   for (int i = 0; i < n; ++i) {
     List *ps = list_empty();
     int j = list_get_int(order, i);
-    int score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
+    double score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
     for (; ps->count <= max_fan_in ;) {
       List *order_sub = list_slice(order, 0, i - 1);
       List *pps = difference_type_int(order_sub, ps);
@@ -144,7 +146,7 @@ Matrix * learn_struct_K2(
         *((int *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data);
         free(list_remove(ps, n_index));
       }
-      MatrixMax *mm = matrix_max(pscore);
+      MatrixMax *mm = matrix_double_max(pscore);
       assert(mm->cols == 1);
       int best_pscore = list_get_int(mm->values, 0), best_p = list_get_int(mm->rows, 0);
       matrix_max_delete(mm);
@@ -167,36 +169,18 @@ Matrix * learn_struct_K2(
 
 int main(int argc, char **argv) {
 
-  Matrix* data = matrix_zeros(3, 6);
-  *(int *) matrix_element_by_index(data, 0) = 2;
-  *(int *) matrix_element_by_index(data, 1) = 3;
-  *(int *) matrix_element_by_index(data, 2) = 4;
-  *(int *) matrix_element_by_index(data, 3) = 1;
-  *(int *) matrix_element_by_index(data, 4) = 3;
-  *(int *) matrix_element_by_index(data, 5) = 2;
-  *(int *) matrix_element_by_index(data, 6) = 2;
-  *(int *) matrix_element_by_index(data, 7) = 1;
-  *(int *) matrix_element_by_index(data, 8) = 2;
-  *(int *) matrix_element_by_index(data, 9) = 1;
-  *(int *) matrix_element_by_index(data, 10) = 2;
-  *(int *) matrix_element_by_index(data, 11) = 4;
-  *(int *) matrix_element_by_index(data, 12) = 1;
-  *(int *) matrix_element_by_index(data, 13) = 2;
-  *(int *) matrix_element_by_index(data, 14) = 1;
-  *(int *) matrix_element_by_index(data, 15) = 2;
-  *(int *) matrix_element_by_index(data, 16) = 3;
-  *(int *) matrix_element_by_index(data, 17) = 4;
-
+  Matrix* data = matrix_from_file("test1.csv");
   Matrix* sz = matrix_create_sz(data);
-
-  Matrix* counts = compute_counts(data, sz);
+/*
   List* ps = list_empty();
-  list_push_int(ps, 0);
-  list_push_int(ps, 1);
-  Matrix* dis = matrix_range(0, 2);
+  Matrix* order = matrix_range(0, data->rows - 1);
   List* discrete = matrix_to_list(dis);
 
   double score = score_family(2, ps, "tabular", "bayesian", sz, discrete, data);
   printf("%f\n", score);
+  */
+  Matrix* order_m = matrix_range(0, data->rows - 1);
+  List * order = matrix_to_list(order_m);
+  Matrix * dag = learn_struct_K2(data, sz, order);
   return 0;
 }
