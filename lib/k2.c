@@ -185,5 +185,6 @@ int main(int argc, char **argv) {
   Matrix* order_m = matrix_range(0, data->rows - 1);
   List * order = matrix_to_list(order_m);
   Matrix * dag = learn_struct_K2(data, sz, order);
+  matrix_display(dag);
   return 0;
 }
