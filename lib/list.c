@@ -74,6 +74,7 @@ void * list_remove(List *list, int index) {
   if (list->count - index > 0) {
     memmove(list->arr + index, list->arr + index + 1, (list->count - index) * sizeof(void *));
   }
+  list->arr[list->count] = NULL;
   return ptr;
 }
 
