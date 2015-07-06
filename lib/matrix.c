@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <limits.h>
-#include <float.h>
 #include <string.h>
 #include <math.h>
 
