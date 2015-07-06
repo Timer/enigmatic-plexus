@@ -68,6 +68,11 @@ int list_get_int(List *list, int index) {
   return *((int *) ((list->arr)[index]));
 }
 
+int list_get_double(List *list, int index) {
+  assert(index < list->count);
+  return *((double *) ((list->arr)[index]));
+}
+
 void * list_remove(List *list, int index) {
   assert(index < list->count--);
   void *ptr = (list->arr)[index];
