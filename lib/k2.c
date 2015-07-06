@@ -155,11 +155,11 @@ Matrix * learn_struct_K2(
           best_p = i;
         }
       }
-      printf("best score: %f\n", best_pscore);
       if (best_p == -1) {
         list_scrap(pps);
         break;
       }
+      printf("best score: %f\n", best_pscore);
       best_p = list_get_int(pps, best_p);
       list_scrap(pps);
       if (best_pscore > score) {
