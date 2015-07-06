@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 cd $(dirname "$0")
 CC=gcc
 OS=`uname`
@@ -10,8 +10,8 @@ echo "Compiling..."
 if [ $OS == "Darwin" ]; then
   CC=gcc-5
 fi
-rm $(find . -name \*.out)
-$CC -c $(find . -name \*.c)
+rm *.out
+$CC -lm -c $(find . -name \*.c)
 echo "Building..."
 $CC $(find . -name \*.o -not -name k2.o) -o test.out
 $CC $(find . -name \*.o -not -name test.o) -o k2.out
