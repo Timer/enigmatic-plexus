@@ -19,7 +19,7 @@ double dirichlet_score_family(Matrix *counts, CPD* cpd) {
   Matrix *LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_delete(lu_mat);
   Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
-  Matrix* N_ij = matrix_sum_n_cols(counts, *(int*) matrix_element_by_index(ns_self, 0));
+  Matrix* N_ij = matrix_sum_n_cols_double(counts, *(int*) matrix_element_by_index(ns_self, 0));
   matrix_scrap(ns_self);
   Matrix *gamma_alpha = matrix_lgamma(alpha_ij);
   Matrix *alpha_N = matrix_add_int_double(N_ij, alpha_ij);
@@ -135,8 +135,10 @@ Matrix * learn_struct_K2(
     double score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
     printf("Initial Score: %f\n", score);
     for (; ps->count <= max_fan_in ;) {
-      List *order_sub = list_slice(order, 0, i - 1);
+      List *order_sub = list_slice(order, 0, i);
       List *pps = difference_type_int(order_sub, ps);
+      Matrix* temp_pps = matrix_from_list(pps);
+      matrix_display(temp_pps);
       list_scrap(order_sub);
       int nps = pps->count;
       printf("nps: %d\n", nps);
