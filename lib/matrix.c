@@ -388,7 +388,7 @@ Matrix* matrix_add(Matrix* a, Matrix* b) {
 Matrix* matrix_add_double(Matrix* a, Matrix* b) {
   assert(a->rows == b->rows);
   assert(a->cols == b->cols);
-  Matrix* r = matrix_zeros(a->rows, a->cols);
+  Matrix* r = matrix_double_zeros(a->rows, a->cols);
   double** ad = (double**) a->data, ** bd = (double**) b->data, ** rd = (double**) r->data;
   for (int i = 0; i < a->rows * a->cols; ++i)
     *rd[i] = *ad[i] + *bd[i];
