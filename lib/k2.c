@@ -81,16 +81,14 @@ CPD *tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   }
   cpd->sizes = fam_sz;
   Matrix *calc = matrix_sub_indices(fam_sz, 0, ps->count - 1, 0, 1);
-
   int psz = matrix_prod(calc);
   list_delete(ps);
   matrix_scrap(calc);
   cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, (1.0 / psz) * (1.0 / *(int *) matrix_element_by_index(ns, self)));
-
   return cpd;
 }
 
-double score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *ns, List *discrete, Matrix *data) {
+double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data) {
   Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
     Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
@@ -98,14 +96,7 @@ double score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *
     matrix_scrap(dag_sub);
     //TODO: sort `ps` here.
   }
-
-  CPD *cpd;
-  if (!strcmp(node_type, "tabular")) {
-    cpd = tabular_CPD(dag, ns, j);
-  } else {
-    assert(1 == 2);
-  }
-
+  CPD *cpd = tabular_CPD(dag, ns, j);
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
          *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   double score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
@@ -115,13 +106,10 @@ double score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *
   return score;
 }
 
-Matrix *learn_struct_K2(
-    Matrix *data, Matrix *ns, List *order) {
+Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   assert(order->count == data->rows);
   int n = data->rows;
   int max_fan_in = n;
-  char *type = "tabular";
-  char *scoring_fn = "bayesian";
   List *discrete = list_empty();
   for (int i = 0; i < n; ++i) list_push_int(discrete, i);
 
@@ -130,7 +118,7 @@ Matrix *learn_struct_K2(
   for (int i = 0; i < n; ++i) {
     List *ps = list_empty();
     int j = list_get_int(order, i);
-    double score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
+    double score = score_family(j, ps, ns, discrete, data);
     for (; ps->count <= max_fan_in;) {
       List *order_sub = list_slice(order, 0, i);
       List *pps = difference_type_int(order_sub, ps);
@@ -140,7 +128,7 @@ Matrix *learn_struct_K2(
       for (int pi = 0; pi < nps; ++pi) {
         int p = list_get_int(pps, pi);
         int n_index = list_push_int(ps, p);
-        *((double *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data);
+        *((double *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, ns, discrete, data);
         free(list_remove(ps, n_index));
       }
       double best_pscore = -DBL_MAX;
@@ -156,14 +144,14 @@ Matrix *learn_struct_K2(
         list_scrap(pps);
         break;
       }
-      //printf("best score: %f\n", best_pscore);
       best_p = list_get_int(pps, best_p);
       list_scrap(pps);
       if (best_pscore > score) {
         score = best_pscore;
         list_push_int(ps, best_p);
-      } else
+      } else {
         break;
+      }
     }
     if (ps->count > 0) {
       Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
@@ -176,5 +164,9 @@ Matrix *learn_struct_K2(
 }
 
 int main(int argc, char **argv) {
+  Matrix *data = matrix_from_file(argv[1]);
+  Matrix *orders = matrix_from_file(argv[2]);
+  matrix_delete(orders);
+  matrix_delete(data);
   return 0;
 }
