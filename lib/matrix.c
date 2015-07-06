@@ -119,9 +119,9 @@ void *matrix_element_by_index(Matrix *matrix, int index) {
 }
 
 void matrix_set(Matrix *matrix, int value) {
-  void **data = matrix->data;
+  int **data = (int **) matrix->data;
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
-    *((int *) (matrix->data)[i]) = value;
+    *data[i] = value;
   }
 }
 
@@ -153,9 +153,9 @@ double matrix_sum_double(Matrix *matrix) {
 }
 
 void matrix_dobule_set(Matrix *matrix, int value) {
-  void **data = matrix->data;
+  double **data = (double **) matrix->data;
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
-    *((double *) (matrix->data)[i]) = value;
+    *data[i] = value;
   }
 }
 
