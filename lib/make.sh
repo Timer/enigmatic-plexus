@@ -4,8 +4,7 @@ CC=gcc
 OS=`uname`
 if command -v clang-format >/dev/null 2>&1; then
   echo "Linting..."
-  clang-format -i *.c
-  clang-format -i *.h
+  clang-format -i *.c *.h
 fi
 echo "Compiling..."
 if [ $OS == "Darwin" ]; then
