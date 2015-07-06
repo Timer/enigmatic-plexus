@@ -179,7 +179,7 @@ Matrix * learn_struct_K2(
 
 int main(int argc, char **argv) {
 
-  Matrix* data = matrix_from_file("test1.csv");
+  Matrix* data = matrix_from_file("test2.csv");
   Matrix* sz = matrix_create_sz(data);
 /*
   List* ps = list_empty();
