@@ -144,10 +144,10 @@ Matrix * learn_struct_K2(
         int p = list_get_int(pps, pi);
         int n_index = list_push_int(ps, p);
         *((double *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, type, scoring_fn, ns, discrete, data);
-        printf("new score: %f\n", *((double *) matrix_element_by_index(pscore, pi)));
         free(list_remove(ps, n_index));
       }
       double best_pscore = -DBL_MAX;
+      printf("best score: %f\n", best_pscore);
       int best_p = -1;
       for (int i = 0; i < nps; ++i) {
         double d = *(double *) matrix_element_by_index(pscore, i);
