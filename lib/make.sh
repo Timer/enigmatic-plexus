@@ -2,7 +2,7 @@
 cd $(dirname "$0")
 CC=gcc
 OS=`uname`
-if hash clang-format 2>/dev/null; then
+if command -v clang-format >/dev/null 2>&1; then
   echo "Linting..."
   clang-format -i *.c
   clang-format -i *.h
