@@ -11,8 +11,8 @@ if [ $OS == "Darwin" ]; then
   CC=gcc-5
 fi
 rm *.out
-$CC -lm -c $(find . -name \*.c)
+$CC -std=c99 -c $(find . -name \*.c) -lm
 echo "Building..."
-$CC $(find . -name \*.o -not -name k2.o) -o test.out
-$CC $(find . -name \*.o -not -name test.o) -o k2.out
+$CC -std=c99 $(find . -name \*.o -not -name k2.o) -o test.out -lm
+$CC -std=c99 $(find . -name \*.o -not -name test.o) -o k2.out -lm
 rm $(find . -name \*.o)
