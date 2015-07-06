@@ -114,9 +114,8 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   for (int i = 0; i < n; ++i) list_push_int(discrete, i);
 
   Matrix *dag = matrix_zeros(n, n);
-
+  int parent_order = 0;
   for (int i = 0; i < n; ++i) {
-    int parent_order = 0;
     List *ps = list_empty();
     int j = list_get_int(order, i);
     double score = score_family(j, ps, ns, discrete, data);
@@ -165,41 +164,38 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
 }
 
 int main(int argc, char **argv) {
-  if (argc != 3) {
-    puts("You must send two files to this program: (1) data and (2) typologies.");
+  if (argc != 4) {
+    puts("You must send three files to this program: (1) data, (2) topologies, and (3) output filename.");
     return 1;
   }
 
   Matrix *data = matrix_from_file(argv[1]), *sz = matrix_create_sz(data);
   Matrix *orders = matrix_from_file(argv[2]);
 
-  Matrix *cn = matrix_zeros(data->rows, data->rows);
 
+  //Matrix *cn = matrix_zeros(data->rows, data->rows);
+  FILE *csv = fopen(argv[3], "w");
+  fclose(csv);
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
-    assert(bnet->rows == cn->rows && bnet->cols == cn->cols);
-    Matrix *n_cn = matrix_add(cn, bnet);
-    matrix_delete(cn);
-    cn = n_cn;
+
+    csv = fopen(argv[3], "a");
+    for (int i = 0; i < bnet->rows * bnet->cols; ++i)
+      fprintf(csv, "%d,", *(int *) matrix_element_by_index(bnet, i));
+    fprintf(csv, "\n");
+
+
     matrix_delete(bnet);
     list_delete(order);
     matrix_scrap(m_order);
   }
 
-  FILE *csv = fopen("consensus.csv", "w");
-  for (int r = 0; r < cn->rows; ++r) {
-    for (int c = 0; c < cn->cols; ++c) {
-      fprintf(csv, "%d", *(int *) matrix_element(cn, r, c));
-      if (c < cn->cols - 1) fprintf(csv, ",");
-    }
-    fprintf(csv, "\n");
-  }
-  fclose(csv);
-  puts("Wrote consensus network to consensus.csv!");
 
-  matrix_delete(cn);
+  printf("Wrote networks to %s\n", argv[3]);
+
+
   matrix_delete(orders);
   matrix_delete(sz);
   matrix_delete(data);
