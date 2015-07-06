@@ -159,7 +159,7 @@ Matrix * learn_struct_K2(
         list_scrap(pps);
         break;
       }
-      printf("best score: %f\n", best_pscore);
+      //printf("best score: %f\n", best_pscore);
       best_p = list_get_int(pps, best_p);
       list_scrap(pps);
       if (best_pscore > score) {
@@ -179,7 +179,7 @@ Matrix * learn_struct_K2(
 
 int main(int argc, char **argv) {
 
-  Matrix* data = matrix_from_file("test2.csv");
+  Matrix* data = matrix_from_file("test3.csv");
   Matrix* sz = matrix_create_sz(data);
 /*
   List* ps = list_empty();
@@ -191,7 +191,9 @@ int main(int argc, char **argv) {
   */
   Matrix* order_m = matrix_range(0, data->rows - 1);
   List * order = matrix_to_list(order_m);
-  Matrix * dag = learn_struct_K2(data, sz, order);
-  matrix_display(dag);
+  for (int i = 0; i < 150; ++i) {
+    Matrix * dag = learn_struct_K2(data, sz, order);
+  }
+  //matrix_display(dag);
   return 0;
 }
