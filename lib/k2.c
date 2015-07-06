@@ -212,8 +212,8 @@ int main(int argc, char **argv) {
 
   Matrix* counts = compute_counts(data, sz);
   List* ps = list_empty();
-//  list_push_int(ps, 1);
-//  list_push_int(ps, 1);
+  list_push_int(ps, 0);
+  list_push_int(ps, 1);
   Matrix* dis = matrix_range(0, 2);
   List* discrete = matrix_to_list(dis);
 
