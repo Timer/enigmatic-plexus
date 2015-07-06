@@ -164,9 +164,34 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
 }
 
 int main(int argc, char **argv) {
-  Matrix *data = matrix_from_file(argv[1]);
+  if (argc != 3) {
+    puts("You must send two files to this program: (1) data and (2) typologies.");
+    return 1;
+  }
+
+  Matrix *data = matrix_from_file(argv[1]), *sz = matrix_create_sz(data);
   Matrix *orders = matrix_from_file(argv[2]);
+
+  Matrix *cn = matrix_zeros(data->rows, data->rows);
+
+  for (int o = 0; o < orders->rows; ++o) {
+    Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
+    List *order = matrix_to_list(m_order);
+    Matrix *bnet = learn_struct_K2(data, sz, order);
+    assert(bnet->rows == cn->rows && bnet->cols == cn->cols);
+    Matrix *n_cn = matrix_add(cn, bnet);
+    matrix_delete(cn);
+    cn = n_cn;
+    matrix_delete(bnet);
+    list_delete(order);
+    matrix_scrap(m_order);
+  }
+
+  //TODO: save cn (consensus network)
+
+  matrix_delete(cn);
   matrix_delete(orders);
+  matrix_delete(sz);
   matrix_delete(data);
   return 0;
 }
