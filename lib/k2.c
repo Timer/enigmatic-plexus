@@ -187,7 +187,15 @@ int main(int argc, char **argv) {
     matrix_scrap(m_order);
   }
 
-  //TODO: save cn (consensus network)
+  FILE *csv = fopen("consensus.csv", "w");
+  for (int r = 0; r < cn->rows; ++r) {
+    for (int c = 0; c < cn->cols; ++c) {
+      fprintf(csv, "%d", *(int *) matrix_element(cn, r, c));
+      if (c < cn->cols - 1) fprintf(csv, ",");
+    }
+    fprintf(csv, "\n");
+  }
+  fclose(csv);
 
   matrix_delete(cn);
   matrix_delete(orders);
