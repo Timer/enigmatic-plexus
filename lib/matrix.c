@@ -12,8 +12,8 @@ int _matrix_index_for(Matrix *m, int row, int col) { return col * m->rows + row;
 // --- PRIVATE END
 
 Matrix * matrix_raw(int rows, int cols) {
-  assert(rows != 0);
-  assert(cols != 0);
+  //assert(rows != 0);
+  //assert(cols != 0);
   Matrix *matrix = malloc(sizeof(Matrix));
   matrix->rows = rows;
   matrix->cols = cols;
