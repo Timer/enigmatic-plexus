@@ -116,6 +116,7 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   Matrix *dag = matrix_zeros(n, n);
 
   for (int i = 0; i < n; ++i) {
+    int parent_order = 0;
     List *ps = list_empty();
     int j = list_get_int(order, i);
     double score = score_family(j, ps, ns, discrete, data);
@@ -155,7 +156,7 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
     }
     if (ps->count > 0) {
       Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
-      matrix_set(dag_sub, 1);
+      matrix_set(dag_sub, ++parent_order);
       matrix_scrap(dag_sub);
     }
     list_delete(ps);
