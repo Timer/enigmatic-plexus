@@ -156,6 +156,7 @@ Matrix * learn_struct_K2(
         list_scrap(pps);
         break;
       }
+      assert(mm->cols == 1);
       double best_pscore = list_get_double(mm->values, 0), best_p = list_get_double(mm->rows, 0);
       printf("best pscore: %f\n", best_pscore);
       matrix_max_delete(mm);
