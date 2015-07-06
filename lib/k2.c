@@ -196,6 +196,7 @@ int main(int argc, char **argv) {
     fprintf(csv, "\n");
   }
   fclose(csv);
+  puts("Wrote consensus network to consensus.csv!");
 
   matrix_delete(cn);
   matrix_delete(orders);

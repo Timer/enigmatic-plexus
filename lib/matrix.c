@@ -330,9 +330,9 @@ Matrix *matrix_add(Matrix *a, Matrix *b) {
   assert(a->cols == b->cols);
   Matrix *r = matrix_zeros(a->rows, a->cols);
   int **ad = (int **) a->data, **bd = (int **) b->data, **rd = (int **) r->data;
-  for (int i = 0; i < a->rows * a->cols; ++i)
+  for (int i = 0; i < a->rows * a->cols; ++i) {
     *rd[i] = *ad[i] + *bd[i];
-
+  }
   return r;
 }
 
@@ -341,9 +341,9 @@ Matrix *matrix_add_double(Matrix *a, Matrix *b) {
   assert(a->cols == b->cols);
   Matrix *r = matrix_double_zeros(a->rows, a->cols);
   double **ad = (double **) a->data, **bd = (double **) b->data, **rd = (double **) r->data;
-  for (int i = 0; i < a->rows * a->cols; ++i)
+  for (int i = 0; i < a->rows * a->cols; ++i) {
     *rd[i] = *ad[i] + *bd[i];
-
+  }
   return r;
 }
 
