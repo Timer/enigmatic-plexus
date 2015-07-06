@@ -8,7 +8,7 @@
 #include "matrix.h"
 #include "bnet.h"
 
-double dirichlet_score_family(Matrix *counts, CPD* cpd) {
+double dirichlet_score_family(Matrix *counts, CPD *cpd) {
   Matrix *ns = cpd->sizes, *prior = cpd->dirichlet;
   Matrix *ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
   Matrix *pnc = matrix_add_int_double(counts, prior);
@@ -17,10 +17,10 @@ double dirichlet_score_family(Matrix *counts, CPD* cpd) {
   Matrix *lu_mat = matrix_double_subtract(gamma_pnc, gamma_prior);
   matrix_delete(gamma_pnc);
   matrix_delete(gamma_prior);
-  Matrix *LU = matrix_sum_n_cols_double(lu_mat, *(int*) matrix_element_by_index(ns_self, 0));
+  Matrix *LU = matrix_sum_n_cols_double(lu_mat, *(int *) matrix_element_by_index(ns_self, 0));
   matrix_delete(lu_mat);
-  Matrix* alpha_ij = matrix_sum_n_cols_double(prior, *(int*) matrix_element_by_index(ns_self, 0));
-  Matrix* N_ij = matrix_sum_n_cols(counts, *(int*) matrix_element_by_index(ns_self, 0));
+  Matrix *alpha_ij = matrix_sum_n_cols_double(prior, *(int *) matrix_element_by_index(ns_self, 0));
+  Matrix *N_ij = matrix_sum_n_cols(counts, *(int *) matrix_element_by_index(ns_self, 0));
   matrix_scrap(ns_self);
   Matrix *gamma_alpha = matrix_lgamma(alpha_ij);
   Matrix *alpha_N = matrix_add_int_double(N_ij, alpha_ij);
@@ -50,11 +50,11 @@ int count_index(Matrix *sz, Matrix *sample_data, int col) {
   return index;
 }
 
-Matrix * compute_counts(Matrix *data, Matrix *sz) {
+Matrix *compute_counts(Matrix *data, Matrix *sz) {
   assert(sz->rows == data->rows);
   Matrix *count = matrix_zeros(matrix_prod(sz), 1);
-   for (int i = 0; i < data->cols; ++i) {
-    *((int*) matrix_element_by_index(count, count_index(sz, data, i))) += 1;
+  for (int i = 0; i < data->cols; ++i) {
+    *((int *) matrix_element_by_index(count, count_index(sz, data, i))) += 1;
   }
   return count;
 }
@@ -71,7 +71,7 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
-CPD * tabular_CPD(Matrix *dag, Matrix *ns, int self) {
+CPD *tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
   list_push_int(ps, self);
@@ -107,7 +107,7 @@ double score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *
   }
 
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
-    *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
+         *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   double score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
   cpd_delete(cpd);
   matrix_scrap(data_sub_1);
@@ -115,9 +115,8 @@ double score_family(int j, List *ps, char *node_type, char *scoring_fn, Matrix *
   return score;
 }
 
-Matrix * learn_struct_K2(
-  Matrix *data, Matrix *ns, List *order
-) {
+Matrix *learn_struct_K2(
+    Matrix *data, Matrix *ns, List *order) {
   assert(order->count == data->rows);
   int n = data->rows;
   int max_fan_in = n;
@@ -132,7 +131,7 @@ Matrix * learn_struct_K2(
     List *ps = list_empty();
     int j = list_get_int(order, i);
     double score = score_family(j, ps, type, scoring_fn, ns, discrete, data);
-    for (; ps->count <= max_fan_in ;) {
+    for (; ps->count <= max_fan_in;) {
       List *order_sub = list_slice(order, 0, i);
       List *pps = difference_type_int(order_sub, ps);
       list_scrap(order_sub);
@@ -163,7 +162,8 @@ Matrix * learn_struct_K2(
       if (best_pscore > score) {
         score = best_pscore;
         list_push_int(ps, best_p);
-      } else break;
+      } else
+        break;
     }
     if (ps->count > 0) {
       Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);

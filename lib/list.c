@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-List * list_empty() {
+List *list_empty() {
   List *list = malloc(sizeof(List));
   list->size = list->count = 0;
   list->arr = NULL;
@@ -51,14 +51,14 @@ int list_push_double(List *list, double value) {
   return list->count++;
 }
 
-void * list_set(List *list, int index, void *data) {
+void *list_set(List *list, int index, void *data) {
   assert(index < list->size);
   void *old = (list->arr)[index];
   (list->arr)[index] = data;
   return old;
 }
 
-void * list_get(List *list, int index) {
+void *list_get(List *list, int index) {
   assert(index < list->count);
   return (list->arr)[index];
 }
@@ -73,7 +73,7 @@ double list_get_double(List *list, int index) {
   return *((double *) ((list->arr)[index]));
 }
 
-void * list_remove(List *list, int index) {
+void *list_remove(List *list, int index) {
   assert(index < list->count--);
   void *ptr = (list->arr)[index];
   if (list->count - index > 0) {
@@ -83,7 +83,7 @@ void * list_remove(List *list, int index) {
   return ptr;
 }
 
-List * list_slice(List *ol, int start, int end) {
+List *list_slice(List *ol, int start, int end) {
   List *sl = list_empty();
   for (int index = start; index < end; ++index) {
     list_push(sl, (ol->arr)[index]);
@@ -91,7 +91,7 @@ List * list_slice(List *ol, int start, int end) {
   return sl;
 }
 
-List * difference_type_int(List *primary, List *secondary) {
+List *difference_type_int(List *primary, List *secondary) {
   List *list = list_slice(primary, 0, primary->count);
   if (list->count == 0 || secondary->count == 0) return list;
   for (int i = 0; i < secondary->count; ++i) {

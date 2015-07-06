@@ -9,6 +9,6 @@ typedef struct {
 } CPD;
 
 void cpd_delete(CPD *cpd);
-List * adjacency_matrix_parents(Matrix *adj_mat, int col);
+List *adjacency_matrix_parents(Matrix *adj_mat, int col);
 
 #endif

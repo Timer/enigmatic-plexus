@@ -9,7 +9,7 @@ void cpd_delete(CPD *cpd) {
   free(cpd);
 }
 
-List * adjacency_matrix_parents(Matrix *adj_mat, int col) {
+List *adjacency_matrix_parents(Matrix *adj_mat, int col) {
   List *l = list_empty();
   Matrix *sub = matrix_sub_indices(adj_mat, 0, adj_mat->rows, col, col + 1);
   for (int i = 0; i < adj_mat->rows; ++i) {
