@@ -396,16 +396,15 @@ Matrix* matrix_add_double(Matrix* a, Matrix* b) {
   return r;
 }
 
-// first is int, second is double
-Matrix* matrix_add_int_double(Matrix* a, Matrix* b) {
+Matrix * matrix_add_int_double(Matrix *a, Matrix *b) {
   assert(a->rows == b->rows);
   assert(a->cols == b->cols);
-  Matrix* r = matrix_zeros(a->rows, a->cols);
-  int** ad = (int**) a->data;
-  double** bd = (double**) b->data, ** rd = (double**) r->data;
-  for (int i = 0; i < a->rows * a->cols; ++i)
+  Matrix *r = matrix_double_zeros(a->rows, a->cols);
+  int **ad = (int **) a->data;
+  double **bd = (double **) b->data, **rd = (double **) r->data;
+  for (int i = 0; i < a->rows * a->cols; ++i) {
     *rd[i] = *ad[i] + *bd[i];
-
+  }
   return r;
 }
 
@@ -443,15 +442,15 @@ Matrix * matrix_lgamma(Matrix *m) {
   return nm;
 }
 
-Matrix* matrix_create_sz(Matrix* matrix) {
-  Matrix* r = matrix_zeros(matrix->rows, 1);
+Matrix *matrix_create_sz(Matrix *matrix) {
+  Matrix *r = matrix_zeros(matrix->rows, 1);
   for (int i = 0; i < matrix->rows; ++i) {
     int max = 1;
     for (int temp = 1, j = 0; j < matrix->cols; ++j) {
-      temp = *(int*) matrix_element(matrix, i, j);
+      temp = *(int *) matrix_element(matrix, i, j);
       max = max < temp ? temp : max;
     }
-    *(int*) matrix_element_by_index(r, i) = max;
+    *(int *) matrix_element_by_index(r, i) = max;
   }
   return r;
 }

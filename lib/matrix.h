@@ -41,14 +41,14 @@ List * matrix_to_list(Matrix *matrix);
 List * matrix_double_to_list(Matrix *matrix);
 Matrix * matrix_from_array(int rows, int cols, int arr[]);
 Matrix * matrix_from_list(List *l);
-Matrix* matrix_add(Matrix* a, Matrix* b);
-Matrix* matrix_add_double(Matrix* a, Matrix* b);
+Matrix* matrix_add(Matrix *a, Matrix *b);
+Matrix* matrix_add_double(Matrix *a, Matrix *b);
 Matrix* matrix_add_int_double(Matrix* a, Matrix* b);
 Matrix * matrix_sum_n_cols(Matrix *matrix, int cols);
-Matrix* matrix_sum_n_cols_double(Matrix *matrix, int cols);
+Matrix * matrix_sum_n_cols_double(Matrix *matrix, int cols);
 Matrix * matrix_double_subtract(Matrix *m1, Matrix *m2);
 Matrix * matrix_lgamma(Matrix *m);
-Matrix* matrix_create_sz(Matrix* matrix);
+Matrix* matrix_create_sz(Matrix *matrix);
 
 void matrix_max_delete(MatrixMax *matrix_max);
 void matrix_delete(Matrix *matrix);
