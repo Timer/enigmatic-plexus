@@ -47,6 +47,7 @@ int count_index(Matrix *sz, Matrix *sample_data, int col) {
     assert((*id[i]) - 1 < *dd[i]);
     index += ((*id[i]) - 1) * m;
   }
+  matrix_scrap(mat_col);
   return index;
 }
 
@@ -103,6 +104,7 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data) {
   cpd_delete(cpd);
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
+  matrix_delete(dag);
   return score;
 }
 
@@ -140,6 +142,7 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
           best_p = i;
         }
       }
+      matrix_delete(pscore);
       if (best_p == -1) {
         list_scrap(pps);
         break;
@@ -160,6 +163,7 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
     }
     list_delete(ps);
   }
+  list_delete(discrete);
   return dag;
 }
 

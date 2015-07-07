@@ -91,6 +91,7 @@ Matrix *matrix_from_file(char *file) {
       strcat(num, s);
     }
   }
+  list_delete(nums);
   fclose(f);
   Matrix *m = matrix_zeros(l_rows->count, lc);
   for (int r = 0; r < l_rows->count; ++r) {
