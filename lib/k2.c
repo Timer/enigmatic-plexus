@@ -179,6 +179,7 @@ int exec(char *f_data, char *f_topologies, char *f_output) {
   FILE *csv = fopen(f_output, "w");
   fclose(csv);
 
+#pragma omp parallel for
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
@@ -244,5 +245,6 @@ int main(int argc, char **argv) {
     puts("You must send topologies using -t <file name>.");
     return 1;
   }
+  omp_set_num_threads(threads);
   return exec(data, topologies, output);
 }
