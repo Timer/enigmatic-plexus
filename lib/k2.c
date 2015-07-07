@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <float.h>
+#include <unistd.h>
+#include <omp.h>
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
@@ -167,26 +169,21 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   return dag;
 }
 
-int main(int argc, char **argv) {
-  if (argc != 4) {
-    puts("You must send three files to this program: (1) data, (2) topologies, and (3) output filename.");
-    return 1;
-  }
-
-  Matrix *data = matrix_from_file(argv[1]), *sz = matrix_create_sz(data);
-  Matrix *orders = matrix_from_file(argv[2]);
+int exec(char *f_data, char *f_topologies, char *f_output) {
+  Matrix *data = matrix_from_file(f_data), *sz = matrix_create_sz(data);
+  Matrix *orders = matrix_from_file(f_topologies);
 
   int out_csv_row_count = data->rows;
   int out_csv_row_count_sq = out_csv_row_count * out_csv_row_count;
 
-  FILE *csv = fopen(argv[3], "w");
+  FILE *csv = fopen(f_output, "w");
   fclose(csv);
 
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
-    csv = fopen(argv[3], "a");
+    csv = fopen(f_output, "a");
     fprintf(csv, "%d:", bnet->rows);
     for (int i = 0; i < out_csv_row_count - 1; ++i) {
       fprintf(csv, "%d,", *(int *) matrix_element_by_index(m_order, i));
@@ -203,9 +200,49 @@ int main(int argc, char **argv) {
     matrix_scrap(m_order);
   }
 
-  printf("Wrote networks to %s\n", argv[3]);
+  printf("Wrote networks to %s\n", f_output);
   matrix_delete(orders);
   matrix_delete(sz);
   matrix_delete(data);
   return 0;
+}
+
+int main(int argc, char **argv) {
+  int threads = 1;
+  char *data = NULL, *topologies = NULL, *output = "consensus.csv";
+  int c;
+  while ((c = getopt(argc, argv, "p:d:t:o:")) != -1) {
+    switch (c) {
+    case 'p': {
+      threads = atoi(optarg);
+      assert(threads > 0);
+      assert(threads <= omp_get_num_procs());
+      break;
+    }
+    case 'd': {
+      data = optarg;
+      break;
+    }
+    case 't': {
+      topologies = optarg;
+      break;
+    }
+    case 'o': {
+      output = optarg;
+      break;
+    }
+    default: {
+      return 1;
+    }
+    }
+  }
+  if (data == NULL) {
+    puts("You must send a data file using -d <file name>.");
+    return 1;
+  }
+  if (topologies == NULL) {
+    puts("You must send topologies using -t <file name>.");
+    return 1;
+  }
+  return exec(data, topologies, output);
 }
