@@ -10,9 +10,10 @@ echo "Compiling..."
 if [ $OS == "Darwin" ]; then
   CC=gcc-5
 fi
+echo "... using $CC."
 rm *.out
-$CC -std=c99 -c $(find . -name \*.c) -lm
+$CC -std=c99 -fopenmp -c $(find . -name \*.c) -lm
 echo "Building..."
-$CC -std=c99 $(find . -name \*.o -not -name k2.o) -o test.out -lm
-$CC -std=c99 $(find . -name \*.o -not -name test.o) -o k2.out -lm
+$CC -std=c99 -fopenmp $(find . -name \*.o -not -name k2.o) -o test.out -lm
+$CC -std=c99 -fopenmp $(find . -name \*.o -not -name test.o) -o k2.out -lm
 rm $(find . -name \*.o)
