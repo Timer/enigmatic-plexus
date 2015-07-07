@@ -5,3 +5,4 @@ AllowShortFunctionsOnASingleLine: All
 ColumnLimit: 0
 AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
+IndentCaseLabels: false
