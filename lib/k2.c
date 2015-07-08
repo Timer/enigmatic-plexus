@@ -187,17 +187,26 @@ int exec(char *f_data, int topologies, char *f_output) {
     free(arr);
   }
 
+  Matrix *consensus_network = matrix_zeros(data->rows, data->rows);
+  int cn_n_elements = consensus_network->rows * consensus_network->cols;
+
 #pragma omp parallel for
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
 
+    for (int i = 0; i < cn_n_elements; ++i) {
+      *(int *) matrix_element_by_index(consensus_network, i) += *(int *) matrix_element_by_index(bnet, i);
+    }
+
     matrix_delete(bnet);
     list_delete(order);
     matrix_scrap(m_order);
   }
 
+  matrix_to_file(consensus_network, f_output);
+  matrix_delete(consensus_network);
   matrix_delete(orders);
   matrix_delete(sz);
   matrix_delete(data);
