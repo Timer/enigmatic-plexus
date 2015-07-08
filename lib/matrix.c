@@ -105,6 +105,17 @@ Matrix *matrix_from_file(char *file) {
   return m;
 }
 
+void matrix_to_file(Matrix *m, char *file) {
+  FILE *f = fopen(file, "w");
+  for (int r = 0; r < m->rows; ++r) {
+    for (int c = 0; c < m->cols - 1; ++c) {
+      fprintf(f, "%d,", *(int *) matrix_element(m, r, c));
+    }
+    fprintf(f, "%d\n", *(int *) matrix_element(m, r, m->cols - 1));
+  }
+  fclose(f);
+}
+
 void *matrix_element(Matrix *matrix, int row, int col) {
   if (row >= matrix->rows || col >= matrix->cols) {
     exit(EXIT_FAILURE);
