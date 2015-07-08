@@ -176,25 +176,29 @@ int exec(char *f_data, char *f_topologies, char *f_output) {
   int out_csv_row_count = data->rows;
   int out_csv_row_count_sq = out_csv_row_count * out_csv_row_count;
 
-  FILE *csv = fopen(f_output, "w");
-  fclose(csv);
+  //FILE *csv = fopen(f_output, "w");
+  //fclose(csv);
 
 #pragma omp parallel for
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
-    csv = fopen(f_output, "a");
-    fprintf(csv, "%d:", bnet->rows);
+    //csv = fopen(f_output, "a");
+    //fprintf(csv, "%d:", bnet->rows);
     for (int i = 0; i < out_csv_row_count - 1; ++i) {
-      fprintf(csv, "%d,", *(int *) matrix_element_by_index(m_order, i));
+      //fprintf(csv, "%d,", *(int *)
+      matrix_element_by_index(m_order, i);
     }
-    fprintf(csv, "%d:", *(int *) matrix_element_by_index(m_order, out_csv_row_count - 1));
+    //fprintf(csv, "%d:", *(int *)
+    matrix_element_by_index(m_order, out_csv_row_count - 1);
     for (int i = 0; i < out_csv_row_count_sq - 1; ++i) {
-      fprintf(csv, "%d,", *(int *) matrix_element_by_index(bnet, i));
+      //fprintf(csv, "%d,", *(int *)
+      matrix_element_by_index(bnet, i);
     }
-    fprintf(csv, "%d\n", *(int *) matrix_element_by_index(bnet, out_csv_row_count_sq - 1));
-    fclose(csv);
+    //fprintf(csv, "%d\n", *(int *)
+    matrix_element_by_index(bnet, out_csv_row_count_sq - 1);
+    //fclose(csv);
 
     matrix_delete(bnet);
     list_delete(order);
