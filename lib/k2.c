@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
   int threads = 1;
   char *data = NULL, *topologies = NULL, *output = "consensus.csv";
   int c;
-  while ((c = getopt(argc, argv, "p:d:t:o:")) != -1) {
+  while ((c = getopt(argc, argv, "hp:d:t:o:")) != -1) {
     switch (c) {
     case 'p': {
       threads = atoi(optarg);
@@ -232,7 +232,9 @@ int main(int argc, char **argv) {
       output = optarg;
       break;
     }
+    case 'h':
     default: {
+      puts(": -p <num_threads> -d <data file> -t <topologies file> -o <output file>");
       return 1;
     }
     }
