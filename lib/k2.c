@@ -176,8 +176,8 @@ int exec(char *f_data, char *f_topologies, char *f_output) {
   int out_csv_row_count = data->rows;
   int out_csv_row_count_sq = out_csv_row_count * out_csv_row_count;
 
-  //FILE *csv = fopen(f_output, "w");
-  //fclose(csv);
+//FILE *csv = fopen(f_output, "w");
+//fclose(csv);
 
 #pragma omp parallel for
   for (int o = 0; o < orders->rows; ++o) {
@@ -203,6 +203,11 @@ int exec(char *f_data, char *f_topologies, char *f_output) {
     matrix_delete(bnet);
     list_delete(order);
     matrix_scrap(m_order);
+
+#pragma omp critical
+    {
+      //add bnet to List here -- critical is like atomic but atomic only supports say ++r, etc.
+    }
   }
 
   printf("Wrote networks to %s\n", f_output);
