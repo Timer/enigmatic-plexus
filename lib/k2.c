@@ -9,6 +9,7 @@
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
+#include "rand.h"
 
 double dirichlet_score_family(Matrix *counts, CPD *cpd) {
   Matrix *ns = cpd->sizes, *prior = cpd->dirichlet;
@@ -169,48 +170,34 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   return dag;
 }
 
-int exec(char *f_data, char *f_topologies, char *f_output) {
+int exec(char *f_data, int topologies, char *f_output) {
   Matrix *data = matrix_from_file(f_data), *sz = matrix_create_sz(data);
-  Matrix *orders = matrix_from_file(f_topologies);
-
-  int out_csv_row_count = data->rows;
-  int out_csv_row_count_sq = out_csv_row_count * out_csv_row_count;
-
-//FILE *csv = fopen(f_output, "w");
-//fclose(csv);
+  Matrix *orders = matrix_zeros(data->rows * topologies, data->rows);
+  for (int r = 0; r < orders->rows; ++r) {
+    int start = r / topologies;
+    int *arr = malloc(orders->cols * sizeof(int));
+    arr[0] = start;
+    for (int i = 1; i < orders->cols; ++i) {
+      arr[i] = i == start ? 0 : i;
+    }
+    shuffle_int(orders->cols - 1, arr + 1);
+    for (int c = 0; c < orders->cols; ++c) {
+      *(int *) matrix_element(orders, r, c) = arr[c];
+    }
+    free(arr);
+  }
 
 #pragma omp parallel for
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
-    //csv = fopen(f_output, "a");
-    //fprintf(csv, "%d:", bnet->rows);
-    for (int i = 0; i < out_csv_row_count - 1; ++i) {
-      //fprintf(csv, "%d,", *(int *)
-      matrix_element_by_index(m_order, i);
-    }
-    //fprintf(csv, "%d:", *(int *)
-    matrix_element_by_index(m_order, out_csv_row_count - 1);
-    for (int i = 0; i < out_csv_row_count_sq - 1; ++i) {
-      //fprintf(csv, "%d,", *(int *)
-      matrix_element_by_index(bnet, i);
-    }
-    //fprintf(csv, "%d\n", *(int *)
-    matrix_element_by_index(bnet, out_csv_row_count_sq - 1);
-    //fclose(csv);
 
     matrix_delete(bnet);
     list_delete(order);
     matrix_scrap(m_order);
-
-#pragma omp critical
-    {
-      //add bnet to List here -- critical is like atomic but atomic only supports say ++r, etc.
-    }
   }
 
-  printf("Wrote networks to %s\n", f_output);
   matrix_delete(orders);
   matrix_delete(sz);
   matrix_delete(data);
@@ -218,8 +205,8 @@ int exec(char *f_data, char *f_topologies, char *f_output) {
 }
 
 int main(int argc, char **argv) {
-  int threads = 1;
-  char *data = NULL, *topologies = NULL, *output = "consensus.csv";
+  int threads = 1, topologies = 1;
+  char *data = NULL, *output = "consensus.csv";
   int c;
   while ((c = getopt(argc, argv, "hp:d:t:o:")) != -1) {
     switch (c) {
@@ -234,7 +221,7 @@ int main(int argc, char **argv) {
       break;
     }
     case 't': {
-      topologies = optarg;
+      topologies = atoi(optarg);
       break;
     }
     case 'o': {
@@ -243,17 +230,13 @@ int main(int argc, char **argv) {
     }
     case 'h':
     default: {
-      puts(": -p <num_threads> -d <data file> -t <topologies file> -o <output file>");
+      puts(": -p <num_threads> -d <data file> -t <topologies per gene> -o <output file>");
       return 1;
     }
     }
   }
   if (data == NULL) {
     puts("You must send a data file using -d <file name>.");
-    return 1;
-  }
-  if (topologies == NULL) {
-    puts("You must send topologies using -t <file name>.");
     return 1;
   }
   omp_set_num_threads(threads);
