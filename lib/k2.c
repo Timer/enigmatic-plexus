@@ -198,6 +198,7 @@ int exec(char *f_data, int topologies, char *f_output) {
     assert(consensus_network->rows == bnet->rows);
     assert(consensus_network->cols == bnet->cols);
 
+#pragma omp critical
     for (int i = 0; i < cn_n_elements; ++i) {
       *(int *) matrix_element_by_index(consensus_network, i) += *(int *) matrix_element_by_index(bnet, i) ? 1 : 0;
     }
