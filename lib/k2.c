@@ -6,6 +6,7 @@
 #include <float.h>
 #include <unistd.h>
 #include <omp.h>
+#include <time.h>
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
@@ -219,6 +220,7 @@ int exec(char *f_data, int topologies, char *f_output) {
 }
 
 int main(int argc, char **argv) {
+  srand(time(NULL));
   int threads = 1, topologies = 1;
   char *data = NULL, *output = "consensus.csv";
   int c;
