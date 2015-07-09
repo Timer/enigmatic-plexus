@@ -263,6 +263,7 @@ int main(int argc, char **argv) {
     case 'h':
     default: {
       puts(": -p <num_threads> -d <data file> -t <topologies per gene> -o <output file>");
+      puts("~ -T (reads matrix transposed)");
       return 1;
     }
     }
