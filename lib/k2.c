@@ -195,6 +195,8 @@ int exec(char *f_data, int topologies, char *f_output) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
     Matrix *bnet = learn_struct_K2(data, sz, order);
+    assert(consensus_network->rows == bnet->rows);
+    assert(consensus_network->cols == bnet->cols);
 
     for (int i = 0; i < cn_n_elements; ++i) {
       *(int *) matrix_element_by_index(consensus_network, i) += *(int *) matrix_element_by_index(bnet, i) ? 1 : 0;
