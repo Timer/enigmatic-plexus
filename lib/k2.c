@@ -12,6 +12,8 @@
 #include "bnet.h"
 #include "rand.h"
 
+#define VERBOSE 0
+
 double dirichlet_score_family(Matrix *counts, CPD *cpd) {
   Matrix *ns = cpd->sizes, *prior = cpd->dirichlet;
   Matrix *ns_self = matrix_sub_indices(ns, ns->rows - 1, ns->rows, 0, ns->cols);
@@ -125,6 +127,9 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
     List *ps = list_empty();
     int j = list_get_int(order, i);
     double score = score_family(j, ps, ns, discrete, data);
+#if VERBOSE
+    printf("\nnode %d, empty score %6.4f\n", j, score);
+#endif
     for (; ps->count <= max_fan_in;) {
       List *order_sub = list_slice(order, 0, i);
       List *pps = difference_type_int(order_sub, ps);
@@ -135,6 +140,9 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
         int p = list_get_int(pps, pi);
         int n_index = list_push_int(ps, p);
         *((double *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, ns, discrete, data);
+#if VERBOSE
+        printf("considering adding %d to %d, score %6.4f\n", p, j, *((double *) matrix_element_by_index(pscore, pi)));
+#endif
         free(list_remove(ps, n_index));
       }
       double best_pscore = -DBL_MAX;
@@ -156,6 +164,9 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
       if (best_pscore > score) {
         score = best_pscore;
         list_push_int(ps, best_p);
+#if VERBOSE
+        printf("* adding %d to %d, score %6.4f\n", best_p, j, best_pscore);
+#endif
       } else {
         break;
       }
