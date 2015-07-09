@@ -1,4 +1,5 @@
 #include "list.h"
+#include <stdbool.h>
 
 #ifndef MATRIX_H
 #define MATRIX_H
@@ -13,7 +14,7 @@ Matrix *matrix_create(int rows, int cols, int value);
 Matrix *matrix_double_zeros(int rows, int cols);
 Matrix *matrix_double_create(int rows, int cols, double value);
 Matrix *matrix_range(int from, int to);
-Matrix *matrix_from_file(char *file);
+Matrix *matrix_from_file(char *file, bool transposed);
 void matrix_to_file(Matrix *m, char *file);
 void *matrix_element(Matrix *matrix, int row, int col);
 void *matrix_element_by_index(Matrix *matrix, int index);

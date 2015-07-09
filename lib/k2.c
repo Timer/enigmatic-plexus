@@ -182,8 +182,8 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   return dag;
 }
 
-int exec(char *f_data, int topologies, char *f_output) {
-  Matrix *data = matrix_from_file(f_data), *sz = matrix_create_sz(data);
+int exec(bool data_transposed, char *f_data, int topologies, char *f_output) {
+  Matrix *data = matrix_from_file(f_data, data_transposed), *sz = matrix_create_sz(data);
   Matrix *orders = matrix_zeros(data->rows * topologies, data->rows);
   for (int r = 0; r < orders->rows; ++r) {
     int start = r / topologies;
@@ -233,10 +233,15 @@ int exec(char *f_data, int topologies, char *f_output) {
 int main(int argc, char **argv) {
   srand(time(NULL));
   int threads = 1, topologies = 1;
+  bool data_transposed = false;
   char *data = NULL, *output = "consensus.csv";
   int c;
-  while ((c = getopt(argc, argv, "hp:d:t:o:")) != -1) {
+  while ((c = getopt(argc, argv, "Thp:d:t:o:")) != -1) {
     switch (c) {
+    case 'T': {
+      data_transposed = true;
+      break;
+    }
     case 'p': {
       threads = atoi(optarg);
       assert(threads > 0);
@@ -267,5 +272,5 @@ int main(int argc, char **argv) {
     return 1;
   }
   omp_set_num_threads(threads);
-  return exec(data, topologies, output);
+  return exec(data_transposed, data, topologies, output);
 }

@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
 // --- PRIVATE START
 int _matrix_index_for(Matrix *m, int row, int col) { return col * m->rows + row; }
@@ -61,7 +62,7 @@ Matrix *matrix_range(int from, int to) {
   return matrix;
 }
 
-Matrix *matrix_from_file(char *file) {
+Matrix *matrix_from_file(char *file, bool transposed) {
   FILE *f = fopen(file, "r");
   assert(f != NULL);
   char num[11] = "";
@@ -93,11 +94,11 @@ Matrix *matrix_from_file(char *file) {
   }
   list_delete(nums);
   fclose(f);
-  Matrix *m = matrix_zeros(l_rows->count, lc);
+  Matrix *m = transposed ? matrix_zeros(l_rows->count, lc) : matrix_zeros(lc, l_rows->count);
   for (int r = 0; r < l_rows->count; ++r) {
     List *cv = list_get(l_rows, r);
     for (int c = 0; c < lc; ++c) {
-      *(int *) matrix_element(m, r, c) = list_get_int(cv, c);
+      *(int *) matrix_element(m, transposed ? r : c, transposed ? c : r) = list_get_int(cv, c);
     }
     list_delete(cv);
   }
