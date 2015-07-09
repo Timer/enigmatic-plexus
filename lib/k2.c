@@ -197,7 +197,7 @@ int exec(char *f_data, int topologies, char *f_output) {
     Matrix *bnet = learn_struct_K2(data, sz, order);
 
     for (int i = 0; i < cn_n_elements; ++i) {
-      *(int *) matrix_element_by_index(consensus_network, i) += *(int *) matrix_element_by_index(bnet, i);
+      *(int *) matrix_element_by_index(consensus_network, i) += *(int *) matrix_element_by_index(bnet, i) ? 1 : 0;
     }
 
     matrix_delete(bnet);
