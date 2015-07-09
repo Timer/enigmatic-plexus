@@ -187,6 +187,8 @@ int exec(char *f_data, int topologies, char *f_output) {
     free(arr);
   }
 
+  matrix_to_file(orders, "topologies.csv");
+
   Matrix *consensus_network = matrix_zeros(data->rows, data->rows);
   int cn_n_elements = consensus_network->rows * consensus_network->cols;
 
