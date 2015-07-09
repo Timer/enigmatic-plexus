@@ -409,7 +409,7 @@ Matrix *matrix_lgamma(Matrix *m) {
 Matrix *matrix_create_sz(Matrix *matrix) {
   Matrix *r = matrix_zeros(matrix->rows, 1);
   for (int i = 0; i < matrix->rows; ++i) {
-    int max = 1;
+    int max = 2;
     for (int temp = 1, j = 0; j < matrix->cols; ++j) {
       temp = *(int *) matrix_element(matrix, i, j);
       max = max < temp ? temp : max;
