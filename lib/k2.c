@@ -73,7 +73,7 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   Matrix *data = matrix_sub_concat_rows(pev, self_ev);
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
-  const double score = dirichlet_score_family(counts, cpd);
+  double score = dirichlet_score_family(counts, cpd);
   matrix_delete(counts);
   return score;
 }

@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
   }
 
   puts("Validating element and index correspondence ...");
-  const int test_row = 1, test_col = 2, test_index = 7;
+  int test_row = 1, test_col = 2, test_index = 7;
   *(int *) matrix_element(m, test_row, test_col) *= 2;
   assert(*(int *) matrix_element_by_index(m, test_index) == 20);
 

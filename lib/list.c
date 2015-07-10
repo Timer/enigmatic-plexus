@@ -14,7 +14,7 @@ List *list_empty() {
 void list_enlarge(List *list) {
   if (list->arr) {
     if (list->count == list->size) {
-      const int prev = list->size;
+      int prev = list->size;
       list->arr = realloc(list->arr, (list->size *= 2) * sizeof(void *));
       for (int i = prev; i < list->size; ++i) list_set(list, i, NULL);
     }
