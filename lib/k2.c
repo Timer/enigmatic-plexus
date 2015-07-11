@@ -235,8 +235,15 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
   matrix_delete(data);
 
 #if MPI
-//TODO: write topologies
-//TODO: merge and write consensus_network
+  //TODO: merge and write topologies
+  if (forkIndex == 0) {
+    for (int i = 1; i < forkSize; ++i) {
+      //TODO: recv & merge consensus network
+    }
+    matrix_to_file(consensus_network, f_output);
+  } else {
+    //TODO: send consensus network
+  }
 #else
   matrix_to_file(orders, "topologies.csv");
   matrix_to_file(consensus_network, f_output);
