@@ -7,11 +7,13 @@
 #include <unistd.h>
 #include <omp.h>
 #include <time.h>
+#include <mpi.h>
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
 #include "rand.h"
 
+#define MPI 0
 #define VERBOSE 0
 
 double dirichlet_score_family(Matrix *counts, CPD *cpd) {
@@ -182,9 +184,18 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   return dag;
 }
 
-int exec(bool data_transposed, char *f_data, int topologies, char *f_output) {
+int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int topologies, char *f_output) {
   Matrix *data = matrix_from_file(f_data, data_transposed), *sz = matrix_create_sz(data);
+#if MPI
+  assert(forkIndex > -1);
+  assert(forkSize > 0);
+  int top_d = topologies / forkSize, top_r = topologies % forkSize;
+  if (forkIndex < top_r) ++top_d;
+  topologies = top_d;
+#endif
   Matrix *orders = matrix_zeros(data->rows * topologies, data->rows);
+
+#pragma omp parallel for
   for (int r = 0; r < orders->rows; ++r) {
     int start = r / topologies;
     int *arr = malloc(orders->cols * sizeof(int));
@@ -198,8 +209,6 @@ int exec(bool data_transposed, char *f_data, int topologies, char *f_output) {
     }
     free(arr);
   }
-
-  matrix_to_file(orders, "topologies.csv");
 
   Matrix *consensus_network = matrix_zeros(data->rows, data->rows);
   int cn_n_elements = consensus_network->rows * consensus_network->cols;
@@ -222,16 +231,30 @@ int exec(bool data_transposed, char *f_data, int topologies, char *f_output) {
     matrix_scrap(m_order);
   }
 
-  matrix_to_file(consensus_network, f_output);
-  matrix_delete(consensus_network);
-  matrix_delete(orders);
   matrix_delete(sz);
   matrix_delete(data);
+
+#if MPI
+//TODO: write topologies
+//TODO: merge and write consensus_network
+#else
+  matrix_to_file(orders, "topologies.csv");
+  matrix_to_file(consensus_network, f_output);
+#endif
+  matrix_delete(orders);
+  matrix_delete(consensus_network);
   return 0;
 }
 
 int main(int argc, char **argv) {
-  srand(time(NULL));
+  int forkIndex = 0, forkSize = 1;
+#if MPI
+  MPI_Init(&argc, &argv);
+  MPI_Comm_rank(MPI_COMM_WORLD, &forkIndex);
+  MPI_Comm_size(MPI_COMM_WORLD, &forkSize);
+#endif
+
+  srand(time(NULL) & forkIndex);
   int threads = 1, topologies = 1;
   bool data_transposed = false;
   char *data = NULL, *output = "consensus.csv";
@@ -273,5 +296,9 @@ int main(int argc, char **argv) {
     return 1;
   }
   omp_set_num_threads(threads);
-  return exec(data_transposed, data, topologies, output);
+  int status = exec(forkIndex, forkSize, data_transposed, data, topologies, output);
+#if MPI
+  MPI_Finalize();
+#endif
+  return status;
 }
