@@ -261,7 +261,7 @@ int main(int argc, char **argv) {
   MPI_Comm_size(MPI_COMM_WORLD, &forkSize);
 #endif
 
-  srand(time(NULL) & forkIndex);
+  srand(time(NULL) ^ forkIndex);
   int threads = 1, topologies = 1;
   bool data_transposed = false;
   char *data = NULL, *output = "consensus.csv";
