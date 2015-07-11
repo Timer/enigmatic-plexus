@@ -7,7 +7,6 @@
 #include <unistd.h>
 #include <omp.h>
 #include <time.h>
-#include <mpi.h>
 #include "list.h"
 #include "matrix.h"
 #include "bnet.h"
@@ -15,6 +14,10 @@
 
 #define MPI 0
 #define VERBOSE 0
+
+#if MPI
+#include <mpi.h>
+#endif
 
 double dirichlet_score_family(Matrix *counts, CPD *cpd) {
   Matrix *ns = cpd->sizes, *prior = cpd->dirichlet;
