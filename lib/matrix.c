@@ -233,7 +233,6 @@ Matrix *matrix_sub_row(Matrix *matrix, int row) {
 
 Matrix *matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
   assert(matrix->cols == rows->cols);
-  //TODO: revisit sanity
   Matrix *nm = matrix_raw(matrix->rows + rows->rows, matrix->cols);
   int **o_data = (int **) matrix->data, **n_data = (int **) nm->data,
       **a_data = (int **) rows->data;
@@ -310,7 +309,6 @@ void matrix_scrap(Matrix *matrix) {
   free(matrix);
 }
 
-// --- N-DIMENSIONAL START
 void *matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
   assert(m->rows * m->cols == matrix_prod(dims));
   assert(ind->rows * ind->cols == dims->rows * dims->cols);
@@ -322,7 +320,6 @@ void *matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims) {
   }
   return matrix_element_by_index(m, index);
 }
-// --- N-DIMENSIONAL END
 
 void matrix_display(Matrix *matrix) {
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {

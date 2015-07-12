@@ -1,21 +1,19 @@
 #include <stdlib.h>
 #include <assert.h>
 
-unsigned int rand_interval(unsigned int min, unsigned int max) {
+unsigned int rand_inclusive(unsigned int min, unsigned int max) {
   assert(max >= min);
+  unsigned int
+      delta = 1 + max - min,
+      b = RAND_MAX / delta, c = b * delta;
   int r;
-  const unsigned int range = 1 + max - min;
-  const unsigned int buckets = RAND_MAX / range;
-  const unsigned int limit = buckets * range;
-
   do {
     r = rand();
-  } while (r >= limit);
-
-  return min + (r / buckets);
+  } while (r >= c);
+  return min + r / b;
 }
 
 void shuffle_int(int c, int *a) {
   int b, d;
-  while (c) b = rand_interval(0, --c), d = a[c], a[c] = a[b], a[b] = d;
+  while (c) b = rand_inclusive(0, --c), d = a[c], a[c] = a[b], a[b] = d;
 }
