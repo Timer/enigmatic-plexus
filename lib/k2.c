@@ -187,6 +187,42 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   return dag;
 }
 
+#if MPI
+#define MPI_TAG_MATRIX_R 1
+#define MPI_TAG_MATRIX_C 2
+#define MPI_TAG_MATRIX_D 3
+
+void MPI_Matrix_Send(int to_index, Matrix *matrix) {
+  int rows = matrix->rows, cols = matrix->cols;
+  int **data = (int **) matrix->data;
+  int *extracted = malloc(rows * cols * sizeof(int));
+  int *extracted_start = extracted;
+  for (int i = 0; i < rows * cols; ++i, ++extracted, ++data) {
+    *extracted = **data;
+  }
+  MPI_Send(&rows, 1, MPI_INT, to_index, MPI_TAG_MATRIX_R, MPI_COMM_WORLD);
+  MPI_Send(&cols, 1, MPI_INT, to_index, MPI_TAG_MATRIX_C, MPI_COMM_WORLD);
+  MPI_Send(extracted_start, rows * cols, MPI_INT, to_index, MPI_TAG_MATRIX_D, MPI_COMM_WORLD);
+  free(extracted_start);
+}
+
+Matrix *MPI_Matrix_Recv(int from_index) {
+  int rows, cols;
+  MPI_Recv(&rows, 1, MPI_INT, from_index, MPI_TAG_MATRIX_R, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  MPI_Recv(&cols, 1, MPI_INT, from_index, MPI_TAG_MATRIX_C, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  Matrix *matrix = matrix_zeros(rows, cols);
+  int **data = (int **) matrix->data;
+  int *values = malloc(rows * cols * sizeof(int));
+  MPI_Recv(values, rows * cols, MPI_INT, from_index, MPI_TAG_MATRIX_D, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  int *values_start = values;
+  for (int i = 0; i < rows * cols; ++i, ++values, ++data) {
+    **data = *values;
+  }
+  free(values_start);
+  return matrix;
+}
+#endif
+
 int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int topologies, char *f_output) {
   Matrix *data = matrix_from_file(f_data, data_transposed), *sz = matrix_create_sz(data);
 #if MPI
@@ -241,11 +277,13 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
   //TODO: merge and write topologies
   if (forkIndex == 0) {
     for (int i = 1; i < forkSize; ++i) {
-      //TODO: recv & merge consensus network
+      Matrix *merge = MPI_Matrix_Recv(i);
+      matrix_add_in(consensus_network, merge);
+      matrix_delete(merge);
     }
     matrix_to_file(consensus_network, f_output);
   } else {
-    //TODO: send consensus network
+    MPI_Matrix_Send(0, consensus_network);
   }
 #else
   matrix_to_file(orders, "topologies.csv");

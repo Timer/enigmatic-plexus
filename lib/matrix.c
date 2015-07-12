@@ -349,6 +349,15 @@ Matrix *matrix_add(Matrix *a, Matrix *b) {
   return r;
 }
 
+void matrix_add_in(Matrix *a, Matrix *b) {
+  assert(a->rows == b->rows);
+  assert(a->cols == b->cols);
+  int **ad = (int **) a->data, **bd = (int **) b->data;
+  for (int i = 0; i < a->rows * a->cols; ++i) {
+    *ad[i] = *ad[i] + *bd[i];
+  }
+}
+
 Matrix *matrix_add_double(Matrix *a, Matrix *b) {
   assert(a->rows == b->rows);
   assert(a->cols == b->cols);
