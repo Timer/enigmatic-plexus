@@ -91,7 +91,7 @@ List *list_slice(List *ol, int start, int end) {
   return sl;
 }
 
-List *difference_type_int(List *primary, List *secondary) {
+List *list_difference_type_int(List *primary, List *secondary) {
   List *list = list_slice(primary, 0, primary->count);
   if (list->count == 0 || secondary->count == 0) return list;
   for (int i = 0; i < secondary->count; ++i) {

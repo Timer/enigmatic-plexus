@@ -156,7 +156,7 @@ int matrix_sum(Matrix *matrix) {
   return p;
 }
 
-double matrix_sum_double(Matrix *matrix) {
+double matrix_double_sum(Matrix *matrix) {
   double p = 0;
   void **data = matrix->data;
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
@@ -331,7 +331,7 @@ void matrix_display(Matrix *matrix) {
   printf("\n");
 }
 
-void matrix_display_double(Matrix *matrix) {
+void matrix_double_display(Matrix *matrix) {
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
     printf("[%f]", *((double *) matrix_element_by_index(matrix, i)));
   }
@@ -358,7 +358,7 @@ void matrix_add_in(Matrix *a, Matrix *b) {
   }
 }
 
-Matrix *matrix_add_double(Matrix *a, Matrix *b) {
+Matrix *matrix_double_add(Matrix *a, Matrix *b) {
   assert(a->rows == b->rows);
   assert(a->cols == b->cols);
   Matrix *r = matrix_double_zeros(a->rows, a->cols);
@@ -390,7 +390,7 @@ Matrix *matrix_sum_n_cols(Matrix *matrix, int cols) {
   return m;
 }
 
-Matrix *matrix_sum_n_cols_double(Matrix *matrix, int cols) {
+Matrix *matrix_double_sum_n_cols(Matrix *matrix, int cols) {
   assert((matrix->rows * matrix->cols) % cols == 0);
   Matrix *m = matrix_double_zeros((matrix->rows * matrix->cols) / cols, 1);
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {

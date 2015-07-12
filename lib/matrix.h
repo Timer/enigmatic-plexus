@@ -21,7 +21,7 @@ void *matrix_element_by_index(Matrix *matrix, int index);
 void matrix_set(Matrix *matrix, int value);
 int matrix_prod(Matrix *matrix);
 int matrix_sum(Matrix *matrix);
-double matrix_sum_double(Matrix *matrix);
+double matrix_double_sum(Matrix *matrix);
 void matrix_double_set(Matrix *matrix, double value);
 Matrix *matrix_sub_indices(Matrix *matrix, int row_start, int row_end, int col_start, int col_end);
 Matrix *matrix_sub_lists(Matrix *matrix, List *rows, List *cols);
@@ -38,10 +38,10 @@ Matrix *matrix_from_array(int rows, int cols, int arr[]);
 Matrix *matrix_from_list(List *l);
 Matrix *matrix_add(Matrix *a, Matrix *b);
 void matrix_add_in(Matrix *a, Matrix *b);
-Matrix *matrix_add_double(Matrix *a, Matrix *b);
+Matrix *matrix_double_add(Matrix *a, Matrix *b);
 Matrix *matrix_add_int_double(Matrix *a, Matrix *b);
 Matrix *matrix_sum_n_cols(Matrix *matrix, int cols);
-Matrix *matrix_sum_n_cols_double(Matrix *matrix, int cols);
+Matrix *matrix_double_sum_n_cols(Matrix *matrix, int cols);
 Matrix *matrix_double_subtract(Matrix *m1, Matrix *m2);
 Matrix *matrix_lgamma(Matrix *m);
 Matrix *matrix_create_sz(Matrix *matrix);
@@ -53,5 +53,5 @@ void *matrix_element_n_dim(Matrix *m, Matrix *ind, Matrix *dims);
 
 // for testing ease
 void matrix_display();
-void matrix_display_double();
+void matrix_double_display();
 #endif

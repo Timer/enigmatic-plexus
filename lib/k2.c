@@ -28,9 +28,9 @@ double dirichlet_score_family(Matrix *counts, CPD *cpd) {
   Matrix *lu_mat = matrix_double_subtract(gamma_pnc, gamma_prior);
   matrix_delete(gamma_pnc);
   matrix_delete(gamma_prior);
-  Matrix *LU = matrix_sum_n_cols_double(lu_mat, *(int *) matrix_element_by_index(ns_self, 0));
+  Matrix *LU = matrix_double_sum_n_cols(lu_mat, *(int *) matrix_element_by_index(ns_self, 0));
   matrix_delete(lu_mat);
-  Matrix *alpha_ij = matrix_sum_n_cols_double(prior, *(int *) matrix_element_by_index(ns_self, 0));
+  Matrix *alpha_ij = matrix_double_sum_n_cols(prior, *(int *) matrix_element_by_index(ns_self, 0));
   Matrix *N_ij = matrix_sum_n_cols(counts, *(int *) matrix_element_by_index(ns_self, 0));
   matrix_scrap(ns_self);
   Matrix *gamma_alpha = matrix_lgamma(alpha_ij);
@@ -42,10 +42,10 @@ double dirichlet_score_family(Matrix *counts, CPD *cpd) {
   Matrix *LV = matrix_double_subtract(gamma_alpha, gamma_alpha_N);
   matrix_delete(gamma_alpha);
   matrix_delete(gamma_alpha_N);
-  Matrix *LU_LV = matrix_add_double(LU, LV);
+  Matrix *LU_LV = matrix_double_add(LU, LV);
   matrix_delete(LU);
   matrix_delete(LV);
-  double score = matrix_sum_double(LU_LV);
+  double score = matrix_double_sum(LU_LV);
   matrix_delete(LU_LV);
   return score;
 }
@@ -137,7 +137,7 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
 #endif
     for (; ps->count <= max_fan_in;) {
       List *order_sub = list_slice(order, 0, i);
-      List *pps = difference_type_int(order_sub, ps);
+      List *pps = list_difference_type_int(order_sub, ps);
       list_scrap(order_sub);
       int nps = pps->count;
       Matrix *pscore = matrix_double_zeros(1, nps);
