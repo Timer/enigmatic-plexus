@@ -100,7 +100,7 @@ CPD *tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   return cpd;
 }
 
-double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, char *scoring_fn) {
+double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, char* scoring_method) {
   Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
     Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
@@ -109,29 +109,27 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     //TODO: sort `ps` here.
   }
   CPD *cpd = tabular_CPD(dag, ns, j);
+  Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
+         *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   double score;
-  if (!strcmp(scoring_fn, "bayesian")) {
-    Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
-           *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
+  if (scoring_method == 'bic') {
+    // bnet.CPD{j} = learn_params(bnet.CPD{j},  fam, data, ns, bnet.cnodes)
+    // L = log_prob_node(bnet.CPD{j}, data(j,:), data(ps,:));
+
+    //score = L - 0.5 * bnet.CPD{j}.nparams * log(ncases);
+  }
+  else if (scoring_method == 'bayesian') {
     score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
-    matrix_scrap(data_sub_1);
-    matrix_scrap(data_sub_2);
-  } else if (!strcmp(scoring_fn, "bic")) {
-    //fam = [ps j];
-    //bnet.CPD{j} = learn_params(bnet.CPD{j},  fam, data, ns, bnet.cnodes);
-    //L = log_prob_node(bnet.CPD{j}, data(j,:), data(ps,:));
-    //S = struct(bnet.CPD{j}); % violate object privacy
-    //score = L - 0.5*S.nparams*log(ncases);
-  } else {
-    assert(1 == 2);
   }
 
   cpd_delete(cpd);
+  matrix_scrap(data_sub_1);
+  matrix_scrap(data_sub_2);
   matrix_delete(dag);
   return score;
 }
 
-Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order, char *scoring_fn) {
+Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order) {
   assert(order->count == data->rows);
   int n = data->rows;
   int max_fan_in = n;
@@ -143,7 +141,7 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order, char *scoring_fn)
   for (int i = 0; i < n; ++i) {
     List *ps = list_empty();
     int j = list_get_int(order, i);
-    double score = score_family(j, ps, ns, discrete, data, scoring_fn);
+    double score = score_family(j, ps, ns, discrete, data);
 #if VERBOSE
     printf("\nnode %d, empty score %6.4f\n", j, score);
 #endif
@@ -156,7 +154,7 @@ Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order, char *scoring_fn)
       for (int pi = 0; pi < nps; ++pi) {
         int p = list_get_int(pps, pi);
         int n_index = list_push_int(ps, p);
-        *((double *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, ns, discrete, data, scoring_fn);
+        *((double *) matrix_element_by_index(pscore, pi)) = score_family(j, ps, ns, discrete, data);
 #if VERBOSE
         printf("considering adding %d to %d, score %6.4f\n", p, j, *((double *) matrix_element_by_index(pscore, pi)));
 #endif
@@ -235,7 +233,7 @@ Matrix *MPI_Matrix_Recv(int from_index) {
 }
 #endif
 
-int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int topologies, char *f_output, char *scoring_fn) {
+int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int topologies, char *f_output) {
   Matrix *data = matrix_from_file(f_data, data_transposed), *sz = matrix_create_sz(data);
 #if MPI
   assert(forkIndex > -1);
@@ -268,7 +266,7 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
-    Matrix *bnet = learn_struct_K2(data, sz, order, scoring_fn);
+    Matrix *bnet = learn_struct_K2(data, sz, order);
     assert(consensus_network->rows == bnet->rows);
     assert(consensus_network->cols == bnet->cols);
 
@@ -318,9 +316,8 @@ int main(int argc, char **argv) {
   int threads = 1, topologies = 1;
   bool data_transposed = false;
   char *data = NULL, *output = "consensus.csv";
-  char *scoring_fn = "bayesian";
   int c;
-  while ((c = getopt(argc, argv, "Thp:d:t:o:s:")) != -1) {
+  while ((c = getopt(argc, argv, "Thp:d:t:o:")) != -1) {
     switch (c) {
     case 'T': {
       data_transposed = true;
@@ -344,10 +341,6 @@ int main(int argc, char **argv) {
       output = optarg;
       break;
     }
-    case 's': {
-      scoring_fn = optarg;
-      break;
-    }
     case 'h':
     default: {
       puts(": -p <num_threads> -d <data file> -t <topologies per gene> -o <output file>");
@@ -361,7 +354,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   omp_set_num_threads(threads);
-  int status = exec(forkIndex, forkSize, data_transposed, data, topologies, output, scoring_fn);
+  int status = exec(forkIndex, forkSize, data_transposed, data, topologies, output);
 #if MPI
   MPI_Finalize();
 #endif
