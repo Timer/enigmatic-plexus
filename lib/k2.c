@@ -127,9 +127,10 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     List *fam = list_slice(ps, 0, ps->count);
     int a_index = list_push_int(fam, j);
     Matrix *data_sub_3 = matrix_sub_list_index(data, fam, 0, data->cols);
-    Matrix *count = compute_counts(data_sub_3, cpd->sizes);
+    Matrix *counts = compute_counts(data_sub_3, cpd->sizes);
     matrix_scrap(data_sub_3);
-    //CPD.CPT = mk_stochastic(counts + CPD.dirichlet);
+    cpd->cpt = matrix_add(counts, cpd->dirichlet);
+    matrix_delete(counts);
     double L = log_prob_node(cpd, data_sub_1, data_sub_2);
     //score = L - 0.5*S.nparams*log(ncases);
     free(list_remove(fam, a_index));
