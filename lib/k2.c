@@ -112,14 +112,14 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
          *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   double score;
-  if (scoring_method == 'bayesian') {
+  if (scoring_method == 'bic') {
     // bnet.CPD{j} = learn_params(bnet.CPD{j},  fam, data, ns, bnet.cnodes)
     // L = log_prob_node(bnet.CPD{j}, data(j,:), data(ps,:));
     // S = struct(bnet.CPD{j}); % violate object privacy
-    // score = L - 0.5*S.nparams*log(ncases);
+    score = L - 0.5 * S.nparams * log(ncases);
   }
-  else {
-
+  else if (scoring_method == 'bayesian') {
+    score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
   }
 
   cpd_delete(cpd);
