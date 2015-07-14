@@ -165,7 +165,7 @@ double matrix_double_sum(Matrix *matrix) {
   return p;
 }
 
-void matrix_dobule_set(Matrix *matrix, int value) {
+void matrix_double_set(Matrix *matrix, double value) {
   double **data = (double **) matrix->data;
   for (int i = 0; i < matrix->rows * matrix->cols; ++i) {
     *data[i] = value;

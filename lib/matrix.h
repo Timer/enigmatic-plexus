@@ -22,7 +22,7 @@ void matrix_set(Matrix *matrix, int value);
 int matrix_prod(Matrix *matrix);
 int matrix_sum(Matrix *matrix);
 double matrix_double_sum(Matrix *matrix);
-void matrix_dobule_set(Matrix *matrix, int value);
+void matrix_double_set(Matrix *matrix, double value);
 Matrix *matrix_sub_indices(Matrix *o_matrix, int row_start, int row_end, int col_start, int col_end);
 Matrix *matrix_sub_lists(Matrix *o_matrix, List *rows, List *cols);
 Matrix *matrix_sub_list_index(Matrix *o_matrix, List *rows, int col_start, int col_end);
