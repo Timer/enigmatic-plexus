@@ -5,7 +5,7 @@
 #define BNET_H
 
 typedef struct {
-  Matrix *sizes, *dirichlet;
+  Matrix *sizes, *dirichlet, *CPT;
 } CPD;
 
 void cpd_delete(CPD *cpd);
