@@ -100,7 +100,7 @@ CPD *tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   return cpd;
 }
 
-double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data) {
+double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, char* scoring_method) {
   Matrix *dag = matrix_zeros(data->rows, data->rows);
   if (ps->count > 0) {
     Matrix *dag_sub = matrix_sub_list_index(dag, ps, j, j + 1);
@@ -111,7 +111,17 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data) {
   CPD *cpd = tabular_CPD(dag, ns, j);
   Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
          *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
-  double score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
+  double score;
+  if (scoring_method == 'bayesian') {
+    // bnet.CPD{j} = learn_params(bnet.CPD{j},  fam, data, ns, bnet.cnodes)
+    // L = log_prob_node(bnet.CPD{j}, data(j,:), data(ps,:));
+    // S = struct(bnet.CPD{j}); % violate object privacy
+    // score = L - 0.5*S.nparams*log(ncases);
+  }
+  else {
+
+  }
+
   cpd_delete(cpd);
   matrix_scrap(data_sub_1);
   matrix_scrap(data_sub_2);
