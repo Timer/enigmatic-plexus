@@ -83,6 +83,15 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
+double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
+  double score;  //TODO: this
+  //[P, p] = prob_node(CPD, self_ev, pev); % P may underflow, so we use p
+  //tiny = exp(-700);
+  //p = p + (p==0)*tiny; % replace 0s by tiny
+  //L = sum(log(p));
+  return score;
+}
+
 CPD *tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   CPD *cpd = malloc(sizeof(CPD));
   List *ps = adjacency_matrix_parents(dag, self);
@@ -108,20 +117,17 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     matrix_scrap(dag_sub);
     //TODO: sort `ps` here.
   }
+  Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
+         *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
   CPD *cpd = tabular_CPD(dag, ns, j);
   double score;
   if (!strcmp(scoring_fn, "bayesian")) {
-    Matrix *data_sub_1 = matrix_sub_indices(data, j, j + 1, 0, data->cols),
-           *data_sub_2 = matrix_sub_list_index(data, ps, 0, data->cols);
     score = log_marg_prob_node(cpd, data_sub_1, data_sub_2);
-    matrix_scrap(data_sub_1);
-    matrix_scrap(data_sub_2);
   } else if (!strcmp(scoring_fn, "bic")) {
     List *fam = list_slice(ps, 0, ps->count);
     int a_index = list_push_int(fam, j);
     //bnet.CPD{j} = learn_params(bnet.CPD{j},  fam, data, ns, bnet.cnodes);
-    //L = log_prob_node(bnet.CPD{j}, data(j,:), data(ps,:));
-    //S = struct(bnet.CPD{j}); % violate object privacy
+    double L = log_prob_node(cpd, data_sub_1, data_sub_2);
     //score = L - 0.5*S.nparams*log(ncases);
     free(list_remove(fam, a_index));
     list_scrap(fam);
@@ -130,6 +136,8 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
   }
 
   cpd_delete(cpd);
+  matrix_scrap(data_sub_1);
+  matrix_scrap(data_sub_2);
   matrix_delete(dag);
   return score;
 }
