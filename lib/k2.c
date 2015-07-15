@@ -131,6 +131,7 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     matrix_scrap(data_sub_3);
     cpd->cpt = matrix_add(counts, cpd->dirichlet);
     matrix_delete(counts);
+    matrix_mk_stochastic(cpd->cpt, ns);
     double L = log_prob_node(cpd, data_sub_1, data_sub_2);
     //score = L - 0.5*S.nparams*log(ncases);
     free(list_remove(fam, a_index));
