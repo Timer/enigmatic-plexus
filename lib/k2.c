@@ -102,19 +102,8 @@ Matrix *prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 }
 
 double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
-  double score = 0;  //TODO: this
-  //[P, p] = prob_node(CPD, self_ev, pev); % P may underflow, so we use p
-
-  //tiny = exp(-700); % we will use DBL_MIN
-
-  // % temporary matrix until we have a return from prob_node
+  double score = 0;
   Matrix *p = prob_node(cpd, self_ev, pev);
-
-  //p = p + (p==0)*tiny; % replace 0s by tiny
-  //L = sum(log(p));
-  // % we need to make sure the values arent 0, because we take the log
-  // % so i check for 0, if its <= zero i take the log of DBL_MIN
-  // % otherwise i just set p to its own logs
   double log_dbl_min = log(DBL_MIN);
   double **data = (double **) p->data;
   for (int i = 0; i < p->rows * p->cols; ++i, ++data) {
