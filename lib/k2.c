@@ -83,14 +83,14 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
-Matrix* prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev, Matrix* sz) {
+Matrix* prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 
   Matrix *sample_data = matrix_sub_concat_rows(pev, self_ev);
   Matrix *prob = matrix_double_zeros(sample_data->rows, sample_data->cols);
   for (int i = 0; i < sample_data->cols; ++i) {
     Matrix *mat_col = matrix_sub_col(sample_data, i);
     int index = 0;
-    int **id = (int **) mat_col->data, **dd = (int **) sz->data;
+    int **id = (int **) mat_col->data, **dd = (int **) cpd->sizes->data;
     for (int j = 0, m = 1; j < mat_col->rows * mat_col->cols; m *= *dd[j++]) {
       assert((*id[j]) - 1 < *dd[j]);
       index += ((*id[j]) - 1) * m;
@@ -109,7 +109,7 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   //tiny = exp(-700); % we will use DBL_MIN
 
   // % temporary matrix until we have a return from prob_node
-  Matrix* p = prob_node(cpd, self_ev, pev, sz);
+  Matrix* p = prob_node(cpd, self_ev, pev);
 
   //p = p + (p==0)*tiny; % replace 0s by tiny
   //L = sum(log(p));
