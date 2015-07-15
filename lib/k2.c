@@ -152,9 +152,9 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     Matrix *data_sub_3 = matrix_sub_list_index(data, fam, 0, data->cols);
     Matrix *counts = compute_counts(data_sub_3, cpd->sizes);
     matrix_scrap(data_sub_3);
-    cpd->cpt = matrix_add(counts, cpd->dirichlet);
+    cpd->cpt = matrix_add_int_double(counts, cpd->dirichlet);
     matrix_delete(counts);
-    matrix_mk_stochastic(cpd->cpt, ns);
+    matrix_double_mk_stochastic(cpd->cpt, ns);
     double L = log_prob_node(cpd, data_sub_1, data_sub_2);
     Matrix *sz = cpd->sizes;
     int *last = (int *) sz->data[sz->rows * sz->cols - 1];
