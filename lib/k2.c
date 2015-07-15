@@ -104,7 +104,7 @@ Matrix *prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   double score = 0;
   Matrix *p = prob_node(cpd, self_ev, pev);
-  double log_dbl_min = log(DBL_MIN);
+  double log_dbl_min = -700;
   double **data = (double **) p->data;
   for (int i = 0; i < p->rows * p->cols; ++i, ++data) {
     double d = **data;
