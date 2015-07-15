@@ -431,7 +431,7 @@ void matrix_double_mk_stochastic(Matrix *m, Matrix *ns) {
   assert(index_count % dim == 0);
   Matrix *div = matrix_double_sum_n_cols(m, dim);
   for (int i = 0; i < index_count; ++i) {
-    *(double *) matrix_element_by_index(m, i) = (*(double *) matrix_element_by_index(m, i)) / (*(double *) matrix_element_by_index(m, i % (index_count / dim)));
+    *(double *) matrix_element_by_index(m, i) = (*(double *) matrix_element_by_index(m, i)) / (*(double *) matrix_element_by_index(div, i % (index_count / dim)));
   }
   matrix_delete(div);
 }
