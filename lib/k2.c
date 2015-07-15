@@ -83,6 +83,25 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
+Matrix* prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev, Matrix* sz) {
+
+  Matrix *sample_data = matrix_sub_concat_rows(pev, self_ev);
+  Matrix *prob = matrix_double_zeros(sample_data->rows, sample_data->cols);
+  for (int i = 0; i < sample_data->cols; ++i) {
+    Matrix *mat_col = matrix_sub_col(sample_data, i);
+    int index = 0;
+    int **id = (int **) mat_col->data, **dd = (int **) sz->data;
+    for (int j = 0, m = 1; j < mat_col->rows * mat_col->cols; m *= *dd[j++]) {
+      assert((*id[j]) - 1 < *dd[j]);
+      index += ((*id[j]) - 1) * m;
+    }
+    matrix_scrap(mat_col);
+    *(double*) matrix_element_by_index(prob, i) =  *(double*) matrix_element_by_index(cpd->cpt, index);
+  }
+  matrix_scrap(sample_data);
+  return prob;
+}
+
 double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   double score;  //TODO: this
   //[P, p] = prob_node(CPD, self_ev, pev); % P may underflow, so we use p
@@ -95,10 +114,10 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   //p = p + (p==0)*tiny; % replace 0s by tiny
   //L = sum(log(p));
   // % we need to make sure the values arent 0, because we take the log
-  // % so i check for 0, if its zero i take the log of DBL_MIN
+  // % so i check for 0, if its <= zero i take the log of DBL_MIN
   // % otherwise i just set p to its own logs
   for (int i = 0; i < p->rows * p->rows; ++i) {
-    if (*(double*) matrix_element_by_index(p, i) == 0) {
+    if (*(double*) matrix_element_by_index(p, i) <= 0) {
       *(double*) matrix_element_by_index(p, i) = log(DBL_MIN);
     }
     else {
