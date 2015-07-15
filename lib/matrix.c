@@ -425,13 +425,13 @@ Matrix *matrix_create_sz(Matrix *matrix) {
   return r;
 }
 
-void matrix_mk_stochastic(Matrix* m, Matrix* ns) {
-  int dim = *(int*) matrix_element_by_index(ns, (ns->rows * ns->cols) - 1);
+void matrix_mk_stochastic(Matrix *m, Matrix *ns) {
+  int dim = *(int *) matrix_element_by_index(ns, (ns->rows * ns->cols) - 1);
   int index_count = m->rows * m->cols;
   assert(index_count % dim == 0);
-  Matrix* div = matrix_double_sum_n_cols(m, dim);
+  Matrix *div = matrix_double_sum_n_cols(m, dim);
   for (int i = 0; i < index_count; ++i) {
-    *(double* ) matrix_element_by_index(m, i) = (*(double* ) matrix_element_by_index(m, i)) / (*(double* ) matrix_element_by_index(m, i % (index_count/dim)));
+    *(double *) matrix_element_by_index(m, i) = (*(double *) matrix_element_by_index(m, i)) / (*(double *) matrix_element_by_index(m, i % (index_count / dim)));
   }
   matrix_delete(div);
 }

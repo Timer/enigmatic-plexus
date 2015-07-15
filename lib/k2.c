@@ -83,8 +83,7 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   return score;
 }
 
-Matrix* prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
-
+Matrix *prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   Matrix *sample_data = matrix_sub_concat_rows(pev, self_ev);
   Matrix *prob = matrix_double_zeros(sample_data->rows, sample_data->cols);
   for (int i = 0; i < sample_data->cols; ++i) {
@@ -96,7 +95,7 @@ Matrix* prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
       index += ((*id[j]) - 1) * m;
     }
     matrix_scrap(mat_col);
-    *(double*) matrix_element_by_index(prob, i) =  *(double*) matrix_element_by_index(cpd->cpt, index);
+    *(double *) matrix_element_by_index(prob, i) = *(double *) matrix_element_by_index(cpd->cpt, index);
   }
   matrix_scrap(sample_data);
   return prob;
@@ -109,7 +108,7 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   //tiny = exp(-700); % we will use DBL_MIN
 
   // % temporary matrix until we have a return from prob_node
-  Matrix* p = prob_node(cpd, self_ev, pev);
+  Matrix *p = prob_node(cpd, self_ev, pev);
 
   //p = p + (p==0)*tiny; % replace 0s by tiny
   //L = sum(log(p));
@@ -118,11 +117,10 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   // % otherwise i just set p to its own logs
   double log_dbl_min = log(DBL_MIN);
   for (int i = 0; i < p->rows * p->rows; ++i) {
-    if (*(double*) matrix_element_by_index(p, i) <= 0) {
+    if (*(double *) matrix_element_by_index(p, i) <= 0) {
       score += log_dbl_min;
-    }
-    else {
-      score += log(*(double*) matrix_element_by_index(p, i));
+    } else {
+      score += log(*(double *) matrix_element_by_index(p, i));
     }
   }
   matrix_delete(p);
@@ -170,7 +168,7 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     matrix_delete(counts);
     matrix_mk_stochastic(cpd->cpt, ns);
     double L = log_prob_node(cpd, data_sub_1, data_sub_2);
-    //score = L - 0.5*S.nparams*log(ncases);
+    score = L - 0.5;  //L - 0.5 * S.nparams * log(ncases);
     free(list_remove(fam, a_index));
     list_scrap(fam);
   } else {

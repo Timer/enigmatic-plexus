@@ -50,6 +50,6 @@ Matrix *matrix_double_sum_n_cols(Matrix *matrix, int cols);
 Matrix *matrix_double_subtract(Matrix *m1, Matrix *m2);
 Matrix *matrix_lgamma(Matrix *m);
 Matrix *matrix_create_sz(Matrix *matrix);
-void matrix_mk_stochastic(Matrix* m, Matrix* ns);
+void matrix_mk_stochastic(Matrix *m, Matrix *ns);
 
 #endif
