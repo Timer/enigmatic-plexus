@@ -155,7 +155,11 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     matrix_delete(counts);
     matrix_mk_stochastic(cpd->cpt, ns);
     double L = log_prob_node(cpd, data_sub_1, data_sub_2);
-    score = L - 0.5;  //L - 0.5 * S.nparams * log(ncases);
+    Matrix *sz = cpd->sizes;
+    int *last = (int *) sz->data[sz->rows * sz->cols - 1];
+    --*last;
+    score = L - 0.5 * matrix_prod(cpd->sizes) * log(data->cols);
+    ++*last;
     free(list_remove(fam, a_index));
     list_scrap(fam);
   } else {
