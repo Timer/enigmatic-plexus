@@ -159,7 +159,7 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
     Matrix *sz = cpd->sizes;
     int *last = (int *) sz->data[sz->rows * sz->cols - 1];
     --*last;
-    score = L - 0.5 * matrix_prod(cpd->sizes) * log(data->cols);
+    score = L - 0.5 * matrix_prod(sz) * log(data->cols);
     ++*last;
     free(list_remove(fam, a_index));
     list_scrap(fam);
