@@ -103,7 +103,7 @@ Matrix* prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 }
 
 double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
-  double score;  //TODO: this
+  double score = 0;  //TODO: this
   //[P, p] = prob_node(CPD, self_ev, pev); % P may underflow, so we use p
 
   //tiny = exp(-700); % we will use DBL_MIN
@@ -119,13 +119,12 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   double log_dbl_min = log(DBL_MIN);
   for (int i = 0; i < p->rows * p->rows; ++i) {
     if (*(double*) matrix_element_by_index(p, i) <= 0) {
-      *(double*) matrix_element_by_index(p, i) = log_dbl_min;
+      score += log_dbl_min;
     }
     else {
-      *(double*) matrix_element_by_index(p, i) = log(*(double*) matrix_element_by_index(p, i));
+      score += log(*(double*) matrix_element_by_index(p, i));
     }
   }
-  double L =  matrix_double_sum(p);
   matrix_delete(p);
   return score;
 }
