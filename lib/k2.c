@@ -116,9 +116,10 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   // % we need to make sure the values arent 0, because we take the log
   // % so i check for 0, if its <= zero i take the log of DBL_MIN
   // % otherwise i just set p to its own logs
+  double log_dbl_min = log(DBL_MIN);
   for (int i = 0; i < p->rows * p->rows; ++i) {
     if (*(double*) matrix_element_by_index(p, i) <= 0) {
-      *(double*) matrix_element_by_index(p, i) = log(DBL_MIN);
+      *(double*) matrix_element_by_index(p, i) = log_dbl_min;
     }
     else {
       *(double*) matrix_element_by_index(p, i) = log(*(double*) matrix_element_by_index(p, i));
