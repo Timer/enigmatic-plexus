@@ -86,9 +86,27 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   double score;  //TODO: this
   //[P, p] = prob_node(CPD, self_ev, pev); % P may underflow, so we use p
-  //tiny = exp(-700);
+
+  //tiny = exp(-700); % we will use DBL_MIN
+
+  // % temporary matrix until we have a return from prob_node
+  Matrix* p = matrix_double_zeros(self_ev->rows, self_ev->cols + 1);
+
   //p = p + (p==0)*tiny; % replace 0s by tiny
   //L = sum(log(p));
+  // % we need to make sure the values arent 0, because we take the log
+  // % so i check for 0, if its zero i take the log of DBL_MIN
+  // % otherwise i just set p to its own logs
+  for (int i = 0; i < p->rows * p->rows; ++i) {
+    if (*(double*) matrix_element_by_index(p, i) == 0) {
+      *(double*) matrix_element_by_index(p, i) = log(DBL_MIN);
+    }
+    else {
+      *(double*) matrix_element_by_index(p, i) = log(*(double*) matrix_element_by_index(p, i));
+    }
+  }
+  double L =  matrix_double_sum(p);
+  matrix_delete(p);
   return score;
 }
 
