@@ -109,7 +109,7 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   //tiny = exp(-700); % we will use DBL_MIN
 
   // % temporary matrix until we have a return from prob_node
-  Matrix* p = matrix_double_zeros(self_ev->rows, self_ev->cols + 1);
+  Matrix* p = prob_node(cpd, self_ev, pev, sz);
 
   //p = p + (p==0)*tiny; % replace 0s by tiny
   //L = sum(log(p));
