@@ -116,12 +116,10 @@ double log_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   // % so i check for 0, if its <= zero i take the log of DBL_MIN
   // % otherwise i just set p to its own logs
   double log_dbl_min = log(DBL_MIN);
-  for (int i = 0; i < p->rows * p->rows; ++i) {
-    if (*(double *) matrix_element_by_index(p, i) <= 0) {
-      score += log_dbl_min;
-    } else {
-      score += log(*(double *) matrix_element_by_index(p, i));
-    }
+  double **data = (double **) p->data;
+  for (int i = 0; i < p->rows * p->cols; ++i, ++data) {
+    double d = **data;
+    score += d <= 0 ? log_dbl_min : log(d);
   }
   matrix_delete(p);
   return score;
