@@ -6,7 +6,7 @@
 void cpd_delete(CPD *cpd) {
   matrix_delete(cpd->sizes);
   matrix_delete(cpd->dirichlet);
-  matrix_delete(cpd->cpt);
+  if (cpd->cpt != NULL) matrix_delete(cpd->cpt);
   free(cpd);
 }
 

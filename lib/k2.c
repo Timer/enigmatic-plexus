@@ -128,6 +128,7 @@ CPD *tabular_CPD(Matrix *dag, Matrix *ns, int self) {
   list_delete(ps);
   matrix_scrap(calc);
   cpd->dirichlet = matrix_double_create(matrix_prod(fam_sz), 1, (1.0 / psz) * (1.0 / *(int *) matrix_element_by_index(ns, self)));
+  cpd->cpt = NULL;
   return cpd;
 }
 
