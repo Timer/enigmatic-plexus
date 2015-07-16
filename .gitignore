@@ -30,3 +30,6 @@
 
 # Debug files
 *.dSYM/
+
+# Javascript files
+lib/js/node_modules
