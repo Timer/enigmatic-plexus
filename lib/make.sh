@@ -3,10 +3,10 @@ cd $(dirname "$0")
 CC=gcc
 OS=`uname`
 NODE=`uname -n`
-FLAGS=""
+FLAGS="-std=gnu99 -fopenmp -lmpi"
 if ! [[ $NODE =~ h20login ]]; then
   CC=cc
-  FLAGS="-std=gnu99 -fopenmp -lmpi"
+  FLAGS=""
 fi
 if command -v clang-format >/dev/null 2>&1; then
   echo "Linting..."
