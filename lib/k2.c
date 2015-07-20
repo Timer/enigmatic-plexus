@@ -335,14 +335,13 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
       matrix_add_in(consensus_network, merge);
       matrix_delete(merge);
     }
-    matrix_to_file(consensus_network, f_output);
   } else {
     MPI_Matrix_Send(0, consensus_network);
   }
 #else
   matrix_to_file(orders, "topologies.csv");
-  matrix_to_file(consensus_network, f_output);
 #endif
+  matrix_to_file(consensus_network, f_output);
   matrix_delete(orders);
   matrix_delete(consensus_network);
   return 0;
