@@ -2,6 +2,12 @@
 cd $(dirname "$0")
 CC=gcc
 OS=`uname`
+NODE=`uname -n`
+FLAGS=""
+if ! [[ $NODE =~ h20login ]]; then
+  CC=cc
+  FLAGS="-std=gnu99 -fopenmp -lmpi"
+fi
 if command -v clang-format >/dev/null 2>&1; then
   echo "Linting..."
   clang-format -i *.c *.h
@@ -12,11 +18,12 @@ if [ $OS == "Darwin" ]; then
 fi
 echo "... using $CC."
 rm *.out
-$CC -std=gnu99 -fopenmp -lmpi -c $(find . -name \*.c) -lm
+$CC $FLAGS -c $(find . -name \*.c) -lm
 if [ $OS == "Darwin" ]; then
   rm benchmark-native.o
 fi
 echo "Building..."
-$CC -std=gnu99 -fopenmp -lmpi $(find . -name \*.o -not -name k2.o) -o test.out -lm
-$CC -std=gnu99 -fopenmp -lmpi $(find . -name \*.o -not -name test.o) -o k2.out -lm
+
+$CC $FLAGS $(find . -name \*.o -not -name k2.o) -o test.out -lm
+$CC $FLAGS $(find . -name \*.o -not -name test.o) -o k2.out -lm
 rm $(find . -name \*.o)
