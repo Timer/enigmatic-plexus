@@ -287,6 +287,7 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
   topologies = top_d;
 #endif
   Matrix *orders = matrix_zeros(data->rows * topologies, data->rows);
+  Matrix *networks = matrix_zeros(data->rows * topologies, data->rows * data->rows);
 
 #pragma omp parallel for
   for (int r = 0; r < orders->rows; ++r) {
@@ -319,6 +320,10 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
       *(int *) matrix_element_by_index(consensus_network, i) += *(int *) matrix_element_by_index(bnet, i) ? 1 : 0;
     }
 
+    for (int i = 0; i < cn_n_elements; ++i) {
+      *(int *) matrix_element_by_index(networks, i + cn_n_elements * o) = *(int *) matrix_element_by_index(bnet, i);
+    }
+
     matrix_delete(bnet);
     list_delete(order);
     matrix_scrap(m_order);
@@ -341,15 +346,23 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
       matrix_scrap(old);
       matrix_scrap(merge);
     }
+    for (int i = 1; i < forkSize; ++i) {
+      Matrix *merge = MPI_Matrix_Recv(i), *old = networks;
+      orders = matrix_sub_concat_rows(networks, merge);
+      matrix_scrap(old);
+      matrix_scrap(merge);
+    }
   } else {
     MPI_Matrix_Send(0, consensus_network);
     MPI_Matrix_Send(0, orders);
+    MPI_Matrix_Send(0, networks);
   }
 #else
   matrix_to_file(orders, "topologies.csv");
 #endif
   matrix_to_file(consensus_network, f_output);
   matrix_delete(orders);
+  matrix_delete(networks);
   matrix_delete(consensus_network);
   return 0;
 }
