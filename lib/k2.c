@@ -370,7 +370,7 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
   matrix_to_file(consensus_network, f_output);
 #if SAVE_NETWORKS
   matrix_to_file(networks, "networks.csv");
-  matrix_to_file(topologies, "topologies.csv");
+  matrix_to_file(orders, "topologies.csv");
 #endif
   matrix_delete(orders);
   matrix_delete(networks);
