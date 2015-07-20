@@ -354,7 +354,7 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
     }
     for (int i = 1; i < forkSize; ++i) {
       Matrix *merge = MPI_Matrix_Recv(i), *old = networks;
-      orders = matrix_sub_concat_rows(networks, merge);
+      networks = matrix_sub_concat_rows(networks, merge);
       matrix_scrap(old);
       matrix_scrap(merge);
     }
