@@ -4,7 +4,7 @@ CC=gcc
 OS=`uname`
 NODE=`uname -n`
 FLAGS="-std=gnu99 -fopenmp -lmpi"
-if ! [[ $NODE =~ h20login ]]; then
+if [[ $NODE =~ h20login ]]; then
   CC=cc
   FLAGS=""
 fi
