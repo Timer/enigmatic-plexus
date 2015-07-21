@@ -29,7 +29,7 @@ Matrix *matrix_sub_list_index(Matrix *o_matrix, List *rows, int col_start, int c
 Matrix *matrix_sub_index_list(Matrix *o_matrix, int row_start, int row_end, List *cols);
 Matrix *matrix_sub_col(Matrix *matrix, int col);
 Matrix *matrix_sub_row(Matrix *matrix, int row);
-Matrix *matrix_sub_concat_rows(Matrix *matrix, Matrix *rows);
+Matrix *matrix_sub_concat_rows(Matrix *matrix, Matrix *rows, bool parallel);
 List *matrix_find_by_value(Matrix *matrix, int value);
 List *matrix_double_find_by_value(Matrix *matrix, double value);
 List *matrix_to_list(Matrix *matrix);

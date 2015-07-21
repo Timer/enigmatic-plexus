@@ -76,7 +76,7 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
   assert(self_ev->rows == 1);
   assert(cpd->sizes->cols == 1);
   assert(pev->cols == self_ev->cols);
-  Matrix *data = matrix_sub_concat_rows(pev, self_ev);
+  Matrix *data = matrix_sub_concat_rows(pev, self_ev, false);
   Matrix *counts = compute_counts(data, cpd->sizes);
   matrix_scrap(data);
   double score = dirichlet_score_family(counts, cpd);
@@ -85,7 +85,7 @@ double log_marg_prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
 }
 
 Matrix *prob_node(CPD *cpd, Matrix *self_ev, Matrix *pev) {
-  Matrix *sample_data = matrix_sub_concat_rows(pev, self_ev);
+  Matrix *sample_data = matrix_sub_concat_rows(pev, self_ev, false);
   Matrix *prob = matrix_double_zeros(sample_data->rows, sample_data->cols);
   for (int i = 0; i < sample_data->cols; ++i) {
     Matrix *mat_col = matrix_sub_col(sample_data, i);
@@ -348,13 +348,13 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
 #if SAVE_NETWORKS
     for (int i = 1; i < forkSize; ++i) {
       Matrix *merge = MPI_Matrix_Recv(i), *old = orders;
-      orders = matrix_sub_concat_rows(orders, merge);
+      orders = matrix_sub_concat_rows(orders, merge, true);
       matrix_scrap(old);
       matrix_scrap(merge);
     }
     for (int i = 1; i < forkSize; ++i) {
       Matrix *merge = MPI_Matrix_Recv(i), *old = networks;
-      networks = matrix_sub_concat_rows(networks, merge);
+      networks = matrix_sub_concat_rows(networks, merge, true);
       matrix_scrap(old);
       matrix_scrap(merge);
     }

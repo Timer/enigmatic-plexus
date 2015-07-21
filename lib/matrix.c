@@ -231,16 +231,18 @@ Matrix *matrix_sub_row(Matrix *matrix, int row) {
   return matrix_sub_indices(matrix, row, row + 1, 0, matrix->cols);
 }
 
-Matrix *matrix_sub_concat_rows(Matrix *matrix, Matrix *rows) {
+Matrix *matrix_sub_concat_rows(Matrix *matrix, Matrix *rows, bool parallel) {
   assert(matrix->cols == rows->cols);
   Matrix *m = matrix_raw(matrix->rows + rows->rows, matrix->cols);
   int **m1_data = (int **) matrix->data, **m2_data = (int **) rows->data,
       **m_data = (int **) m->data;
+#pragma omp parallel for if (parallel) collapse(2)
   for (int r = 0; r < matrix->rows; ++r) {
     for (int c = 0; c < matrix->cols; ++c) {
       m_data[_matrix_index_for(m, r, c)] = m1_data[_matrix_index_for(matrix, r, c)];
     }
   }
+#pragma omp parallel for if (parallel) collapse(2)
   for (int r = 0; r < rows->rows; ++r) {
     for (int c = 0; c < rows->cols; ++c) {
       m_data[_matrix_index_for(m, matrix->rows + r, c)] = m2_data[_matrix_index_for(rows, r, c)];
