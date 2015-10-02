@@ -1,0 +1,13 @@
+----------------------------------------
+Begin Torque Prologue on nid25350
+at Sun Sep 27 18:42:25 CDT 2015
+Job Id:			2283655.nid11293
+Username:		deeter
+Group:			EOT_gj6
+Job name:		data.pbs
+Requested resources:	neednodes=1:ppn=32,nodes=1:ppn=32,walltime=00:30:00
+Queue:			normal
+Account:		gj6
+End Torque Prologue:  0.032 elapsed
+----------------------------------------
+Application 28006103 resources: utime ~253s, stime ~1s, Rss ~54368, inblocks ~8200, outblocks ~19686
