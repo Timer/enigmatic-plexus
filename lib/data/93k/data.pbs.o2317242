@@ -1,0 +1,15 @@
+----------------------------------------
+Begin Torque Prologue on nid25261
+at Wed Oct  7 00:45:30 CDT 2015
+Job Id:			2317242.nid11293
+Username:		deeter
+Group:			EOT_gj6
+Job name:		data.pbs
+Requested resources:	neednodes=130:ppn=32,nodes=130:ppn=32,walltime=00:30:00
+Queue:			normal
+Account:		gj6
+End Torque Prologue:  0.049 elapsed
+----------------------------------------
+Application 28112463 exit codes: 134
+Application 28112463 exit signals: Killed
+Application 28112463 resources: utime ~0s, stime ~130s, Rss ~14340, inblocks ~1036984, outblocks ~2559050
