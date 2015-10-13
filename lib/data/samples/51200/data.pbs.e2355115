@@ -1,0 +1,6 @@
+aprun: file ./k2.out not found
+aprun: Exiting due to errors. Application aborted
+
+real	0m0.657s
+user	0m0.044s
+sys	0m0.052s
