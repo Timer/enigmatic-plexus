@@ -29,12 +29,12 @@ for (my $i= 0; $i < 10; ++$i) {
 	}
     }
 
-    print $pbs "#!/bin/bash\n";
-    print $pbs "#PBS -l nodes=52:ppn=32\n";
-    print $pbs "#PBS -l walltime=00:30:00\n";
-    print $pbs "cd \$PBS_O_WORKDIR\n\n";
+    print $pbs "#!/bin/bash";
+    print $pbs "#PBS -l nodes=52:ppn=32";
+    print $pbs "#PBS -l walltime=00:30:00";
+    print $pbs "cd \$PBS_O_WORKDIR";
 
-    print $pbs "time aprun -n 52 -d 32 ./k2.out -t 64 -d data.csv -p 32 -m 5\n";
+    print $pbs "time aprun -n 52 -d 32 ./k2.out -t 64 -d data.csv -p 32";
     
     close $in;
     close $train;

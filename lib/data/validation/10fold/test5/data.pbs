@@ -3,4 +3,4 @@
 #PBS -l walltime=00:30:00
 cd $PBS_O_WORKDIR
 
-time aprun -n 52 -d 32 ./k2.out -t 64 -d data.csv -p 32
+time aprun -n 52 -d 32 ./k2.out -t 64 -d data.csv -p 32 -m 5
