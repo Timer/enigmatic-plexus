@@ -12,9 +12,9 @@
 #include "bnet.h"
 #include "rand.h"
 
-#define MPI 0
+#define MPI 1
 #define VERBOSE 0
-#define SAVE_NETWORKS 1
+#define SAVE_NETWORKS 0
 
 #if MPI
 #include <mpi.h>
@@ -174,10 +174,10 @@ double score_family(int j, List *ps, Matrix *ns, List *discrete, Matrix *data, c
   return score;
 }
 
-Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order, char *scoring_fn) {
+Matrix *learn_struct_K2(Matrix *data, Matrix *ns, List *order, char *scoring_fn, int max_parents) {
   assert(order->count == data->rows);
   int n = data->rows;
-  int max_fan_in = n;
+  int max_fan_in = max_parents == 0 ? n : max_parents;
   List *discrete = list_empty();
   for (int i = 0; i < n; ++i) list_push_int(discrete, i);
 
@@ -278,7 +278,7 @@ Matrix *MPI_Matrix_Recv(int from_index) {
 }
 #endif
 
-int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int topologies, char *f_output, char *scoring_fn) {
+int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int topologies, char *f_output, char *scoring_fn, int max_parents) {
   Matrix *data = matrix_from_file(f_data, data_transposed), *sz = matrix_create_sz(data);
 #if MPI
   assert(forkIndex > -1);
@@ -314,7 +314,7 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
   for (int o = 0; o < orders->rows; ++o) {
     Matrix *m_order = matrix_sub_indices(orders, o, o + 1, 0, orders->cols);
     List *order = matrix_to_list(m_order);
-    Matrix *bnet = learn_struct_K2(data, sz, order, scoring_fn);
+    Matrix *bnet = learn_struct_K2(data, sz, order, scoring_fn, max_parents);
     assert(consensus_network->rows == bnet->rows);
     assert(consensus_network->cols == bnet->cols);
 
@@ -374,8 +374,10 @@ int exec(int forkIndex, int forkSize, bool data_transposed, char *f_data, int to
     matrix_to_file(orders, "topologies.csv");
 #endif
   }
-  matrix_delete(orders);
+#if SAVE_NETWORKS
   matrix_delete(networks);
+#endif
+  matrix_delete(orders);
   matrix_delete(consensus_network);
   return 0;
 }
@@ -389,7 +391,7 @@ int main(int argc, char **argv) {
 #endif
 
   srand(time(NULL) ^ forkIndex);
-  int threads = 1, topologies = 1;
+  int threads = 1, topologies = 1, max_parents = 0;
   bool data_transposed = false;
   char *data = NULL, *output = "consensus.csv";
   char *scoring_fn = "bayesian";
@@ -404,6 +406,11 @@ int main(int argc, char **argv) {
       threads = atoi(optarg);
       assert(threads > 0);
       assert(threads <= omp_get_num_procs());
+      break;
+    }
+    case 'm': {
+      max_parents = atoi(optarg);
+      assert(max_parents >= 0);
       break;
     }
     case 'd': {
@@ -424,7 +431,7 @@ int main(int argc, char **argv) {
     }
     case 'h':
     default: {
-      puts(": -p <num_threads> -d <data file> -t <topologies per gene> -o <output file>");
+      puts(": -p <num_threads> -d <data file> -t <topologies per gene> -o <output file> -m <max parents>");
       puts("~ -T (reads matrix transposed)");
       return 1;
     }
@@ -435,7 +442,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   omp_set_num_threads(threads);
-  int status = exec(forkIndex, forkSize, data_transposed, data, topologies, output, scoring_fn);
+  int status = exec(forkIndex, forkSize, data_transposed, data, topologies, output, scoring_fn, max_parents);
 #if MPI
   MPI_Finalize();
 #endif
