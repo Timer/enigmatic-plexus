@@ -1,0 +1,43 @@
+use strict;
+use warnings;
+
+my $infile = 'shuffled.csv';
+
+for (my $i= 0; $i < 10; ++$i) {
+
+    my $start = ($i * 4455);
+    my $end = $start + 4455;
+
+    my $existingdir = "./test$i";
+    mkdir $existingdir unless -d $existingdir; # Check if dir exists. If not create it.
+
+    my $trainfile = "train.csv";
+    my $testfile = "test.csv";
+    my $pbsfile = "data.pbs";
+
+    open my $in, '<', $infile or die "Cannot open $infile: $!";
+    open my $train, '>', "$existingdir/$trainfile" or die "Cannot open $trainfile: $!";
+    open my $test, '>', "$existingdir/$testfile" or die "Cannot open $testfile: $!";
+    open my $pbs, '>', "$existingdir/$pbsfile" or die "Cannot open $pbsfile: $!";
+    
+
+    while( my $line = <$in>)  {
+	if ($. > $start && $. <= $end) {
+	    print $test $line;    
+	} else {
+	    print $train $line;    
+	}
+    }
+
+    print $pbs "#!/bin/bash\n";
+    print $pbs "#PBS -l nodes=52:ppn=32\n";
+    print $pbs "#PBS -l walltime=00:30:00\n";
+    print $pbs "cd \$PBS_O_WORKDIR\n\n";
+
+    print $pbs "time aprun -n 52 -d 32 ./k2.out -t 64 -d data.csv -p 32\n";
+    
+    close $in;
+    close $train;
+    close $test;
+    close $pbs;
+}
