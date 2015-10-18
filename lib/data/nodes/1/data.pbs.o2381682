@@ -1,0 +1,13 @@
+----------------------------------------
+Begin Torque Prologue on nid25352
+at Sat Oct 17 23:04:11 CDT 2015
+Job Id:			2381682.nid11293
+Username:		haddad
+Group:			EOT_gj6
+Job name:		data.pbs
+Requested resources:	neednodes=1:ppn=32,nodes=1:ppn=32,walltime=00:30:00
+Queue:			normal
+Account:		gj6
+End Torque Prologue:  0.035 elapsed
+----------------------------------------
+Application 28302721 resources: utime ~200s, stime ~1s, Rss ~14880, inblocks ~8197, outblocks ~19687
