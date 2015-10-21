@@ -1,0 +1,14 @@
+use strict;
+use warnings;
+
+my $infile = 'olddata.csv';
+my $outfile = 'data.csv';
+
+
+
+while( my $line = <$in>)  {
+    print $test $line;    
+}
+
+close $in;
+}
