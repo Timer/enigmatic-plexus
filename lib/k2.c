@@ -12,7 +12,7 @@
 #include "bnet.h"
 #include "rand.h"
 
-#define MPI 1
+#define MPI 0
 #define VERBOSE 0
 #define SAVE_NETWORKS 0
 
