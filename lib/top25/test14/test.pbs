@@ -1,0 +1,6 @@
+#!/bin/bash
+#PBS -l nodes=52:ppn=32
+#PBS -l walltime=00:30:00
+cd $PBS_O_WORKDIR
+
+time aprun -n 52 -d 32 ./k2.out -t 60 -d data.csv -p 32 -m 5 -o top14.csv
