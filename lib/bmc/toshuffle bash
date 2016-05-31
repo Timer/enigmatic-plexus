@@ -1,0 +1,1 @@
+perl -MList::Util -e 'print List::Util::shuffle <>' total_data.csv > shuffled.csv
