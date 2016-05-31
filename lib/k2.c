@@ -396,7 +396,7 @@ int main(int argc, char **argv) {
   char *data = NULL, *output = "consensus.csv";
   char *scoring_fn = "bayesian";
   int c;
-  while ((c = getopt(argc, argv, "Thp:d:t:o:s:")) != -1) {
+  while ((c = getopt(argc, argv, "Thp:d:t:o:s:m:")) != -1) {
     switch (c) {
     case 'T': {
       data_transposed = true;
