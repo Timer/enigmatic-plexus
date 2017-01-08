@@ -14,7 +14,7 @@ if command -v clang-format >/dev/null 2>&1; then
 fi
 echo "Compiling..."
 if [ $OS == "Darwin" ]; then
-  CC=gcc-5
+  CC=gcc-6
 fi
 echo "... using $CC."
 rm *.out
